@@ -1,0 +1,41 @@
+# ---- ModelSim / Questa ----
+work/
+*.wlf
+*.wlf.*
+wlf*
+transcript
+vsim.dbg
+vish_stacktrace.vstf
+modelsim.ini
+.modelsim
+vsim_stacktrace.vstf
+covhtmlreport/
+
+# ---- Synopsys Design Compiler ----
+command.log
+filenames.log
+default.svf
+*.svf
+*.ddc
+*.mr
+*.pvl
+*.syn
+alib-*/
+WORK/
+work_syn/
+
+# DC writes elaborated netlists next to the sources
+*_noOPT*.vhdl
+*_optimized.vhdl
+
+# ---- editor / OS ----
+*~
+*.swp
+*.swo
+\#*\#
+.\#*
+.DS_Store
+Thumbs.db
+
+# ---- parked pre-reorg files, safe to delete ----
+.old/
