@@ -34,7 +34,7 @@ entity mux_and_shift is
   );
 end entity mux_and_shift;
 
-architecture BEH of mux_and_shift is
+architecture no_sign_extend of mux_and_shift is
 begin
 
   process (A, sel)
@@ -62,4 +62,33 @@ begin
 
   end process;
 
-end architecture BEH;
+end architecture no_sign_extend;
+
+---------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+architecture sign_extend of mux_and_shift is
+begin
+
+  process (A, sel)
+    variable q : std_logic_vector(N downto 0);   -- N+1 bits, holds +/-A or +/-2A
+  begin
+
+    -- start from A sign-extended to 2N bits
+    q := std_logic_vector(resize(signed(A), N*2));
+
+    if sel(0) = '0' then
+      q := (others => '0');                                   -- row disabled
+    elsif sel(1) = '1' then
+      q := std_logic_vector(shift_left(unsigned(q), 1));      -- 2A
+    end if;
+
+    -- negate: one's complement. The matching +1 is supplied as neg_bits(i)
+    -- by the corrector, so it costs one bit in the array instead of an adder.
+    q := q xor (q'range => sel(2));
+    pp <= q;
+
+  end process;
+
+end architecture sign_extend;

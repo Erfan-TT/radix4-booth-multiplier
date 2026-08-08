@@ -28,7 +28,7 @@ entity corrector is
   );
 end entity corrector;
 
-architecture BEH of corrector is
+architecture no_sign_extend of corrector is
 
   constant SE_CONST : std_logic_vector(2*N-1 downto 0) := sign_ext_const(N);
 
@@ -43,4 +43,22 @@ begin
   -- high half: constant bias cancellation (no logic, pure wiring to 0/1)
   correction_v(2*N-1 downto N) <= SE_CONST(2*N-1 downto N);
 
-end architecture BEH;
+end architecture no_sign_extend;
+
+---------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------
+
+-- basic one, without the optimization on the sign bits, only the two's complement addition bits comming from sel(2)
+architecture sign_extend of corrector is
+
+begin
+
+  -- low half: Booth "+1" bits, neg_bits(i) at weight 2**(2i)
+  gen_neg: for i in 0 to N/2-1 generate
+    correction_v(2*i)   <= neg_bits(i);
+    correction_v(2*i+1) <= '0';
+  end generate gen_neg;
+  -- high half: all zero
+  correction_v(2*N-1 downto N) <= ( others => '0');
+
+end architecture sign_extend;

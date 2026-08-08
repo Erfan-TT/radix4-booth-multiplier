@@ -24,7 +24,7 @@ entity WALLACE_TREE is
   );
 end entity WALLACE_TREE;
 
-architecture STRUCTURAL of WALLACE_TREE is
+architecture uniform of WALLACE_TREE is
 
   -- reduction layers, plus one to hold the final (carry, sum) pair
   constant NUM_LAYERS : natural := wallace_num_layers(NROWS) + 1;
@@ -81,4 +81,4 @@ begin
   C <= layer(NUM_LAYERS-1)(0);
   S <= layer(NUM_LAYERS-1)(1);
 
-end architecture STRUCTURAL;
+end architecture uniform;

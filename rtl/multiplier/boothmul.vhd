@@ -162,3 +162,14 @@ begin
 end architecture STRUCTURAL;
 
 
+configuration top_cfg of boothmul is
+  for structural 
+    for mux_i : mux_and_shift use entity work.mux_and_shift(no_sign_extent);
+    end for;
+    for corr_i : corrector use entity work.corrector(no_sign_extend);
+    end for;
+    for wallace_tree : wallace_tree use entity work.wallace_tree(uniform);
+  end for;
+end configuration top_cfg;
+
+
