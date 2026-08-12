@@ -1,7 +1,12 @@
 # run the booth multiplier testbench
 # usage: do sim.do
 
-vsim -voptargs=+acc work.multiplier_tb(test)
+# which variant to simulate
+set CFG work.cfg_tb_opt_dadda
+# set CFG work.cfg_tb_opt
+# set CFG work.cfg_tb_base
+
+vsim -voptargs=+acc $CFG
 
 add wave -radix hexadecimal /multiplier_tb/A_i
 add wave -radix hexadecimal /multiplier_tb/B_i

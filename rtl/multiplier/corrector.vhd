@@ -1,25 +1,14 @@
 library ieee;
 use ieee.std_logic_1164.all;
-
-use work.pp_pkg.all;
-
--- =============================================================================
+use work.common_pkg.all;
 -- corrector : builds the last row of the partial-product array.
---
 -- This single row carries two completely different things, which happen to fit
 -- in disjoint halves of the same word:
---
---   bits N-1 .. 0   the Booth negation carries. Row i was negated as ~x, so it
---                   still owes a +1 at weight 2**(2i). neg_bits(i) goes there.
---                   Odd positions are unused and tied to '0'.
---
---   bits 2N-1 .. N  the constant that cancels the bias introduced by
+--   bits N-1 .. 0 : the one to be added to the two's complements of the partial products, if they are negative or not.
+--   which are determined by the sel(2) bits inside the neg_bits vector input.
+--   bits 2N-1 .. N  the constant that cancels the error introduced by
 --                   sign-extension elimination in mux_and_shift
---                   (0xAAAA...AB, see pp_pkg.sign_ext_const).
---
--- Because the two halves never overlap they share one row for free: the Wallace
--- tree still sees N/2+1 rows, so no extra reduction layer is needed.
--- =============================================================================
+--                   the pattern is : (0xAAAA...AB, see pp_pkg.sign_ext_const).
 entity corrector is
   generic (N : integer := 32);
   port (

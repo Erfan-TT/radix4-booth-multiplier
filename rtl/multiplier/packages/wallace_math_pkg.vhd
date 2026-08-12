@@ -8,7 +8,7 @@
 -- 2*NBIT-bit quantity (~2**62 for NBIT=32) which does not fit in a VHDL
 -- integer, so it is built as a bit pattern by pp_pkg.sign_ext_const instead.
 -- =============================================================================
-package const_math_pkg is
+package wallace_math_pkg is
 
   -- integer exponentiation, A**P
   function pow(A : natural; P : natural) return natural;
@@ -22,10 +22,10 @@ package const_math_pkg is
   -- Number of Wallace layers needed to get from r rows down to 2.
   function wallace_num_layers(r : natural) return natural;
 
-end package const_math_pkg;
+end package wallace_math_pkg;
 
 
-package body const_math_pkg is
+package body wallace_math_pkg is
 
   function pow(A : natural; P : natural) return natural is
     variable result : natural := 1;
@@ -64,4 +64,4 @@ package body const_math_pkg is
     return layers;
   end function wallace_num_layers;
 
-end package body const_math_pkg;
+end package body wallace_math_pkg;

@@ -1,10 +1,5 @@
 library ieee;
 use ieee.std_logic_1164.all;
-
--- Booth radix-4 encoder
--- Takes 3 overlapping bits of multiplier B: B(2i+1), B(2i), B(2i-1)
--- Outputs 3-bit selection: SEL(2)=negate, SEL(1)=double, SEL(0)=enable
---
 -- Encoding table:
 -- B_IN  | Operation | SEL
 -- 000   |     0     | 000
@@ -15,7 +10,6 @@ use ieee.std_logic_1164.all;
 -- 101   |    -A     | 101
 -- 110   |    -A     | 101
 -- 111   |     0     | 000
-
 entity BOOTH_ENCODER is
   port (
     B_IN : in  std_logic_vector(2 downto 0);

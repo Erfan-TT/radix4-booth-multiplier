@@ -2,7 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 -- =============================================================================
--- pp_pkg : partial-product types and the sign-extension correction constant.
+-- common_pkg : partial-product types and the sign-extension correction constant.
 --
 -- NBIT is the single source of truth for the operand width. Change it here and
 -- the multiplier and the testbench both follow.
@@ -12,14 +12,26 @@ use ieee.std_logic_1164.all;
 -- That is why the width comes from a constant here while the *number of rows*
 -- stays generic (pp_array is unconstrained in its outer dimension).
 -- =============================================================================
-package pp_pkg is
+package common_pkg is
 
   -- Operand width. Must be even (radix-4 Booth works on bit pairs).
   -- Set to 8 to run the exhaustive testbench; 32 is the synthesis target.
   constant NBIT : integer := 8;
-
+  constant NROWS : integer := NBIT/2+1;
   subtype pp_word  is std_logic_vector(2*NBIT-1 downto 0);
   type    pp_array is array (natural range <>) of pp_word;
+
+  -- Shape of the partial-product array feeding the reduction tree. The Dadda
+  -- schedule is computed from column heights, so it has to know which layout it
+  -- is looking at; the uniform CSA tree ignores this.
+  --
+  --   BOOTH_SE     radix-4 Booth, sign extension eliminated
+  --                NBIT/2 rows of NBIT+1 bits at offset 2i, plus the corrector
+  --   BOOTH_PLAIN  radix-4 Booth, rows sign-extended to the full 2*NBIT width
+  --                corrector carries only the negate bits
+  --   BAUGH_WOOLEY NBIT rows of NBIT bits at offset j, two hardwired constants
+  type pp_layout_t is (BOOTH_SE, BOOTH_PLAIN, BAUGH_WOOLEY);
+
 
   -- Sign-extension bias cancellation constant.
   --
@@ -34,10 +46,10 @@ package pp_pkg is
   -- are zero, which is what lets this share a row with the Booth "+1" bits.
   function sign_ext_const(NB : natural) return std_logic_vector;
 
-end package pp_pkg;
+end package common_pkg;
 
 
-package body pp_pkg is
+package body common_pkg is
 
   function sign_ext_const(NB : natural) return std_logic_vector is
     variable v : std_logic_vector(2*NB-1 downto 0) := (others => '0');
@@ -52,4 +64,4 @@ package body pp_pkg is
     return v;
   end function sign_ext_const;
 
-end package body pp_pkg;
+end package body common_pkg;

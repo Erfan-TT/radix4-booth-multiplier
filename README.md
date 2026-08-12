@@ -113,6 +113,20 @@ from synthesis):
 This is not an area-for-timing trade — the removed adders sit on sign-extension
 and near-zero columns, off the critical path.
 
+Adding Dadda reduction on top, all four variants at N=32:
+
+| variant | full adders | half adders | cells | levels |
+|---|---|---|---|---|
+| BASE + uniform | 661 | 115 | 776 | 6 |
+| BASE + dadda | 658 | 62 | 720 | 6 |
+| OPT + uniform | 436 | 148 | 584 | 6 |
+| **OPT + dadda** | **435** | **45** | **480** | **6** |
+
+Depth is identical across all four. Note how little the full adder count moves
+between uniform and dadda — eliminating a bit always costs one full adder, so
+that number is fixed by the array, not the schedule. What Dadda removes is the
+half adders, which shift a bit sideways without eliminating anything.
+
 Baseline synthesis of the pre-optimization design, Nangate 45 nm,
 `compile -map_effort high`: **8210 µm²**, 6903 combinational cells.
 
@@ -122,12 +136,14 @@ Baseline synthesis of the pre-optimization design, Nangate 45 nm,
 
 ```
 rtl/
-  common/       constants, iv, nd2, mux21, mux21_generic, fa
+  common/       constants, iv, nd2, mux21, mux21_generic, fa, ha
   adder/        rca, carry_select_block, PG_block, PG_elem, G_block,
                 carry_generator, sum_generator, P4_adder
-  multiplier/   pp_pkg, const_math_pkg, booth_encoder, mux_and_shift,
-                corrector, CSA, wallace_tree, boothmul
+  multiplier/   pp_pkg, const_math_pkg, dadda_pkg, booth_encoder,
+                mux_and_shift, corrector, CSA,
+                reduction_tree (uniform), dadda_tree (dadda), boothmul
 tb/             tb_multiplier
+cfg/            configurations  -- variant selection, analysed last
 sim/            compile.do, sim.do
 docs/           waveform printouts
 ```
@@ -147,6 +163,18 @@ cd sim
 do compile.do
 do sim.do
 ```
+
+Which variant runs is one line at the top of `sim.do`:
+
+| configuration | PP generation | reduction |
+|---|---|---|
+| `cfg_tb_opt_dadda` | sign extension eliminated | Dadda |
+| `cfg_tb_opt` | sign extension eliminated | uniform CSA |
+| `cfg_tb_base` | full sign extension | uniform CSA |
+| `cfg_tb_base_dadda` | full sign extension | Dadda |
+
+All four must pass the same exhaustive testbench — they are different circuits
+computing the same function.
 
 `NBIT` in `rtl/multiplier/pp_pkg.vhd` is the only width knob; the testbench
 follows it automatically.
@@ -185,13 +213,17 @@ Without ungrouping, none of it propagates and the measured area improvement is
 ## Roadmap
 
 - [x] Sign-extension elimination (−25% adder cells)
-- [ ] **Per-row widths in the tree.** Rows are now N+1 significant bits inside a
-      2N-bit word; the CSAs are still uniformly 2N wide. Giving each CSA a width
-      and an offset removes the remaining dead cells.
-- [ ] **Dadda instead of Wallace.** Reduce only as far as each level needs
-      rather than maximally. Projected 584 → 480 adder cells at the same depth,
-      mostly by using far fewer half adders (148 → 46).
+- [x] **Dadda reduction.** 584 → 480 adder cells at the same depth. Almost the
+      entire saving is half adders (148 → 45); the full adder count barely
+      moves, because the number of bits that must be eliminated is fixed.
 - [ ] **4:2 compressors** if depth rather than area becomes the target.
+- [ ] **Measured synthesis numbers** for all four variants under one flow.
+
+Per-row-width CSAs were considered and dropped. Constant propagation already
+removes the dead adders in a uniform-width tree, so hard-coding the widths
+produces *identical* logic — 584 cells either way. It only shrinks the netlist
+you write (960 → 728 instances), which matters solely if you synthesise without
+`ungroup`. The real waste was the scheduling, which is what Dadda fixes.
 - [ ] **Baugh-Wooley comparison.** It produces N rows of 2N bits, which is
       exactly what `WALLACE_TREE` already accepts, so it reuses the tree and the
       P4 adder unchanged. Analysis puts radix-4 Booth ~33% ahead at N=32 and

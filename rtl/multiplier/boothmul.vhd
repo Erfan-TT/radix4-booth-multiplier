@@ -2,7 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-use work.pp_pkg.all;          -- NBIT, pp_word, pp_array
+use work.common_pkg.all;          -- NBIT, pp_word, pp_array
 
 -- =============================================================================
 -- BOOTHMUL : NBIT x NBIT signed multiplier.
@@ -13,7 +13,7 @@ use work.pp_pkg.all;          -- NBIT, pp_word, pp_array
 --                   above it (sign-extension elimination)
 --   corrector       one more row: Booth "+1" carries in the low half,
 --                   sign-extension bias cancellation constant in the high half
---   WALLACE_TREE    3:2 CSA reduction of the NBIT/2+1 rows down to carry + sum
+--   REDUCTION_TREE  reduces the NBIT/2+1 rows down to carry + sum
 --   P4_adder        final carry-propagate add to the 2*NBIT product
 --
 -- Everything is arithmetic mod 2**(2*NBIT): CSA carry-outs of the MSB are
@@ -76,8 +76,7 @@ architecture STRUCTURAL of BOOTHMUL is
     );
   end component;
 
-  component WALLACE_TREE is
-    generic (NROWS : positive);
+  component REDUCTION_TREE is
     port (
       PP : in  pp_array(0 to NROWS-1);
       C  : out pp_word;
@@ -97,11 +96,6 @@ architecture STRUCTURAL of BOOTHMUL is
   end component;
 
 begin
-
-  -- radix-4 Booth needs an even number of bits
-  assert (NBIT mod 2) = 0
-    report "BOOTHMUL: NBIT must be even"
-    severity failure;
 
   -- B(-1) = '0' convention
   B_padded <= B & '0';
@@ -141,8 +135,7 @@ begin
       correction_v => pp(Num_PP)
     );
 
-  csa_tree: WALLACE_TREE
-    generic map (NROWS => Num_PP + 1)
+  tree_i: REDUCTION_TREE
     port map (
       PP => pp,
       C  => tree_c,
@@ -161,15 +154,8 @@ begin
 
 end architecture STRUCTURAL;
 
-
-configuration top_cfg of boothmul is
-  for structural 
-    for mux_i : mux_and_shift use entity work.mux_and_shift(no_sign_extent);
-    end for;
-    for corr_i : corrector use entity work.corrector(no_sign_extend);
-    end for;
-    for wallace_tree : wallace_tree use entity work.wallace_tree(uniform);
-  end for;
-end configuration top_cfg;
+-- Configurations live in cfg/configurations.vhd, because the testbench-level
+-- ones can only be analysed after the testbench and it is easier to keep the
+-- whole binding story in one file.
 
 
