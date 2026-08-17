@@ -3,9 +3,11 @@ use work.dadda_types_pkg.all;
 
 package dadda_math_pkg is
 
+  type full_sys_t is array(0 to 2) of sys_t (0 to NUM_LAYERS_D-1);
+
   function num_rows_dadda(level : natural) return natural;
   function making_inital_layer(NBIT : natural ) return row_t;
-  function constructing_dadda(purpose_bit : natural ) return sys_t;
+  function constructing_dadda return full_sys_t;
 
   function fa_count_col_dadda(FA_matrix : sys_t ; level : natural; num_rows_current: natural; col : natural) return natural;
   function ha_flag_col_dadda( HA_matrix : sys_t ; level : natural; num_rows_current: natural; col : natural) return natural;
@@ -67,7 +69,8 @@ package body dadda_math_pkg is
 
 
 
-  function constructing_dadda(purpose_bit : natural ) return sys_t is
+  function constructing_dadda return full_sys_t is
+    variable full_system : full_sys_t := (others => (others => (others => (others => '0') )));
     variable top_layer_rows : integer := NBIT/2 +1;
     variable system :    sys_t(0 to NUM_LAYERS_D-1) := (others => (others => (others => '0')));
     variable FA_matrix : sys_t(0 to NUM_LAYERS_D-1) := (others => (others => (others => '0')));
@@ -190,12 +193,14 @@ package body dadda_math_pkg is
       end loop loop_columns;
     end loop loop_layers;
 
-    if(purpose_bit = 0) then return system;
-    elsif (purpose_bit = 1) then return HA_matrix;
-    elsif (purpose_bit = 2) then return FA_matrix;
-    else return system;
-    end if;
 
+    full_system(0) := system;
+    full_system(1) := HA_matrix;
+    full_system(2) := FA_matrix;
+    
+    
+    return full_system;
+  
   end function constructing_dadda;
 
 

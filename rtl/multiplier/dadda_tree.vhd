@@ -16,9 +16,11 @@ end entity dadda_tree;
 
 architecture structural of dadda_tree is
 
-  constant remaining_system : sys_t(0 to NUM_LAYERS_D-1) := constructing_dadda(0); -- zero opt code means return remaining_sys
-  constant HA_matrix :        sys_t(0 to NUM_LAYERS_D-1) := constructing_dadda(1); -- one opt code means return ha matrix
-  constant FA_matrix :        sys_t(0 to NUM_LAYERS_D-1) := constructing_dadda(2); -- two opt code means return fa matrix
+  constant full_system : full_sys_t := constructing_dadda ;
+
+  constant remaining_system : sys_t(0 to NUM_LAYERS_D-1) := full_system(0); -- zero index return remaining_sys
+  constant HA_matrix :        sys_t(0 to NUM_LAYERS_D-1) := full_system(1); -- one index return ha matrix
+  constant FA_matrix :        sys_t(0 to NUM_LAYERS_D-1) := full_system(2); -- two two return fa matrix
   
 
   -- one entry per layer, each holding a full set of rows

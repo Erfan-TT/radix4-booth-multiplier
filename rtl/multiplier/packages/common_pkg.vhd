@@ -21,17 +21,6 @@ package common_pkg is
   subtype pp_word  is std_logic_vector(2*NBIT-1 downto 0);
   type    pp_array is array (natural range <>) of pp_word;
 
-  -- Shape of the partial-product array feeding the reduction tree. The Dadda
-  -- schedule is computed from column heights, so it has to know which layout it
-  -- is looking at; the uniform CSA tree ignores this.
-  --
-  --   BOOTH_SE     radix-4 Booth, sign extension eliminated
-  --                NBIT/2 rows of NBIT+1 bits at offset 2i, plus the corrector
-  --   BOOTH_PLAIN  radix-4 Booth, rows sign-extended to the full 2*NBIT width
-  --                corrector carries only the negate bits
-  --   BAUGH_WOOLEY NBIT rows of NBIT bits at offset j, two hardwired constants
-  type pp_layout_t is (BOOTH_SE, BOOTH_PLAIN, BAUGH_WOOLEY);
-
 
   -- Sign-extension bias cancellation constant.
   --
