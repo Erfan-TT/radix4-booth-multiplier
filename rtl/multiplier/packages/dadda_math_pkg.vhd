@@ -300,7 +300,7 @@ package body dadda_math_pkg is
     begin
       for i in 0 to (num_rows -1) loop
         if(HA_matrix(lev)(i)(col) = '1') then
-        assert count_bit <= 2
+        assert count_bit < 2
           REPORT "ERROR : more than one HA at level: " & integer'image(lev) & ", at the column: " & integer'image(col) severity failure;
           ha_pos(count_bit) := i;
           count_bit := count_bit + 1;
