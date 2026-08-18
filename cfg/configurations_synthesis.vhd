@@ -1,5 +1,5 @@
 
--- basic wallace version of booth (not sign optimized )
+-- not sign optimized wallace version of booth (should give highest area)
 configuration CFG_BOOTHMUL_WAL_BASE of BOOTHMUL is
   for STRUCTURAL
 
@@ -45,7 +45,7 @@ end configuration CFG_BOOTHMUL_WAL_OPT;
 
 ------------------------------------------------------
 
--- dadda tree version
+-- dadda tree (should give the least area)
 configuration CFG_BOOTHMUL_DADDA of BOOTHMUL is
   for STRUCTURAL
 
@@ -66,35 +66,64 @@ configuration CFG_BOOTHMUL_DADDA of BOOTHMUL is
   end for;
 end configuration CFG_BOOTHMUL_DADDA;
 
-
-------------------------------------------------------
--- testbench -----------------------------------------
 ------------------------------------------------------
 
-configuration cfg_tb_wal_base of MULTIPLIER_tb is
-  for TEST
-    for uut : BOOTHMUL
-      use configuration work.CFG_BOOTHMUL_WAL_BASE;
+-- the worst case, completely behavioural adding of partial products, also no P4
+configuration CFG_BOOTHMUL_BEHAVIOURAL of BOOTHMUL is
+  for BEHAVIOURAL
+
+    for gen_stages
+      for muxing_i : mux_and_shift
+        use entity work.mux_and_shift(sign_extend);
+      end for;
+    end for;
+
+  end for;
+end configuration CFG_BOOTHMUL_BEHAVIOURAL;
+
+
+---------------------------------------------------
+----------- choosing the final arch in ------------
+---------------------------------------------------
+
+-- wallace, basic version 
+configuration CFG_BOOTHMUL_REG_WAL_BASE of boothmul_registered is
+  for structural
+    for mul : boothmul
+        use configuration work.CFG_BOOTHMUL_WAL_BASE;
     end for;
   end for;
-end configuration cfg_tb_wal_base;
+end configuration CFG_BOOTHMUL_REG_WAL_BASE;
 
 ------------------------------------------------------
 
-configuration cfg_tb_wal_opt of MULTIPLIER_tb is
-  for TEST
-    for uut : BOOTHMUL
-      use configuration work.CFG_BOOTHMUL_WAL_OPT;
+-- wallace, optimal version (with sign optimization)
+configuration CFG_BOOTHMUL_REG_WAL_OPT of boothmul_registered is
+  for structural
+    for mul : boothmul
+        use configuration work.CFG_BOOTHMUL_WAL_OPT;
     end for;
   end for;
-end configuration cfg_tb_wal_opt;
+end configuration CFG_BOOTHMUL_REG_WAL_OPT;
 
 ------------------------------------------------------
 
-configuration cfg_tb_dadda of MULTIPLIER_tb is
-  for TEST
-    for uut : BOOTHMUL
-      use configuration work.CFG_BOOTHMUL_DADDA;
+-- dadda tree version 
+configuration CFG_BOOTHMUL_REG_DADDA of boothmul_registered is
+  for structural
+    for mul : boothmul
+        use configuration work.CFG_BOOTHMUL_DADDA;
     end for;
   end for;
-end configuration cfg_tb_dadda;
+end configuration CFG_BOOTHMUL_REG_DADDA;
+
+------------------------------------------------------
+
+-- behavioral version 
+configuration CFG_BOOTHMUL_REG_BEH of boothmul_registered is
+  for structural
+    for mul : boothmul
+        use configuration work.CFG_BOOTHMUL_BEHAVIOURAL;
+    end for;
+  end for;
+end configuration CFG_BOOTHMUL_REG_BEH;
