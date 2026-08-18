@@ -154,8 +154,113 @@ begin
 
 end architecture STRUCTURAL;
 
--- Configurations live in cfg/configurations.vhd, because the testbench-level
--- ones can only be analysed after the testbench and it is easier to keep the
--- whole binding story in one file.
+
+
+------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+
+architecture BEHAVIORAL of BOOTHMUL is
+
+  -- Number of Booth encoders = NBIT/2
+  constant NENC : integer := NBIT/2;
+
+  -- Array types for internal signals
+  --outputs of the encoders that go into the mux_and_shift component
+  type sel_array_t     is array (0 to NENC-1) of std_logic_vector(2 downto 0);
+
+  
+  --inputs of the encoders
+  type triplet_array_t is array (0 to NENC-1) of std_logic_vector(2 downto 0);
+
+  --partial products, the outputs of the muxes
+  type pp_array_t      is array (0 to NENC-1) of signed(2*NBIT-1 downto 0);
+
+                                                                         
+  --outputs of the sums, the last one ( sum_array_t(NENC-1) ) is the final result                                                                      
+  type sum_array_t     is array (0 to NENC-1) of signed(2*NBIT-1 downto 0);
+
+  -- B extended with a '0' appended at LSB (for B(-1) = 0)
+  signal B_padded : std_logic_vector(NBIT downto 0);
+
+  
+  signal triplets : triplet_array_t;
+  signal sel      : sel_array_t;
+
+  -- Partial products (each 2N bits)
+  signal pp : pp_array_t;
+  signal pp_temp : pp_array_t;
+
+  -- Adder cascade: sum_chain(i) = pp(0) + pp(1) + ... + pp(i)
+  signal sum_chain : sum_array_t;
+
+  -- Booth encoder component
+  component BOOTH_ENCODER is
+    port (
+      B_IN : in  std_logic_vector(2 downto 0);
+      SEL  : out std_logic_vector(2 downto 0)
+    );
+  end component;
+
+  component mux_and_shift is
+     generic (N: integer := 8);
+  port(
+    A: in std_logic_vector(N-1 downto 0);
+    sel: in std_logic_vector ( 2 downto 0);
+    pp: out signed(2*N-1 downto 0)
+    );
+end component;
+
+  
+
+begin
+
+  -- Append '0' at LSB for the B(-1) = 0 convention
+  -- B_padded(N downto 1) = B(N-1 downto 0), B_padded(0) = '0'
+  B_padded <= B & '0';
+
+  -- STRUCTURAL: Generate N/2 Booth encoders and partial products
+  gen_stages: for i in 0 to NENC-1 generate
+
+    -- Extract 3-bit triplet: B(2i+1), B(2i), B(2i-1)
+    triplets(i) <= B_padded(2*i+2) & B_padded(2*i+1) & B_padded(2*i);
+
+    -- Instantiate Booth encoder (structural component instantiation)
+    enc_i: BOOTH_ENCODER
+      port map (
+        B_IN => triplets(i),
+        SEL  => sel(i)
+        );
+
+-- Instantiate the mux and shift component, which results in the base of the
+-- partial products, that is either A, -A, 2A, -2A, 0, depending on the select
+-- signal, which then will be shifted by the order associated to the encoder(i)(
+-- the bit order of B )
+    muxing_i: mux_and_shift
+      generic map(N => NBIT)
+      port map(A => A, sel => sel(i), pp => pp_temp(i));
+
+    pp(i) <= shift_left(pp_temp(i), 2*i);
+
+
+
+  end generate gen_stages;
+
+ 
+  -- sum_chain(0) = pp(0) which is the output of the first mux
+  -- sum_chain(i) = sum_chain(i-1) + pp(i) for i >= 1 the previous sum output +
+  -- the next partial product
+  -------------------------------------------------------------------
+  sum_chain(0) <= pp(0);
+
+  gen_sum: for i in 1 to NENC-1 generate
+    sum_chain(i) <= sum_chain(i-1) + pp(i);
+  end generate gen_sum;
+
+  -- Final product output
+  P <= std_logic_vector(sum_chain(NENC-1));
+
+end BEHAVIORAL;
+
 
 
