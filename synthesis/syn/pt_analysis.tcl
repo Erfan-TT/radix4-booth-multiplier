@@ -77,8 +77,8 @@ foreach configuration in $configs {
         update_power
 
         ##################################################################
-        ## DID THE VCD REALLY ATTACH ?
-        ##
+        ## To check if the vcd was valid or not, we can count how many net
+        ## was given the toggle rate more than zero and is not empty.
         ## If the path is wrong, PrimeTime does not stop, it just uses a
         ## default activity and gives a number that looks fine but is
         ## wrong. So we count how many nets really got an activity.
