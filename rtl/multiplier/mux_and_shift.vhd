@@ -77,3 +77,33 @@ begin
   end process;
 
 end architecture sign_extend;
+
+
+
+---------------------------------------------------
+---------------------------------------------------
+
+architecture behavioural of mux_and_shift is
+begin
+
+  process (A, sel)
+    variable q : unsigned(2*N-1 downto 0);   -- full row width
+  begin
+
+    -- start from A sign-extended to 2N bits
+    q := resize(signed(A), 2*N);
+
+    if sel(0) = '0' then
+      q := (others => '0');                                   -- row disabled
+    elsif sel(1) = '1' then
+      q := shift_left(unsigned(q), 1);                        -- unsigned 2A
+    end if;
+
+    -- negate: one's complement. The matching +1 is supplied as neg_bits(i) by the corrector
+    q := q xor (q'range => sel(2));
+    q := q + 1
+    pp <= q;
+
+  end process;
+
+end architecture behavioural;

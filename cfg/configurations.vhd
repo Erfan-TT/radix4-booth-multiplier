@@ -67,6 +67,25 @@ configuration CFG_BOOTHMUL_DADDA of BOOTHMUL is
 end configuration CFG_BOOTHMUL_DADDA;
 
 
+
+
+
+
+configuration CFG_BOOTHMUL_BEHAVIOURAL of BOOTHMUL is
+  for BEHAVIOURAL
+
+    for gen_stages
+      for muxing_i : mux_and_shift
+        use entity work.mux_and_shift(behavioural);
+      end for;
+    end for;
+
+  end for;
+end configuration CFG_BOOTHMUL_BEHAVIOURAL;
+
+
+
+
 ------------------------------------------------------
 -- testbench -----------------------------------------
 ------------------------------------------------------
@@ -98,3 +117,13 @@ configuration cfg_tb_dadda of MULTIPLIER_tb is
     end for;
   end for;
 end configuration cfg_tb_dadda;
+
+------------------------------------------------------
+
+configuration cfg_tb_beh of MULTIPLIER_tb is
+  for TEST
+    for uut : BOOTHMUL
+      use configuration work.CFG_BOOTHMUL_BEHAVIOURAL;
+    end for;
+  end for;
+end configuration cfg_tb_beh;

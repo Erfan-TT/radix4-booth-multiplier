@@ -74,7 +74,7 @@ configuration CFG_BOOTHMUL_BEHAVIOURAL of BOOTHMUL is
 
     for gen_stages
       for muxing_i : mux_and_shift
-        use entity work.mux_and_shift(sign_extend);
+        use entity work.mux_and_shift(behavioural);
       end for;
     end for;
 
