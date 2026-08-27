@@ -5,9 +5,9 @@ use work.common_pkg.all;
 entity boothmul_registered is 
   port (
     CLK, LD, RST : in std_logic;
-    A : in  std_logic_vector(N-1 downto 0);
-    B : in  std_logic_vector(N-1 downto 0);
-    P : out std_logic_vector(2*N-1 downto 0)
+    A : in  std_logic_vector(NBIT-1 downto 0);
+    B : in  std_logic_vector(NBIT-1 downto 0);
+    P : out std_logic_vector(2*NBIT-1 downto 0)
   );
   end entity;
 
@@ -15,9 +15,9 @@ architecture structural of boothmul_registered is
 
 component boothmul is
   port (
-    A : in  std_logic_vector(N-1 downto 0);
-    B : in  std_logic_vector(N-1 downto 0);
-    P : out std_logic_vector(2*N-1 downto 0)
+    A : in  std_logic_vector(NBIT-1 downto 0);
+    B : in  std_logic_vector(NBIT-1 downto 0);
+    P : out std_logic_vector(2*NBIT-1 downto 0)
   );
 end component;
 
@@ -30,8 +30,8 @@ port (
 );
 end component;
 
-signal A_i, B_i : std_logic_vector(N-1 downto 0);
-signal P_i : std_logic_vector(2*N-1 downto 0);
+signal A_i, B_i : std_logic_vector(NBIT-1 downto 0);
+signal P_i : std_logic_vector(2*NBIT-1 downto 0);
 
 begin
 

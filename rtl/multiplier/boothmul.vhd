@@ -160,7 +160,7 @@ end architecture STRUCTURAL;
 -------------------------------------------------------------
 -------------------------------------------------------------
 
-architecture BEHAVIORAL of BOOTHMUL is
+architecture BEHAVIOURAL of BOOTHMUL is
 
   -- Number of Booth encoders = NBIT/2
   constant NENC : integer := NBIT/2;
@@ -174,7 +174,7 @@ architecture BEHAVIORAL of BOOTHMUL is
   type triplet_array_t is array (0 to NENC-1) of std_logic_vector(2 downto 0);
 
   --partial products, the outputs of the muxes
-  type pp_array_t      is array (0 to NENC-1) of signed(2*NBIT-1 downto 0);
+  type pp_array_t      is array (0 to NENC-1) of std_logic_vector(2*NBIT-1 downto 0);
 
                                                                          
   --outputs of the sums, the last one ( sum_array_t(NENC-1) ) is the final result                                                                      
@@ -207,7 +207,7 @@ architecture BEHAVIORAL of BOOTHMUL is
   port(
     A: in std_logic_vector(N-1 downto 0);
     sel: in std_logic_vector ( 2 downto 0);
-    pp: out signed(2*N-1 downto 0)
+    pp: out std_logic_vector(2*N-1 downto 0)
     );
 end component;
 
@@ -240,7 +240,7 @@ begin
       generic map(N => NBIT)
       port map(A => A, sel => sel(i), pp => pp_temp(i));
 
-    pp(i) <= shift_left(pp_temp(i), 2*i);
+    pp(i) <= std_logic_vector(shift_left(signed(pp_temp(i)), 2*i));
 
 
 
@@ -251,16 +251,16 @@ begin
   -- sum_chain(i) = sum_chain(i-1) + pp(i) for i >= 1 the previous sum output +
   -- the next partial product
   -------------------------------------------------------------------
-  sum_chain(0) <= pp(0);
+  sum_chain(0) <= signed(pp(0));
 
   gen_sum: for i in 1 to NENC-1 generate
-    sum_chain(i) <= sum_chain(i-1) + pp(i);
+    sum_chain(i) <= sum_chain(i-1) + signed(pp(i));
   end generate gen_sum;
 
   -- Final product output
   P <= std_logic_vector(sum_chain(NENC-1));
 
-end BEHAVIORAL;
+end BEHAVIOURAL;
 
 
 

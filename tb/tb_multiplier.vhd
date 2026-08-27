@@ -3,7 +3,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use ieee.math_real.all;
 
-use work.pp_pkg.all;          -- NBIT
+use work.common_pkg.all;          -- NBIT
 
 -- =============================================================================
 -- MULTIPLIER_tb : self-checking testbench for BOOTHMUL.

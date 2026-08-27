@@ -18,3 +18,4 @@ add wave -radix hexadecimal /multiplier_tb/uut/tree_c
 add wave -radix hexadecimal /multiplier_tb/uut/tree_s
 
 run -all
+quit -f

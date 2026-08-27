@@ -12,6 +12,8 @@ vsim_stacktrace.vstf
 covhtmlreport/
 
 # ---- Synopsys Design Compiler ----
+synthesis/syn/netlist
+synthesis/syn/reports
 command.log
 filenames.log
 default.svf
