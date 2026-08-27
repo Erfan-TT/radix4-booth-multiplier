@@ -27,7 +27,6 @@ analyze -library WORK -format vhdl {../../rtl/multiplier/packages/common_pkg.vhd
 analyze -library WORK -format vhdl {../../rtl/multiplier/packages/dadda_types_pkg.vhd}
 analyze -library WORK -format vhdl {../../rtl/multiplier/packages/wallace_math_pkg.vhd}
 analyze -library WORK -format vhdl {../../rtl/multiplier/packages/dadda_math_pkg.vhd}
-analyze -library WORK -format vhdl {../../rtl/common/constants.vhd}
 
 # basic gates
 analyze -library WORK -format vhdl {../../rtl/common/iv.vhd}
