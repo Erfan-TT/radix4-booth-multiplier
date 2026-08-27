@@ -6,15 +6,15 @@ Report : timing
         -max_paths 1
 Design : boothmul_registered
 Version: W-2024.09-SP2
-Date   : Thu Aug 27 03:30:14 2026
+Date   : Thu Aug 27 04:48:31 2026
 ****************************************
 
 Operating Conditions: typical   Library: NangateOpenCellLibrary
 Wire Load Model Mode: top
 
-  Startpoint: B_reg_Y_temp_reg_4_
+  Startpoint: B_reg_Y_temp_reg_9_
               (rising edge-triggered flip-flop clocked by CLK)
-  Endpoint: p_reg_Y_temp_reg_13_
+  Endpoint: p_reg_Y_temp_reg_61_
             (rising edge-triggered flip-flop clocked by CLK)
   Path Group: CLK
   Path Type: max
@@ -28,46 +28,60 @@ Wire Load Model Mode: top
   -----------------------------------------------------------
   clock CLK (rise edge)                    0.00       0.00
   clock network delay (ideal)              0.05       0.05
-  B_reg_Y_temp_reg_4_/CK (DFF_X1)          0.00       0.05 r
-  B_reg_Y_temp_reg_4_/QN (DFF_X1)          0.08       0.13 r
-  U367/ZN (INV_X1)                         0.02       0.15 f
-  U368/ZN (NAND2_X1)                       0.04       0.19 r
-  U369/ZN (NAND2_X1)                       0.07       0.26 f
-  U371/ZN (OAI22_X1)                       0.09       0.36 r
-  U372/ZN (INV_X1)                         0.03       0.39 f
-  U373/ZN (OAI22_X1)                       0.05       0.44 r
-  U310/Z (CLKBUF_X1)                       0.05       0.49 r
-  U402/ZN (XNOR2_X1)                       0.06       0.55 r
-  U410/ZN (XNOR2_X1)                       0.07       0.62 r
-  U417/ZN (XNOR2_X1)                       0.07       0.70 r
-  U418/ZN (XNOR2_X1)                       0.08       0.77 r
-  U420/ZN (XNOR2_X1)                       0.09       0.86 r
-  U421/ZN (OAI211_X1)                      0.06       0.92 f
-  U428/ZN (AND3_X1)                        0.05       0.97 f
-  U452/ZN (OAI22_X1)                       0.05       1.02 r
-  U587/ZN (AOI21_X1)                       0.04       1.06 f
-  U588/ZN (OAI222_X1)                      0.07       1.13 r
-  U589/ZN (INV_X1)                         0.03       1.16 f
-  U591/ZN (NAND2_X1)                       0.03       1.19 r
-  U592/ZN (AND3_X1)                        0.05       1.25 r
-  U594/ZN (AOI21_X1)                       0.03       1.28 f
-  U203/ZN (AND2_X1)                        0.05       1.33 f
-  U209/ZN (AOI222_X1)                      0.11       1.44 r
-  U210/ZN (INV_X1)                         0.02       1.46 f
-  p_reg_Y_temp_reg_13_/D (DFF_X1)          0.01       1.47 f
-  data arrival time                                   1.47
+  B_reg_Y_temp_reg_9_/CK (DFF_X1)          0.00       0.05 r
+  B_reg_Y_temp_reg_9_/Q (DFF_X1)           0.10       0.15 r
+  U5556/ZN (NOR2_X1)                       0.03       0.18 f
+  U4051/ZN (OR2_X1)                        0.07       0.25 f
+  U4605/ZN (NOR2_X1)                       0.09       0.34 r
+  U8295/ZN (XNOR2_X1)                      0.08       0.42 r
+  U8298/S (FA_X1)                          0.13       0.55 f
+  U8301/ZN (NAND2_X1)                      0.05       0.60 r
+  U8302/ZN (NAND2_X1)                      0.03       0.64 f
+  U8303/Z (MUX2_X1)                        0.07       0.71 f
+  U5049/ZN (AND2_X1)                       0.04       0.75 f
+  U8343/ZN (XNOR2_X1)                      0.06       0.80 f
+  U5362/ZN (OR2_X1)                        0.05       0.86 f
+  U8362/ZN (AND3_X1)                       0.04       0.90 f
+  U4617/ZN (OR2_X1)                        0.06       0.96 f
+  U8384/ZN (XNOR2_X1)                      0.06       1.02 f
+  U8399/ZN (XNOR2_X1)                      0.06       1.08 f
+  U8400/ZN (XNOR2_X1)                      0.06       1.15 f
+  U8437/ZN (AND2_X1)                       0.04       1.19 f
+  U8438/ZN (NAND2_X1)                      0.03       1.22 r
+  U5145/ZN (AND2_X1)                       0.04       1.26 r
+  U5172/ZN (NAND2_X1)                      0.03       1.29 f
+  U8441/ZN (NAND2_X1)                      0.03       1.32 r
+  U8442/ZN (AND2_X1)                       0.04       1.36 r
+  U4289/ZN (NAND2_X1)                      0.03       1.39 f
+  U5152/ZN (NAND4_X1)                      0.04       1.43 r
+  U5151/ZN (NAND4_X1)                      0.04       1.47 f
+  U5241/ZN (AND4_X1)                       0.04       1.52 f
+  U4099/ZN (OR3_X2)                        0.08       1.60 f
+  U8635/ZN (NAND2_X1)                      0.03       1.63 r
+  U8654/ZN (AND3_X1)                       0.05       1.69 r
+  U5207/ZN (OAI211_X1)                     0.04       1.73 f
+  U5206/ZN (INV_X1)                        0.04       1.76 r
+  U4667/ZN (NAND2_X1)                      0.03       1.79 f
+  U9094/ZN (NAND2_X1)                      0.03       1.83 r
+  U9234/ZN (NAND2_X1)                      0.03       1.86 f
+  U4909/ZN (OR2_X2)                        0.07       1.93 f
+  U5104/ZN (NAND2_X1)                      0.04       1.97 r
+  U5210/ZN (XNOR2_X1)                      0.06       2.03 r
+  U5238/ZN (OAI21_X1)                      0.03       2.06 f
+  p_reg_Y_temp_reg_61_/D (DFFS_X1)         0.01       2.07 f
+  data arrival time                                   2.07
 
   clock CLK (rise edge)                    1.50       1.50
   clock network delay (ideal)              0.05       1.55
   clock uncertainty                       -0.05       1.50
-  p_reg_Y_temp_reg_13_/CK (DFF_X1)         0.00       1.50 r
-  library setup time                      -0.03       1.47
-  data required time                                  1.47
+  p_reg_Y_temp_reg_61_/CK (DFFS_X1)        0.00       1.50 r
+  library setup time                      -0.02       1.48
+  data required time                                  1.48
   -----------------------------------------------------------
-  data required time                                  1.47
-  data arrival time                                  -1.47
+  data required time                                  1.48
+  data arrival time                                  -2.07
   -----------------------------------------------------------
-  slack (MET)                                         0.00
+  slack (VIOLATED)                                   -0.59
 
 
 1

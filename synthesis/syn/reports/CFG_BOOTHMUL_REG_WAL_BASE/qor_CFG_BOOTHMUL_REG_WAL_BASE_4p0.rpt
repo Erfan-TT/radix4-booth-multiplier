@@ -3,15 +3,15 @@
 Report : qor
 Design : boothmul_registered
 Version: W-2024.09-SP2
-Date   : Thu Aug 27 03:29:20 2026
+Date   : Thu Aug 27 04:41:07 2026
 ****************************************
 
 
   Timing Path Group 'CLK'
   -----------------------------------
-  Levels of Logic:              20.00
-  Critical Path Length:          1.87
-  Critical Path Slack:           2.05
+  Levels of Logic:              58.00
+  Critical Path Length:          3.91
+  Critical Path Slack:           0.01
   Critical Path Clk Period:      4.00
   Total Negative Slack:          0.00
   No. of Violating Paths:        0.00
@@ -25,37 +25,37 @@ Date   : Thu Aug 27 03:29:20 2026
   -----------------------------------
   Hierarchical Cell Count:          0
   Hierarchical Port Count:          0
-  Leaf Cell Count:                402
-  Buf/Inv Cell Count:              60
-  Buf Cell Count:                   0
-  Inv Cell Count:                  60
+  Leaf Cell Count:               4538
+  Buf/Inv Cell Count:             577
+  Buf Cell Count:                  27
+  Inv Cell Count:                 550
   CT Buf/Inv Cell Count:            0
-  Combinational Cell Count:       370
-  Sequential Cell Count:           32
+  Combinational Cell Count:      4410
+  Sequential Cell Count:          128
   Macro Count:                      0
   -----------------------------------
 
 
   Area
   -----------------------------------
-  Combinational Area:      431.186000
-  Noncombinational Area:   144.703995
-  Buf/Inv Area:             31.920000
-  Total Buffer Area:             0.00
-  Total Inverter Area:          31.92
+  Combinational Area:     5839.763976
+  Noncombinational Area:   585.731980
+  Buf/Inv Area:            321.328002
+  Total Buffer Area:            22.34
+  Total Inverter Area:         298.98
   Macro/Black Box Area:      0.000000
   Net Area:                  0.000000
   -----------------------------------
-  Cell Area:               575.889995
-  Design Area:             575.889995
+  Cell Area:              6425.495956
+  Design Area:            6425.495956
 
 
   Design Rules
   -----------------------------------
-  Total Number of Nets:           443
-  Nets With Violations:             0
-  Max Trans Violations:             0
-  Max Cap Violations:               0
+  Total Number of Nets:          4781
+  Nets With Violations:             3
+  Max Trans Violations:             1
+  Max Cap Violations:               3
   -----------------------------------
 
 
@@ -63,12 +63,12 @@ Date   : Thu Aug 27 03:29:20 2026
 
   Compile CPU Statistics
   -----------------------------------------
-  Resource Sharing:                    0.11
-  Logic Optimization:                  0.08
-  Mapping Optimization:                0.47
+  Resource Sharing:                    0.56
+  Logic Optimization:                  4.38
+  Mapping Optimization:                4.54
   -----------------------------------------
-  Overall Compile Time:                5.09
-  Overall Compile Wall Clock Time:     5.50
+  Overall Compile Time:               43.79
+  Overall Compile Wall Clock Time:    46.72
 
   --------------------------------------------------------------------
 
