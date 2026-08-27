@@ -1,11 +1,9 @@
 -- N-bit 2-to-1 multiplexer: Y = A when SEL='1', B when SEL='0'
 library IEEE;
 use IEEE.std_logic_1164.all;
-use WORK.constants.all;
 
 entity MUX21_GENERIC is
-	Generic (NBIT: integer:= numBit;
-		 DELAY_MUX: Time:= TP_MUX);
+	Generic (NBIT: integer := 32);
         Port (	A:	In	std_logic_vector(NBIT-1 downto 0) ;
 		B:	In	std_logic_vector(NBIT-1 downto 0);
 		SEL:	In	std_logic;
@@ -14,13 +12,13 @@ end MUX21_GENERIC;
 
 
 
--- Bit-wise Boolean expression with configurable delay
+-- Bit-wise Boolean expression
 architecture BEHAVIORAL of MUX21_GENERIC is
 
 begin
 	process(A, B, SEL) begin
 		for i in 0 to (NBIT - 1) loop
-			Y(i) <=  (A(i) and SEL) or (B(i) and not(SEL)) after DELAY_MUX;
+			Y(i) <=  (A(i) and SEL) or (B(i) and not(SEL));
 		end loop;
 	end process;
 end BEHAVIORAL;

@@ -39,8 +39,6 @@ end component;
 
 
 component FA is 
-        generic ( DFAS: time := 0 ns;
-		  DFAC: time := 0 ns);
 	Port (	A:	In	std_logic;
 		B:	In	std_logic;
 		Ci:	In	std_logic;

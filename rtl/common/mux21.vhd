@@ -1,7 +1,6 @@
 -- 2-to-1 multiplexer (1-bit): Y = A when S='1', B when S='0'
 library IEEE;
 use IEEE.std_logic_1164.all;
-use WORK.constants.all;
 
 entity MUX21 is
 	Port (	A:	In	std_logic;

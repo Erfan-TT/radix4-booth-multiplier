@@ -9,7 +9,6 @@ vcom -work work ../rtl/multiplier/packages/common_pkg.vhd
 vcom -work work ../rtl/multiplier/packages/dadda_types_pkg.vhd
 vcom -work work ../rtl/multiplier/packages/wallace_math_pkg.vhd
 vcom -work work ../rtl/multiplier/packages/dadda_math_pkg.vhd
-vcom -work work ../rtl/common/constants.vhd
 
 # basic gates
 vcom -work work ../rtl/common/iv.vhd

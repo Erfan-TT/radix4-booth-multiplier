@@ -208,7 +208,7 @@ Baseline synthesis of the pre-optimization design, Nangate 45 nm,
 
 ```
 rtl/
-  common/                 constants, iv, nd2, mux21, mux21_generic, fa, ha
+  common/                 iv, nd2, mux21, mux21_generic, fa, ha
   adder/                  rca, carry_select_block, PG_block, PG_elem, G_block,
                           carry_generator, sum_generator, P4_adder
   multiplier/
@@ -291,6 +291,14 @@ ungrouping, none of it propagates and the measured improvement is **zero**.
 ---
 
 ## Notes and limitations
+
+- **No `time` generics or `after` clauses anywhere in the RTL.** The VHDL `time`
+  type is not synthesizable; DC ignores `after` but chokes on `time`-typed
+  generics and constants. Keeping them would force a second, stripped copy of
+  the sources for synthesis — which is exactly the duplication this layout
+  removes. The gate-level simulation is therefore zero-delay, which is fine:
+  the design is purely combinational and the testbench settles for 10 ns per
+  vector.
 
 - **The Dadda schedule is specific to the sign-extension-eliminated layout.**
   `making_inital_layer` hard-codes those column heights, so `dadda` is only valid

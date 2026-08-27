@@ -1,10 +1,8 @@
--- 1-bit full adder with configurable propagation delays
+-- 1-bit full adder
 library ieee; 
 use ieee.std_logic_1164.all; 
 
 entity FA is 
-        generic ( DFAS: time := 0 ns;
-		  DFAC: time := 0 ns);
 	Port (	A:	In	std_logic;
 		B:	In	std_logic;
 		Ci:	In	std_logic;
@@ -16,8 +14,8 @@ architecture BEHAVIORAL of FA is
 
 begin
 
-  S  <= A xor B xor Ci after DFAS;                        -- sum
-  Co <= (A and B) or (B and Ci) or (A and Ci) after DFAC;  -- carry-out
+  S  <= A xor B xor Ci;                        -- sum
+  Co <= (A and B) or (B and Ci) or (A and Ci);  -- carry-out
   
 end BEHAVIORAL;
 
