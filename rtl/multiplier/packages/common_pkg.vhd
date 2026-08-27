@@ -16,7 +16,7 @@ package common_pkg is
 
   -- Operand width. Must be even (radix-4 Booth works on bit pairs).
   -- Set to 8 to run the exhaustive testbench; 32 is the synthesis target.
-  constant NBIT : integer := 8;
+  constant NBIT : integer := 32;
   constant NROWS : integer := NBIT/2+1;
   subtype pp_word  is std_logic_vector(2*NBIT-1 downto 0);
   type    pp_array is array (natural range <>) of pp_word;
