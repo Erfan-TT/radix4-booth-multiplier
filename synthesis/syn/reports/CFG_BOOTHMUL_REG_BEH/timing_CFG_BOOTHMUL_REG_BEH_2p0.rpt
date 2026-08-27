@@ -1,0 +1,70 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+Design : boothmul_registered
+Version: W-2024.09-SP2
+Date   : Thu Aug 27 03:33:12 2026
+****************************************
+
+Operating Conditions: typical   Library: NangateOpenCellLibrary
+Wire Load Model Mode: top
+
+  Startpoint: B_reg_Y_temp_reg_2_
+              (rising edge-triggered flip-flop clocked by CLK)
+  Endpoint: p_reg_Y_temp_reg_13_
+            (rising edge-triggered flip-flop clocked by CLK)
+  Path Group: CLK
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  boothmul_registered
+                     5K_hvratio_1_4        NangateOpenCellLibrary
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock CLK (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.05       0.05
+  B_reg_Y_temp_reg_2_/CK (DFF_X1)          0.00       0.05 r
+  B_reg_Y_temp_reg_2_/Q (DFF_X1)           0.10       0.15 f
+  U205/ZN (NOR2_X1)                        0.07       0.22 r
+  U217/ZN (INV_X1)                         0.03       0.25 f
+  U218/ZN (AOI22_X1)                       0.12       0.37 r
+  U276/ZN (AOI22_X1)                       0.05       0.43 f
+  U277/Z (XOR2_X1)                         0.08       0.51 f
+  intadd_2_U10/CO (FA_X1)                  0.11       0.62 f
+  intadd_2_U9/CO (FA_X1)                   0.09       0.72 f
+  intadd_2_U8/CO (FA_X1)                   0.09       0.81 f
+  intadd_2_U7/CO (FA_X1)                   0.09       0.90 f
+  intadd_2_U6/CO (FA_X1)                   0.09       1.00 f
+  intadd_2_U5/CO (FA_X1)                   0.09       1.09 f
+  intadd_2_U4/CO (FA_X1)                   0.09       1.19 f
+  intadd_2_U3/CO (FA_X1)                   0.09       1.28 f
+  intadd_2_U2/CO (FA_X1)                   0.09       1.37 f
+  U184/ZN (INV_X1)                         0.03       1.41 r
+  intadd_3_U2/CO (FA_X1)                   0.08       1.49 r
+  U293/ZN (NOR2_X1)                        0.03       1.52 f
+  U296/ZN (AOI21_X1)                       0.06       1.58 r
+  U297/Z (XOR2_X1)                         0.07       1.65 r
+  U7/ZN (AOI22_X1)                         0.04       1.69 f
+  U8/ZN (INV_X1)                           0.04       1.73 r
+  p_reg_Y_temp_reg_13_/D (DFF_X1)          0.01       1.74 r
+  data arrival time                                   1.74
+
+  clock CLK (rise edge)                    2.00       2.00
+  clock network delay (ideal)              0.05       2.05
+  clock uncertainty                       -0.05       2.00
+  p_reg_Y_temp_reg_13_/CK (DFF_X1)         0.00       2.00 r
+  library setup time                      -0.03       1.97
+  data required time                                  1.97
+  -----------------------------------------------------------
+  data required time                                  1.97
+  data arrival time                                  -1.74
+  -----------------------------------------------------------
+  slack (MET)                                         0.24
+
+
+1

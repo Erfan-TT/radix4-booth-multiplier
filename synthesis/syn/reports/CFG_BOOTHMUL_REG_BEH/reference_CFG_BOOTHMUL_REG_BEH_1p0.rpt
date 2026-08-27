@@ -1,0 +1,84 @@
+ 
+****************************************
+Report : reference
+Design : boothmul_registered
+Version: W-2024.09-SP2
+Date   : Thu Aug 27 03:33:00 2026
+****************************************
+
+Attributes:
+    b - black box (unknown)
+   bo - allows boundary optimization
+    d - dont_touch
+   mo - map_only
+    h - hierarchical
+    n - noncombinational
+    r - removable
+    s - synthetic operator
+    u - contains unmapped logic
+
+Reference          Library       Unit Area   Count    Total Area   Attributes
+-----------------------------------------------------------------------------
+AND2_X1            NangateOpenCellLibrary
+                                  1.064000      11     11.704000  
+AND2_X2            NangateOpenCellLibrary
+                                  1.330000       1      1.330000  
+AOI21_X1           NangateOpenCellLibrary
+                                  1.064000       8      8.512000  
+BUF_X1             NangateOpenCellLibrary
+                                  0.798000      16     12.768000  
+BUF_X2             NangateOpenCellLibrary
+                                  1.064000       3      3.192000  
+BUF_X4             NangateOpenCellLibrary
+                                  1.862000       2      3.724000  
+CLKBUF_X1          NangateOpenCellLibrary
+                                  0.798000       7      5.586000  
+CLKBUF_X2          NangateOpenCellLibrary
+                                  1.064000       1      1.064000  
+DFFS_X1            NangateOpenCellLibrary
+                                  5.320000       2     10.640000  n
+DFFS_X2            NangateOpenCellLibrary
+                                  5.586000       3     16.758000  n
+DFF_X1             NangateOpenCellLibrary
+                                  4.522000      27    122.093996  n
+FA_X1              NangateOpenCellLibrary
+                                  4.256000      13     55.328001  r
+HA_X1              NangateOpenCellLibrary
+                                  2.660000       1      2.660000  r
+INV_X1             NangateOpenCellLibrary
+                                  0.532000      32     17.024000  
+INV_X2             NangateOpenCellLibrary
+                                  0.798000       1      0.798000  
+MUX2_X1            NangateOpenCellLibrary
+                                  1.862000       9     16.758000  
+MUX2_X2            NangateOpenCellLibrary
+                                  2.394000       1      2.394000  
+NAND2_X1           NangateOpenCellLibrary
+                                  0.798000     151    120.497997  
+NAND2_X2           NangateOpenCellLibrary
+                                  1.330000       2      2.660000  
+NAND3_X1           NangateOpenCellLibrary
+                                  1.064000       1      1.064000  
+NAND4_X1           NangateOpenCellLibrary
+                                  1.330000       1      1.330000  
+NOR2_X1            NangateOpenCellLibrary
+                                  0.798000      16     12.768000  
+OAI21_X1           NangateOpenCellLibrary
+                                  1.064000      16     17.024000  
+OAI211_X1          NangateOpenCellLibrary
+                                  1.330000       2      2.660000  
+OAI211_X2          NangateOpenCellLibrary
+                                  2.394000       1      2.394000  
+OR2_X1             NangateOpenCellLibrary
+                                  1.064000      65     69.160001  
+OR2_X2             NangateOpenCellLibrary
+                                  1.330000       4      5.320000  
+XNOR2_X1           NangateOpenCellLibrary
+                                  1.596000      36     57.455998  
+XNOR2_X2           NangateOpenCellLibrary
+                                  2.660000       1      2.660000  
+XOR2_X1            NangateOpenCellLibrary
+                                  1.596000       8     12.768000  
+-----------------------------------------------------------------------------
+Total 30 references                                   600.095992
+1
