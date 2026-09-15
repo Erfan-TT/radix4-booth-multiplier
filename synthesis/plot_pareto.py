@@ -44,7 +44,6 @@ def make_plot(x, y, labels, xlabel, ylabel, title, filename):
 
 
 
- 
 # Loop through configurations
 for configuration in configs:
 
@@ -54,9 +53,9 @@ for configuration in configs:
     print("================================================")
 
     # CSV:
-    # ./syn/$configuration/results_$configuration.csv
-  csv_file = Path("syn") / configuration / f"results_{configuration}.csv"
-   
+    # ./syn/reports_power/<configuration>/results_<configuration>.csv
+    csv_file = Path("syn") / "reports_power" / configuration / f"results_{configuration}.csv"
+
     # Data arrays for this configuration
     period = []
     achieved = []
@@ -64,7 +63,6 @@ for configuration in configs:
     dynamic = []
     leakage = []
     total = []
-
 
     # Read CSV
     with open(csv_file) as f:
@@ -78,7 +76,6 @@ for configuration in configs:
                 float(row["dynamic_power"])
                 + float(row["leakage_power"])
             )
-
 
     # Print table
     print("period  achieved      area      dynamic      leakage")

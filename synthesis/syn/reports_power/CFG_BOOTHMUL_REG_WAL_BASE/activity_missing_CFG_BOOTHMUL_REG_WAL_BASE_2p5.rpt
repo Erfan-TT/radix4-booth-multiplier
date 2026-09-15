@@ -1,0 +1,133 @@
+ 
+****************************************
+Report : saif
+        -missing
+        -hierarchy
+Design : boothmul_registered
+Version: W-2024.09-SP2
+Date   : Tue Sep 15 19:17:53 2026
+****************************************
+
+  
+
+--------------------------------------------------------------------------------
+              User              Default           Propagated
+Object type   Annotated (%)     Activity (%)      Activity (%)       Total
+--------------------------------------------------------------------------------
+  
+ Nets         5132(99.36%)      0(0.00%)          0(0.00%)           5165
+ Ports        131(100.00%)      0(0.00%)          0(0.00%)           131
+ Pins         17253(99.62%)     0(0.00%)          0(0.00%)           17319
+--------------------------------------------------------------------------------
+
+ List of Non-annotated ports :
+
+   0 ports
+
+ List of Non-annotated nets :
+
+   intadd_43_n2 
+   intadd_43_n3 
+   intadd_35_SUM_1_ 
+   intadd_42_n2 
+   intadd_37_B_3_ 
+   intadd_35_SUM_0_ 
+   intadd_42_n3 
+   intadd_37_A_2_ 
+   intadd_37_A_1_ 
+   intadd_41_n2 
+   intadd_41_n3 
+   intadd_40_n3 
+   intadd_35_A_2_ 
+   intadd_35_A_1_ 
+   intadd_39_n2 
+   intadd_39_n3 
+   intadd_38_n3 
+   intadd_37_n2 
+   intadd_37_n3 
+   intadd_37_n4 
+   intadd_36_n4 
+   intadd_35_n2 
+   intadd_35_n3 
+   intadd_35_n4 
+   intadd_34_n2 
+   intadd_33_B_3_ 
+   intadd_34_n3 
+   intadd_33_A_2_ 
+   intadd_34_n4 
+   intadd_33_B_1_ 
+   intadd_33_n2 
+   intadd_33_n3 
+   intadd_33_n4 
+
+ List of Non-annotated pins :
+
+   intadd_43_U2/CI 
+   intadd_43_U3/CI 
+   intadd_43_U3/CO 
+   intadd_43_U4/CO 
+   intadd_42_U2/A 
+   intadd_42_U2/CI 
+   intadd_42_U2/S 
+   intadd_42_U3/B 
+   intadd_42_U3/CI 
+   intadd_42_U3/CO 
+   intadd_42_U3/S 
+   intadd_42_U4/CO 
+   intadd_42_U4/S 
+   intadd_41_U2/CI 
+   intadd_41_U3/CI 
+   intadd_41_U3/CO 
+   intadd_41_U4/CO 
+   intadd_40_U3/CI 
+   intadd_40_U3/S 
+   intadd_40_U4/CO 
+   intadd_40_U4/S 
+   intadd_39_U2/CI 
+   intadd_39_U3/CI 
+   intadd_39_U3/CO 
+   intadd_39_U4/CO 
+   intadd_38_U3/CI 
+   intadd_38_U4/CO 
+   intadd_37_U2/B 
+   intadd_37_U2/CI 
+   intadd_37_U3/A 
+   intadd_37_U3/CI 
+   intadd_37_U3/CO 
+   intadd_37_U4/A 
+   intadd_37_U4/CI 
+   intadd_37_U4/CO 
+   intadd_37_U5/CO 
+   intadd_36_U4/CI 
+   intadd_36_U5/CO 
+   intadd_35_U2/CI 
+   intadd_35_U3/A 
+   intadd_35_U3/CI 
+   intadd_35_U3/CO 
+   intadd_35_U4/A 
+   intadd_35_U4/CI 
+   intadd_35_U4/CO 
+   intadd_35_U4/S 
+   intadd_35_U5/CO 
+   intadd_35_U5/S 
+   intadd_34_U2/CI 
+   intadd_34_U2/S 
+   intadd_34_U3/CI 
+   intadd_34_U3/CO 
+   intadd_34_U3/S 
+   intadd_34_U4/CI 
+   intadd_34_U4/CO 
+   intadd_34_U4/S 
+   intadd_34_U5/CO 
+   intadd_33_U2/B 
+   intadd_33_U2/CI 
+   intadd_33_U3/A 
+   intadd_33_U3/CI 
+   intadd_33_U3/CO 
+   intadd_33_U4/B 
+   intadd_33_U4/CI 
+   intadd_33_U4/CO 
+   intadd_33_U5/CO 
+
+--------------------------------------------------------------------------------
+1

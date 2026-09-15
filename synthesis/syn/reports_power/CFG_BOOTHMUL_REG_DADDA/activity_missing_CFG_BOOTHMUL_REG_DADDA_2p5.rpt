@@ -1,0 +1,130 @@
+ 
+****************************************
+Report : saif
+        -missing
+        -hierarchy
+Design : boothmul_registered
+Version: W-2024.09-SP2
+Date   : Tue Sep 15 19:18:57 2026
+****************************************
+
+  
+
+--------------------------------------------------------------------------------
+              User              Default           Propagated
+Object type   Annotated (%)     Activity (%)      Activity (%)       Total
+--------------------------------------------------------------------------------
+  
+ Nets         4339(99.27%)      0(0.00%)          0(0.00%)           4371
+ Ports        131(100.00%)      0(0.00%)          0(0.00%)           131
+ Pins         14763(99.57%)     0(0.00%)          0(0.00%)           14827
+--------------------------------------------------------------------------------
+
+ List of Non-annotated ports :
+
+   0 ports
+
+ List of Non-annotated nets :
+
+   intadd_297_n2 
+   intadd_297_n3 
+   intadd_296_B_2_ 
+   intadd_296_B_1_ 
+   intadd_296_n2 
+   intadd_296_n3 
+   intadd_295_n2 
+   intadd_295_n3 
+   intadd_294_n2 
+   intadd_294_n3 
+   intadd_293_n3 
+   intadd_292_n3 
+   intadd_291_n3 
+   intadd_290_n2 
+   intadd_286_A_3_ 
+   intadd_290_n3 
+   intadd_289_n2 
+   intadd_289_n3 
+   intadd_288_n4 
+   intadd_287_n2 
+   intadd_287_n3 
+   intadd_287_n4 
+   intadd_286_n2 
+   intadd_286_n3 
+   intadd_286_n4 
+   intadd_285_n2 
+   intadd_284_SUM_2_ 
+   intadd_285_n3 
+   intadd_285_n4 
+   intadd_285_n5 
+   intadd_284_n4 
+   intadd_284_n5 
+
+ List of Non-annotated pins :
+
+   intadd_297_U2/CI 
+   intadd_297_U3/CI 
+   intadd_297_U3/CO 
+   intadd_297_U3/S 
+   intadd_297_U4/CO 
+   intadd_297_U4/S 
+   intadd_296_U2/B 
+   intadd_296_U2/CI 
+   intadd_296_U3/B 
+   intadd_296_U3/CI 
+   intadd_296_U3/CO 
+   intadd_296_U4/CO 
+   intadd_295_U2/A 
+   intadd_295_U3/CI 
+   intadd_295_U3/CO 
+   intadd_295_U4/CO 
+   intadd_294_U2/CI 
+   intadd_294_U3/CI 
+   intadd_294_U3/CO 
+   intadd_294_U4/CO 
+   intadd_293_U3/CI 
+   intadd_293_U4/CO 
+   intadd_292_U3/CI 
+   intadd_292_U4/CO 
+   intadd_291_U3/CI 
+   intadd_291_U4/CO 
+   intadd_290_U2/CI 
+   intadd_290_U2/S 
+   intadd_290_U3/CI 
+   intadd_290_U3/CO 
+   intadd_290_U4/CO 
+   intadd_289_U2/CI 
+   intadd_289_U3/CI 
+   intadd_289_U3/CO 
+   intadd_289_U4/CO 
+   intadd_288_U4/CI 
+   intadd_288_U5/CO 
+   intadd_287_U2/A 
+   intadd_287_U3/B 
+   intadd_287_U3/CO 
+   intadd_287_U4/CI 
+   intadd_287_U4/CO 
+   intadd_287_U5/CO 
+   intadd_286_U2/A 
+   intadd_286_U2/CI 
+   intadd_286_U3/CI 
+   intadd_286_U3/CO 
+   intadd_286_U4/CI 
+   intadd_286_U4/CO 
+   intadd_286_U5/CO 
+   intadd_285_U2/CI 
+   intadd_285_U3/B 
+   intadd_285_U3/CI 
+   intadd_285_U3/CO 
+   intadd_285_U4/CI 
+   intadd_285_U4/CO 
+   intadd_285_U5/CI 
+   intadd_285_U5/CO 
+   intadd_285_U6/CO 
+   intadd_284_U4/CI 
+   intadd_284_U4/S 
+   intadd_284_U5/CI 
+   intadd_284_U5/CO 
+   intadd_284_U6/CO 
+
+--------------------------------------------------------------------------------
+1
