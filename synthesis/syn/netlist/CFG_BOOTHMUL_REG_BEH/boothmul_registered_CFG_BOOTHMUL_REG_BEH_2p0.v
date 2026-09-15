@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////
 // Created by: Synopsys DC Ultra(TM) in wire load mode
 // Version   : W-2024.09-SP2
-// Date      : Thu Aug 27 05:14:16 2026
+// Date      : Mon Sep 14 18:48:06 2026
 /////////////////////////////////////////////////////////////
 
 
@@ -21,7 +21,7 @@ module boothmul_registered ( CLK, LD, RST, A, B, P );
          n415, n416, n417, n418, n419, n420, n421, n422, n423, n424, n425,
          n426, n427, n428, n429, n430, n431, n432, n433, n434, n435, n436,
          n437, n438, n439, n440, n441, n442, n443, n444, n445, n446, n447,
-         n448, n449, n450, n451, n452, n453, n454, DP_OP_213J36_122_2655_I3,
+         n448, n449, n450, n451, n452, n453, n454, DP_OP_213J18_122_2655_I3,
          n457, n458, n459, n460, n461, n463, n464, n465, n468, n469, n470,
          n472, n474, n476, n478, n479, n480, n481, n483, n484, n485, n486,
          n487, n488, n489, n490, n491, n492, n493, n494, n495, n496, n497,
@@ -653,7 +653,7 @@ module boothmul_registered ( CLK, LD, RST, A, B, P );
   DFF_X1 p_reg_Y_temp_reg_55_ ( .D(n335), .CK(CLK), .Q(P[55]), .QN(n5620) );
   DFF_X1 p_reg_Y_temp_reg_56_ ( .D(n334), .CK(CLK), .Q(P[56]), .QN(n5621) );
   DFF_X1 B_reg_Y_temp_reg_1_ ( .D(n421), .CK(CLK), .Q(B_i[1]), .QN(
-        DP_OP_213J36_122_2655_I3) );
+        DP_OP_213J18_122_2655_I3) );
   DFF_X1 B_reg_Y_temp_reg_27_ ( .D(n395), .CK(CLK), .Q(B_i[27]), .QN(n5515) );
   DFF_X1 B_reg_Y_temp_reg_19_ ( .D(n403), .CK(CLK), .Q(B_i[19]), .QN(n5632) );
   DFF_X1 B_reg_Y_temp_reg_25_ ( .D(n397), .CK(CLK), .Q(B_i[25]), .QN(n5513) );
@@ -850,7 +850,7 @@ module boothmul_registered ( CLK, LD, RST, A, B, P );
   CLKBUF_X2 U1619 ( .A(n1435), .Z(n511) );
   BUF_X2 U1620 ( .A(n1149), .Z(n504) );
   CLKBUF_X1 U1621 ( .A(B_i[1]), .Z(n3622) );
-  OR2_X2 U1622 ( .A1(DP_OP_213J36_122_2655_I3), .A2(B_i[0]), .ZN(n1404) );
+  OR2_X2 U1622 ( .A1(DP_OP_213J18_122_2655_I3), .A2(B_i[0]), .ZN(n1404) );
   CLKBUF_X1 U1623 ( .A(n5514), .Z(n1584) );
   BUF_X2 U1624 ( .A(n1294), .Z(n505) );
   CLKBUF_X1 U1625 ( .A(n5532), .Z(n4136) );
@@ -981,7 +981,7 @@ module boothmul_registered ( CLK, LD, RST, A, B, P );
   CLKBUF_X1 U1749 ( .A(B_i[3]), .Z(n993) );
   BUF_X1 U1750 ( .A(n5514), .Z(n3333) );
   OR2_X1 U1751 ( .A1(B_i[3]), .A2(B_i[1]), .ZN(n738) );
-  OR2_X1 U1752 ( .A1(DP_OP_213J36_122_2655_I3), .A2(B_i[2]), .ZN(n737) );
+  OR2_X1 U1752 ( .A1(DP_OP_213J18_122_2655_I3), .A2(B_i[2]), .ZN(n737) );
   INV_X1 U1753 ( .A(A_i[0]), .ZN(n3173) );
   CLKBUF_X1 U1754 ( .A(n5514), .Z(n5652) );
   CLKBUF_X1 U1755 ( .A(n5517), .Z(n5651) );
@@ -1634,7 +1634,7 @@ module boothmul_registered ( CLK, LD, RST, A, B, P );
   NOR2_X1 U2399 ( .A1(n5521), .A2(n5551), .ZN(n996) );
   XNOR2_X1 U2400 ( .A(n1773), .B(n1774), .ZN(n808) );
   OAI21_X1 U2401 ( .B1(n4985), .B2(n5498), .A(n4986), .ZN(n4764) );
-  XNOR2_X1 U2402 ( .A(n5562), .B(DP_OP_213J36_122_2655_I3), .ZN(n1093) );
+  XNOR2_X1 U2402 ( .A(n5562), .B(DP_OP_213J18_122_2655_I3), .ZN(n1093) );
   XNOR2_X1 U2403 ( .A(n4188), .B(n736), .ZN(n4192) );
   XNOR2_X1 U2404 ( .A(n4187), .B(n4186), .ZN(n736) );
   NAND3_X1 U2405 ( .A1(n737), .A2(n738), .A3(n739), .ZN(n1094) );
@@ -2522,7 +2522,7 @@ module boothmul_registered ( CLK, LD, RST, A, B, P );
   NAND2_X1 U3203 ( .A1(n1130), .A2(n3538), .ZN(n3225) );
   XOR2_X1 U3204 ( .A(n1135), .B(n1134), .Z(n1137) );
   MUX2_X1 U3205 ( .A(n1137), .B(n1136), .S(n1170), .Z(n1218) );
-  INV_X1 U3206 ( .A(DP_OP_213J36_122_2655_I3), .ZN(n2924) );
+  INV_X1 U3206 ( .A(DP_OP_213J18_122_2655_I3), .ZN(n2924) );
   XOR2_X1 U3207 ( .A(n1138), .B(n1139), .Z(n1141) );
   MUX2_X1 U3208 ( .A(n1141), .B(n1140), .S(n1170), .Z(n1776) );
   OAI21_X1 U3209 ( .B1(n1775), .B2(n940), .A(n1145), .ZN(n1217) );

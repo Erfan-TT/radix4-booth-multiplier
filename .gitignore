@@ -39,3 +39,4 @@ Thumbs.db
 
 # ---- parked pre-reorg files, safe to delete ----
 .old/
+vcd/

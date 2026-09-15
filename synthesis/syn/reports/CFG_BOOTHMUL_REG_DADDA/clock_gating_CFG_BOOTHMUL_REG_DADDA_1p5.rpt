@@ -3,7 +3,7 @@
 Report : clock_gating
 Design : boothmul_registered
 Version: W-2024.09-SP2
-Date   : Thu Aug 27 05:00:50 2026
+Date   : Mon Sep 14 18:38:19 2026
 ****************************************
 
 Information: Identification of clock-gating cells has not been performed. Pre-existing clock-gating cells will not be reported. (PWR-947)

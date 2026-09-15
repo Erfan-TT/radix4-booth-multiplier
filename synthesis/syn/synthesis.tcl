@@ -16,7 +16,7 @@ close $fp
 #set configs {CFG_BOOTHMUL_REG_WAL_BASE CFG_BOOTHMUL_REG_WAL_OPT CFG_BOOTHMUL_REG_DADDA CFG_BOOTHMUL_REG_BEH}
 
 # the clock periods of the sweep
-set periods {1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 5.0 5.5 6.0}
+set periods {1.5 1.7 2.0 2.2 2.5}
 
 file mkdir netlist
 file mkdir reports

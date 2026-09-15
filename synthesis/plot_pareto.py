@@ -55,8 +55,7 @@ for configuration in configs:
 
     # CSV:
     # ./syn/$configuration/results_$configuration.csv
-    csv_file = ("syn"/configuration/f"results_{configuration}.csv")
-
+  csv_file = Path("syn") / configuration / f"results_{configuration}.csv"
    
     # Data arrays for this configuration
     period = []
