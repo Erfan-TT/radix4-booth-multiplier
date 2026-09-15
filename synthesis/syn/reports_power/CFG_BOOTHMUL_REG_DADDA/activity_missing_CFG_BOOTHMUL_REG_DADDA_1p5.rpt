@@ -1,0 +1,58 @@
+ 
+****************************************
+Report : saif
+        -missing
+        -hierarchy
+Design : boothmul_registered
+Version: W-2024.09-SP2
+Date   : Tue Sep 15 19:18:48 2026
+****************************************
+
+  
+
+--------------------------------------------------------------------------------
+              User              Default           Propagated
+Object type   Annotated (%)     Activity (%)      Activity (%)       Total
+--------------------------------------------------------------------------------
+  
+ Nets         6101(99.87%)      0(0.00%)          0(0.00%)           6109
+ Ports        131(100.00%)      0(0.00%)          0(0.00%)           131
+ Pins         18366(99.91%)     0(0.00%)          0(0.00%)           18382
+--------------------------------------------------------------------------------
+
+ List of Non-annotated ports :
+
+   0 ports
+
+ List of Non-annotated nets :
+
+   intadd_269_n3 
+   intadd_268_B_2_ 
+   intadd_267_n2 
+   intadd_267_n3 
+   intadd_265_n3 
+   intadd_257_n5 
+   intadd_256_n4 
+   intadd_256_n5 
+
+ List of Non-annotated pins :
+
+   intadd_269_U3/A 
+   intadd_269_U3/S 
+   intadd_269_U4/CO 
+   intadd_268_U2/B 
+   intadd_267_U2/B 
+   intadd_267_U3/CI 
+   intadd_267_U3/CO 
+   intadd_267_U4/CO 
+   intadd_265_U3/CI 
+   intadd_265_U4/CO 
+   intadd_257_U5/A 
+   intadd_257_U6/CO 
+   intadd_256_U4/B 
+   intadd_256_U5/B 
+   intadd_256_U5/CO 
+   intadd_256_U6/CO 
+
+--------------------------------------------------------------------------------
+1

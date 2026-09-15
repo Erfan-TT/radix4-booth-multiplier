@@ -1,0 +1,122 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+Design : boothmul_registered
+Version: W-2024.09-SP2
+Date   : Tue Sep 15 19:19:38 2026
+****************************************
+
+Operating Conditions: typical   Library: NangateOpenCellLibrary
+Wire Load Model Mode: top
+
+  Startpoint: B_reg_Y_temp_reg_1_
+              (rising edge-triggered flip-flop clocked by CLK)
+  Endpoint: p_reg_Y_temp_reg_62_
+            (rising edge-triggered flip-flop clocked by CLK)
+  Path Group: CLK
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  boothmul_registered
+                     5K_hvratio_1_4        NangateOpenCellLibrary
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock CLK (rise edge)                0.000000   0.000000
+  clock network delay (ideal)          0.050000   0.050000
+  B_reg_Y_temp_reg_1_/CK (SDFF_X2)     0.000000   0.050000 r
+  B_reg_Y_temp_reg_1_/Q (SDFF_X2)      0.143667   0.193667 f
+  U1671/ZN (NOR2_X1)                   0.098098   0.291765 r
+  U1672/ZN (AOI21_X1)                  0.048164   0.339929 f
+  U1717/ZN (INV_X1)                    0.058475   0.398404 r
+  U1557/Z (BUF_X1)                     0.104956   0.503360 r
+  U1718/ZN (OAI22_X1)                  0.074107   0.577467 f
+  U1725/ZN (NOR2_X1)                   0.055676   0.633143 r
+  U1727/ZN (NAND2_X1)                  0.038161   0.671304 f
+  U1729/ZN (NOR2_X1)                   0.051522   0.722826 r
+  U3404/ZN (NOR2_X1)                   0.029359   0.752185 f
+  U3405/Z (XOR2_X1)                    0.078200   0.830385 f
+  U3408/ZN (NOR2_X1)                   0.068305   0.898690 r
+  U3409/ZN (AOI21_X1)                  0.043867   0.942557 f
+  U3440/ZN (XNOR2_X1)                  0.068850   1.011407 f
+  intadd_556_U5/CO (FA_X1)             0.118210   1.129617 f
+  U3433/ZN (NAND2_X1)                  0.039384   1.169001 r
+  U3434/ZN (NAND3_X1)                  0.039750   1.208751 f
+  intadd_556_U3/S (FA_X1)              0.114973   1.323724 f
+  intadd_514_U54/CO (FA_X1)            0.109509   1.433233 f
+  intadd_514_U53/CO (FA_X1)            0.094387   1.527620 f
+  intadd_514_U52/CO (FA_X1)            0.094387   1.622008 f
+  intadd_514_U51/CO (FA_X1)            0.094387   1.716395 f
+  intadd_514_U50/CO (FA_X1)            0.094387   1.810782 f
+  intadd_514_U49/CO (FA_X1)            0.094387   1.905170 f
+  intadd_514_U48/CO (FA_X1)            0.094387   1.999557 f
+  intadd_514_U47/CO (FA_X1)            0.094387   2.093944 f
+  intadd_514_U46/CO (FA_X1)            0.094388   2.188332 f
+  intadd_514_U45/CO (FA_X1)            0.094388   2.282719 f
+  intadd_514_U44/CO (FA_X1)            0.094388   2.377107 f
+  intadd_514_U43/CO (FA_X1)            0.094388   2.471494 f
+  intadd_514_U42/CO (FA_X1)            0.094388   2.565882 f
+  intadd_514_U41/CO (FA_X1)            0.094388   2.660269 f
+  intadd_514_U40/CO (FA_X1)            0.094388   2.754657 f
+  intadd_514_U39/CO (FA_X1)            0.094388   2.849045 f
+  intadd_514_U38/CO (FA_X1)            0.094388   2.943432 f
+  intadd_514_U37/CO (FA_X1)            0.094388   3.037820 f
+  intadd_514_U36/CO (FA_X1)            0.094388   3.132207 f
+  intadd_514_U35/CO (FA_X1)            0.094388   3.226595 f
+  intadd_514_U34/CO (FA_X1)            0.094388   3.320982 f
+  intadd_514_U33/CO (FA_X1)            0.094388   3.415370 f
+  intadd_514_U32/CO (FA_X1)            0.094388   3.509757 f
+  intadd_514_U31/CO (FA_X1)            0.094388   3.604145 f
+  intadd_514_U30/CO (FA_X1)            0.094388   3.698532 f
+  intadd_514_U29/CO (FA_X1)            0.094388   3.792920 f
+  intadd_514_U28/CO (FA_X1)            0.094388   3.887307 f
+  intadd_514_U27/CO (FA_X1)            0.094388   3.981695 f
+  intadd_514_U26/CO (FA_X1)            0.094387   4.076082 f
+  intadd_514_U25/CO (FA_X1)            0.094387   4.170469 f
+  intadd_514_U24/CO (FA_X1)            0.102894   4.273364 f
+  U2958/ZN (NAND2_X1)                  0.034746   4.308109 r
+  U1570/ZN (AND3_X1)                   0.061502   4.369612 r
+  U2960/ZN (OAI21_X1)                  0.037123   4.406735 f
+  intadd_514_U21/CO (FA_X1)            0.107054   4.513789 f
+  U1481/ZN (OAI211_X1)                 0.045743   4.559532 r
+  U1553/ZN (AND4_X1)                   0.077968   4.637499 r
+  U1685/ZN (OAI21_X1)                  0.049724   4.687223 f
+  U1484/ZN (NAND2_X1)                  0.039489   4.726712 r
+  U1564/ZN (NAND2_X1)                  0.039183   4.765895 f
+  U1631/ZN (NAND2_X1)                  0.034663   4.800558 r
+  U1632/ZN (NAND4_X1)                  0.049984   4.850542 f
+  U1688/ZN (NAND2_X1)                  0.042062   4.892604 r
+  U1689/ZN (NAND3_X1)                  0.050411   4.943015 f
+  U1638/ZN (NAND2_X1)                  0.043302   4.986317 r
+  U1536/ZN (OAI211_X1)                 0.046031   5.032348 f
+  U1479/ZN (INV_X1)                    0.033506   5.065855 r
+  U1500/ZN (OR2_X1)                    0.033182   5.099036 r
+  U1697/ZN (NAND3_X1)                  0.045067   5.144103 f
+  U1627/ZN (INV_X1)                    0.032441   5.176544 r
+  U1626/ZN (OR3_X1)                    0.036320   5.212864 r
+  U1629/ZN (NAND3_X1)                  0.044925   5.257789 f
+  U1702/ZN (NAND2_X1)                  0.038928   5.296716 r
+  U1624/ZN (NAND3_X1)                  0.049721   5.346437 f
+  U1547/ZN (XNOR2_X1)                  0.066166   5.412603 f
+  U1545/ZN (OAI21_X1)                  0.046078   5.458681 r
+  p_reg_Y_temp_reg_62_/D (DFFS_X1)     0.011148   5.469829 r
+  data arrival time                               5.469829
+
+  clock CLK (rise edge)                5.500000   5.500000
+  clock network delay (ideal)          0.050000   5.550000
+  clock uncertainty                    -0.050000  5.500000
+  p_reg_Y_temp_reg_62_/CK (DFFS_X1)    0.000000   5.500000 r
+  library setup time                   -0.029343  5.470657
+  data required time                              5.470657
+  -----------------------------------------------------------
+  data required time                              5.470657
+  data arrival time                               -5.469829
+  -----------------------------------------------------------
+  slack (MET)                                     0.000828
+
+
+1

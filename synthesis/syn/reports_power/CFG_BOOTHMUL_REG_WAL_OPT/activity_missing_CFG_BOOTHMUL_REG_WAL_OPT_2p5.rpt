@@ -1,0 +1,106 @@
+ 
+****************************************
+Report : saif
+        -missing
+        -hierarchy
+Design : boothmul_registered
+Version: W-2024.09-SP2
+Date   : Tue Sep 15 19:18:27 2026
+****************************************
+
+  
+
+--------------------------------------------------------------------------------
+              User              Default           Propagated
+Object type   Annotated (%)     Activity (%)      Activity (%)       Total
+--------------------------------------------------------------------------------
+  
+ Nets         4797(99.50%)      0(0.00%)          0(0.00%)           4821
+ Ports        131(100.00%)      0(0.00%)          0(0.00%)           131
+ Pins         16034(99.70%)     0(0.00%)          0(0.00%)           16082
+--------------------------------------------------------------------------------
+
+ List of Non-annotated ports :
+
+   0 ports
+
+ List of Non-annotated nets :
+
+   intadd_164_n2 
+   intadd_164_n3 
+   intadd_163_n2 
+   intadd_157_B_3_ 
+   intadd_163_n3 
+   intadd_157_A_1_ 
+   intadd_161_SUM_0_ 
+   intadd_162_n3 
+   intadd_155_SUM_1_ 
+   intadd_161_n2 
+   intadd_155_SUM_0_ 
+   intadd_161_n3 
+   intadd_160_n2 
+   intadd_160_n3 
+   intadd_159_B_2_ 
+   intadd_159_n2 
+   intadd_159_n3 
+   intadd_158_n3 
+   intadd_157_n4 
+   intadd_156_n3 
+   intadd_156_n4 
+   intadd_155_n4 
+   intadd_154_n2 
+   intadd_154_n3 
+
+ List of Non-annotated pins :
+
+   intadd_164_U2/A 
+   intadd_164_U3/CI 
+   intadd_164_U3/CO 
+   intadd_164_U4/CO 
+   intadd_163_U2/CI 
+   intadd_163_U2/S 
+   intadd_163_U3/CI 
+   intadd_163_U3/CO 
+   intadd_163_U4/CO 
+   intadd_163_U4/S 
+   intadd_162_U3/A 
+   intadd_162_U3/CI 
+   intadd_162_U4/CO 
+   intadd_161_U2/A 
+   intadd_161_U2/CI 
+   intadd_161_U3/A 
+   intadd_161_U3/CI 
+   intadd_161_U3/CO 
+   intadd_161_U4/CO 
+   intadd_161_U4/S 
+   intadd_160_U2/CI 
+   intadd_160_U3/CI 
+   intadd_160_U3/CO 
+   intadd_160_U3/S 
+   intadd_160_U4/CO 
+   intadd_159_U2/B 
+   intadd_159_U2/CI 
+   intadd_159_U3/CI 
+   intadd_159_U3/CO 
+   intadd_159_U4/CO 
+   intadd_158_U3/CI 
+   intadd_158_U4/CO 
+   intadd_157_U2/B 
+   intadd_157_U4/A 
+   intadd_157_U4/CI 
+   intadd_157_U5/CO 
+   intadd_156_U3/CI 
+   intadd_156_U4/CI 
+   intadd_156_U4/CO 
+   intadd_156_U5/CO 
+   intadd_155_U4/CI 
+   intadd_155_U4/S 
+   intadd_155_U5/CO 
+   intadd_155_U5/S 
+   intadd_154_U2/CI 
+   intadd_154_U3/CI 
+   intadd_154_U3/CO 
+   intadd_154_U4/CO 
+
+--------------------------------------------------------------------------------
+1

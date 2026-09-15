@@ -1,0 +1,97 @@
+ 
+****************************************
+Report : saif
+        -missing
+        -hierarchy
+Design : boothmul_registered
+Version: W-2024.09-SP2
+Date   : Tue Sep 15 19:18:53 2026
+****************************************
+
+  
+
+--------------------------------------------------------------------------------
+              User              Default           Propagated
+Object type   Annotated (%)     Activity (%)      Activity (%)       Total
+--------------------------------------------------------------------------------
+  
+ Nets         5638(99.63%)      0(0.00%)          0(0.00%)           5659
+ Ports        131(100.00%)      0(0.00%)          0(0.00%)           131
+ Pins         17217(99.76%)     0(0.00%)          0(0.00%)           17259
+--------------------------------------------------------------------------------
+
+ List of Non-annotated ports :
+
+   0 ports
+
+ List of Non-annotated nets :
+
+   intadd_282_B_2_ 
+   intadd_281_n3 
+   intadd_280_n2 
+   intadd_280_n3 
+   intadd_279_n3 
+   intadd_278_n3 
+   intadd_276_n2 
+   intadd_272_A_3_ 
+   intadd_276_n3 
+   intadd_275_n3 
+   intadd_274_n4 
+   intadd_272_n4 
+   intadd_271_n2 
+   intadd_270_SUM_3_ 
+   intadd_271_n3 
+   intadd_270_SUM_2_ 
+   intadd_271_n4 
+   intadd_270_n2 
+   intadd_270_n3 
+   intadd_270_n4 
+   intadd_270_n5 
+
+ List of Non-annotated pins :
+
+   intadd_283_U3/S 
+   intadd_282_U2/B 
+   intadd_281_U3/A 
+   intadd_281_U4/CO 
+   intadd_280_U2/CI 
+   intadd_280_U3/CI 
+   intadd_280_U3/CO 
+   intadd_280_U4/CO 
+   intadd_279_U3/CI 
+   intadd_279_U4/CO 
+   intadd_278_U3/CI 
+   intadd_278_U4/CO 
+   intadd_276_U2/CI 
+   intadd_276_U2/S 
+   intadd_276_U3/CI 
+   intadd_276_U3/CO 
+   intadd_276_U4/CO 
+   intadd_275_U3/CI 
+   intadd_275_U4/CO 
+   intadd_274_U4/CI 
+   intadd_274_U5/CO 
+   intadd_272_U2/B 
+   intadd_272_U4/CI 
+   intadd_272_U5/CO 
+   intadd_271_U2/B 
+   intadd_271_U2/CI 
+   intadd_271_U3/A 
+   intadd_271_U3/B 
+   intadd_271_U3/CO 
+   intadd_271_U4/CI 
+   intadd_271_U4/CO 
+   intadd_271_U5/CO 
+   intadd_270_U2/A 
+   intadd_270_U3/CI 
+   intadd_270_U3/CO 
+   intadd_270_U3/S 
+   intadd_270_U4/CI 
+   intadd_270_U4/CO 
+   intadd_270_U4/S 
+   intadd_270_U5/CI 
+   intadd_270_U5/CO 
+   intadd_270_U6/CO 
+
+--------------------------------------------------------------------------------
+1

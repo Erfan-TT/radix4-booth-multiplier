@@ -1,0 +1,88 @@
+ 
+****************************************
+Report : saif
+        -missing
+        -hierarchy
+Design : boothmul_registered
+Version: W-2024.09-SP2
+Date   : Tue Sep 15 19:18:18 2026
+****************************************
+
+  
+
+--------------------------------------------------------------------------------
+              User              Default           Propagated
+Object type   Annotated (%)     Activity (%)      Activity (%)       Total
+--------------------------------------------------------------------------------
+  
+ Nets         6471(99.72%)      0(0.00%)          0(0.00%)           6489
+ Ports        131(100.00%)      0(0.00%)          0(0.00%)           131
+ Pins         19323(99.81%)     0(0.00%)          0(0.00%)           19359
+--------------------------------------------------------------------------------
+
+ List of Non-annotated ports :
+
+   0 ports
+
+ List of Non-annotated nets :
+
+   intadd_142_n2 
+   intadd_142_n3 
+   intadd_141_n2 
+   intadd_135_B_3_ 
+   intadd_135_A_2_ 
+   intadd_139_SUM_1_ 
+   intadd_140_n2 
+   intadd_139_SUM_0_ 
+   intadd_140_n3 
+   intadd_133_SUM_1_ 
+   intadd_139_n2 
+   intadd_133_SUM_0_ 
+   intadd_139_n3 
+   intadd_136_n3 
+   intadd_135_n2 
+   intadd_135_n3 
+   intadd_133_n4 
+   intadd_132_n2 
+
+ List of Non-annotated pins :
+
+   intadd_142_U2/A 
+   intadd_142_U3/B 
+   intadd_142_U3/CO 
+   intadd_142_U4/CO 
+   intadd_141_U2/CI 
+   intadd_141_U2/S 
+   intadd_141_U3/CO 
+   intadd_141_U3/S 
+   intadd_140_U2/A 
+   intadd_140_U2/CI 
+   intadd_140_U3/A 
+   intadd_140_U3/CI 
+   intadd_140_U3/CO 
+   intadd_140_U4/CO 
+   intadd_139_U2/A 
+   intadd_139_U2/CI 
+   intadd_139_U3/A 
+   intadd_139_U3/CI 
+   intadd_139_U3/CO 
+   intadd_139_U3/S 
+   intadd_139_U4/CO 
+   intadd_139_U4/S 
+   intadd_136_U3/B 
+   intadd_136_U4/CO 
+   intadd_135_U2/B 
+   intadd_135_U2/CI 
+   intadd_135_U3/A 
+   intadd_135_U3/CI 
+   intadd_135_U3/CO 
+   intadd_135_U4/CO 
+   intadd_133_U4/CI 
+   intadd_133_U4/S 
+   intadd_133_U5/CO 
+   intadd_133_U5/S 
+   intadd_132_U2/CI 
+   intadd_132_U3/CO 
+
+--------------------------------------------------------------------------------
+1
