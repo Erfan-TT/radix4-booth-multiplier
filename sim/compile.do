@@ -37,12 +37,15 @@ vcom -work work ../rtl/multiplier/dadda_tree.vhd
 vcom -work work ../rtl/multiplier/wallace_tree.vhd
 vcom -work work ../rtl/multiplier/reduction_tree.vhd
 vcom -work work ../rtl/multiplier/boothmul.vhd
+vcom -work work ../rtl/super_beh_multiplier_registered.vhd
 vcom -work work ../rtl/multiplier/boothmul_registered.vhd
 
 # testbench
 vcom -work work ../tb/tb_multiplier.vhd
+vcom -work work ../tb/tb_boothmul_registered.vhd
 
 # configurations last: they depend on both BOOTHMUL and MULTIPLIER_tb
 vcom -work work ../cfg/configurations.vhd
+vcom -work work ../cfg/configurations_synthesis.vhd
 
 quit -f

@@ -127,3 +127,17 @@ configuration CFG_BOOTHMUL_REG_BEH of boothmul_registered is
     end for;
   end for;
 end configuration CFG_BOOTHMUL_REG_BEH;
+
+
+------------------------------------------------------
+
+-- super behavioral test bench config 
+configuration cfg_tb_super_beh of tb_boothmul_registered is
+  for TEST
+    for dut : boothmul_registered
+      use entity work.super_beh_multiplier_registered(beh);
+    end for;
+  end for;
+end configuration cfg_tb_super_beh;
+
+
