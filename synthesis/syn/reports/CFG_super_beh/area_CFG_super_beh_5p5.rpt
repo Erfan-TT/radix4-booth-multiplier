@@ -1,0 +1,30 @@
+ 
+****************************************
+Report : area
+Design : super_beh_multiplier_registered
+Version: W-2024.09-SP2
+Date   : Wed Sep 16 17:31:09 2026
+****************************************
+
+Library(s) Used:
+
+    NangateOpenCellLibrary (File: /home/repository/do/libnandgate/NangateOpenCellLibrary_typical_ecsm.db)
+
+Number of ports:                          131
+Number of nets:                          2788
+Number of cells:                         2345
+Number of combinational cells:           2217
+Number of sequential cells:               128
+Number of macros/black boxes:               0
+Number of buf/inv:                        276
+Number of references:                      35
+
+Combinational area:               3829.868010
+Buf/Inv area:                      159.600001
+Noncombinational area:             586.795980
+Macro/Black Box area:                0.000000
+Net Interconnect area:      undefined  (Wire load has zero net area)
+
+Total cell area:                  4416.663990
+Total area:                 undefined
+1

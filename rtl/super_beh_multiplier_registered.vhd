@@ -6,7 +6,7 @@ use work.common_pkg.all; -- for NBIT and NROWS
 
 entity super_beh_multiplier_registered is
    port (
-    clk, rst : in std_logic;
+    CLK, RST : in std_logic;
     LD : in std_logic;
     A : in  std_logic_vector(NBIT-1 downto 0);
     B : in  std_logic_vector(NBIT-1 downto 0);
@@ -24,9 +24,9 @@ signal P_temp : std_logic_vector(2*NBIT-1 downto 0);
 
     P_temp <= std_logic_vector(signed(A_temp) * signed(B_temp));
 
-    process(clk) begin
-      if(rising_edge(clk)) then
-        if(rst = '1') then
+    process(CLK) begin
+      if(rising_edge(CLK)) then
+        if(RST = '1') then
           A_temp <= (others => '0');
           B_temp <= (others => '0');
           P <= (others => '0'); -- not p_temp, two driver for P_temp, but now one driver for P out
