@@ -40,4 +40,4 @@ set_max_transition 0.20 [current_design]
 
 
 ## minimum area constraint
-set_max_area 0
+#set_max_area 0

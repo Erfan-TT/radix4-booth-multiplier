@@ -1,0 +1,115 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+Design : boothmul_registered
+Version: W-2024.09-SP2
+Date   : Mon Sep 21 17:07:29 2026
+****************************************
+
+Operating Conditions: typical   Library: NangateOpenCellLibrary
+Wire Load Model Mode: top
+
+  Startpoint: B_reg_Y_temp_reg_1_
+              (rising edge-triggered flip-flop clocked by CLK)
+  Endpoint: p_reg_Y_temp_reg_59_
+            (rising edge-triggered flip-flop clocked by CLK)
+  Path Group: CLK
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  boothmul_registered
+                     5K_hvratio_1_4        NangateOpenCellLibrary
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock CLK (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.05       0.05
+  B_reg_Y_temp_reg_1_/CK (DFF_X1)          0.00       0.05 r
+  B_reg_Y_temp_reg_1_/Q (DFF_X1)           0.14       0.19 r
+  U2561/ZN (NAND2_X1)                      0.06       0.25 f
+  U2562/ZN (OAI211_X1)                     0.05       0.29 r
+  U2601/Z (BUF_X1)                         0.09       0.38 r
+  U2582/ZN (OR2_X1)                        0.06       0.44 r
+  U2584/ZN (NAND3_X1)                      0.04       0.48 f
+  U2585/ZN (NAND2_X1)                      0.05       0.53 r
+  U2597/ZN (OAI21_X1)                      0.04       0.57 f
+  U2657/S (FA_X1)                          0.13       0.70 r
+  U2598/ZN (INV_X1)                        0.03       0.73 f
+  U2653/S (FA_X1)                          0.14       0.87 f
+  U2656/ZN (AOI222_X1)                     0.12       0.99 r
+  U2661/CO (FA_X1)                         0.09       1.08 r
+  U2527/ZN (INV_X1)                        0.03       1.10 f
+  U2666/ZN (AOI21_X1)                      0.05       1.15 r
+  U2675/ZN (AOI222_X1)                     0.05       1.20 f
+  U2519/ZN (AOI21_X1)                      0.05       1.25 r
+  U2511/ZN (NOR2_X1)                       0.03       1.28 f
+  U2682/ZN (AOI21_X1)                      0.05       1.33 r
+  U2722/ZN (AOI222_X1)                     0.05       1.38 f
+  U2741/ZN (AOI222_X1)                     0.10       1.48 r
+  U2774/ZN (AOI21_X1)                      0.07       1.55 f
+  U2846/ZN (INV_X1)                        0.05       1.59 r
+  U2847/ZN (AOI21_X1)                      0.03       1.62 f
+  U2848/ZN (NOR2_X1)                       0.05       1.68 r
+  U2849/ZN (AOI222_X1)                     0.04       1.72 f
+  U2853/ZN (NAND2_X1)                      0.03       1.75 r
+  U2855/ZN (NAND3_X1)                      0.04       1.79 f
+  U2863/ZN (AOI221_X1)                     0.09       1.88 r
+  U2864/ZN (AOI21_X1)                      0.03       1.92 f
+  U2522/ZN (NAND2_X1)                      0.03       1.95 r
+  U2526/ZN (NAND2_X1)                      0.03       1.98 f
+  U2872/ZN (OAI21_X1)                      0.06       2.04 r
+  U2873/ZN (AOI222_X1)                     0.05       2.09 f
+  U2875/ZN (AOI222_X1)                     0.10       2.19 r
+  U2878/ZN (AOI21_X1)                      0.05       2.23 f
+  U2881/ZN (AOI221_X1)                     0.12       2.35 r
+  U2882/ZN (AOI222_X1)                     0.05       2.40 f
+  U2886/ZN (OAI211_X1)                     0.05       2.46 r
+  U2887/ZN (NAND2_X1)                      0.04       2.50 f
+  U2451/ZN (OR4_X1)                        0.10       2.60 f
+  U2907/ZN (AOI221_X1)                     0.09       2.69 r
+  U2908/ZN (AOI21_X1)                      0.03       2.72 f
+  U2911/ZN (AOI21_X1)                      0.10       2.82 r
+  U2913/ZN (AOI22_X1)                      0.06       2.88 f
+  U2917/ZN (AOI22_X1)                      0.06       2.94 r
+  U2918/ZN (AOI222_X1)                     0.05       2.99 f
+  U2524/ZN (AOI21_X1)                      0.05       3.04 r
+  U3856/ZN (NAND2_X1)                      0.03       3.07 f
+  U3858/ZN (NAND2_X1)                      0.03       3.10 r
+  U3859/ZN (NAND2_X1)                      0.03       3.13 f
+  U2520/ZN (OR2_X1)                        0.06       3.19 f
+  U2523/ZN (OAI211_X1)                     0.04       3.23 r
+  U2491/ZN (NAND2_X1)                      0.04       3.28 f
+  U2472/ZN (OAI211_X1)                     0.06       3.33 r
+  U4577/ZN (NAND2_X1)                      0.03       3.36 f
+  U4578/ZN (NAND2_X1)                      0.03       3.40 r
+  U4579/ZN (OAI211_X1)                     0.05       3.44 f
+  U4630/ZN (NOR4_X1)                       0.12       3.57 r
+  U4635/ZN (NOR2_X1)                       0.04       3.61 f
+  U4638/ZN (NAND3_X1)                      0.04       3.65 r
+  U4650/ZN (INV_X1)                        0.03       3.68 f
+  U4654/ZN (NAND2_X1)                      0.04       3.73 r
+  U4667/ZN (NOR2_X1)                       0.03       3.76 f
+  U4668/ZN (AOI211_X1)                     0.09       3.85 r
+  U4674/ZN (XNOR2_X1)                      0.07       3.91 r
+  U2109/ZN (OAI22_X1)                      0.04       3.95 f
+  p_reg_Y_temp_reg_59_/D (DFF_X1)          0.01       3.96 f
+  data arrival time                                   3.96
+
+  clock CLK (rise edge)                    4.00       4.00
+  clock network delay (ideal)              0.05       4.05
+  clock uncertainty                       -0.05       4.00
+  p_reg_Y_temp_reg_59_/CK (DFF_X1)         0.00       4.00 r
+  library setup time                      -0.03       3.97
+  data required time                                  3.97
+  -----------------------------------------------------------
+  data required time                                  3.97
+  data arrival time                                  -3.96
+  -----------------------------------------------------------
+  slack (MET)                                         0.01
+
+
+1

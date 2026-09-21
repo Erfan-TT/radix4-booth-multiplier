@@ -1,0 +1,83 @@
+ 
+****************************************
+Report : qor
+Design : boothmul_registered
+Version: W-2024.09-SP2
+Date   : Mon Sep 21 19:31:19 2026
+****************************************
+
+
+  Timing Path Group 'CLK'
+  -----------------------------------
+  Levels of Logic:              30.00
+  Critical Path Length:          1.70
+  Critical Path Slack:          -0.78
+  Critical Path Clk Period:      1.00
+  Total Negative Slack:        -39.42
+  No. of Violating Paths:       59.00
+  Worst Hold Violation:          0.00
+  Total Hold Violation:          0.00
+  No. of Hold Violations:        0.00
+  -----------------------------------
+
+
+  Cell Count
+  -----------------------------------
+  Hierarchical Cell Count:          0
+  Hierarchical Port Count:          0
+  Leaf Cell Count:               6996
+  Buf/Inv Cell Count:            1288
+  Buf Cell Count:                 261
+  Inv Cell Count:                1027
+  CT Buf/Inv Cell Count:            0
+  Combinational Cell Count:      6868
+  Sequential Cell Count:          128
+  Macro Count:                      0
+  -----------------------------------
+
+
+  Area
+  -----------------------------------
+  Combinational Area:     8200.247948
+  Noncombinational Area:   623.237990
+  Buf/Inv Area:            772.730000
+  Total Buffer Area:           220.25
+  Total Inverter Area:         552.48
+  Macro/Black Box Area:      0.000000
+  Net Area:                  0.000000
+  -----------------------------------
+  Cell Area:              8823.485938
+  Design Area:            8823.485938
+
+
+  Design Rules
+  -----------------------------------
+  Total Number of Nets:          7201
+  Nets With Violations:             1
+  Max Trans Violations:             0
+  Max Cap Violations:               1
+  -----------------------------------
+
+
+  Hostname: microsys.openstack.polito
+
+  Compile CPU Statistics
+  -----------------------------------------
+  Resource Sharing:                    0.62
+  Logic Optimization:                 37.56
+  Mapping Optimization:               50.75
+  -----------------------------------------
+  Overall Compile Time:              124.07
+  Overall Compile Wall Clock Time:   127.52
+
+  --------------------------------------------------------------------
+
+  Design  WNS: 0.78  TNS: 39.42  Number of Violating Paths: 59
+
+
+  Design (Hold)  WNS: 0.00  TNS: 0.00  Number of Violating Paths: 0
+
+  --------------------------------------------------------------------
+
+
+1
