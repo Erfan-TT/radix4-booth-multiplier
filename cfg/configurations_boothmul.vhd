@@ -67,6 +67,29 @@ configuration CFG_BOOTHMUL_DADDA of BOOTHMUL is
 end configuration CFG_BOOTHMUL_DADDA;
 
 
+------------------------------------------------------
+
+-- dadda tree version
+configuration CFG_BOOTHMUL_DADDA_FUSED_SEL of BOOTHMUL is
+  for STRUCTURAL
+
+    for gen_stages
+      for mux_i : mux_and_shift
+        use entity work.mux_and_shift(fused_selector);
+      end for;
+    end for;
+
+    for corr_i : corrector
+      use entity work.corrector(no_sign_extend);
+    end for;
+
+    for tree_i : REDUCTION_TREE
+      use entity work.REDUCTION_TREE(dadda);
+    end for;
+
+  end for;
+end configuration CFG_BOOTHMUL_DADDA_FUSED_SEL;
+
 -------------------------------------------------------------
 
 configuration CFG_BOOTHMUL_BEHAVIOURAL of BOOTHMUL is

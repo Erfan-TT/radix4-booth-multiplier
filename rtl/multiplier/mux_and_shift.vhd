@@ -109,3 +109,66 @@ begin
   end process;
 
 end architecture behavioural;
+
+---------------------------------------------------
+---------------------------------------------------
+
+-- fused_selector : same function as no_sign_extend, but written so that the
+-- negation disappears into the selection gate instead of costing its own XOR
+-- level.
+--
+-- no_sign_extend builds the row in two steps: first a mux picks A / 2A / 0,
+-- then every bit is XORed with sel(2). That second step is N+1 XOR2 cells per
+-- row, 16 rows, ~528 XOR cells at NBIT=32 -- roughly 843 um2 doing nothing but
+-- inverting.
+--
+-- Here the row control is decoded once into four mutually exclusive signals,
+-- and each output bit is one flat sum of products over { src1, ~src1, src2,
+-- ~src2 }. DC maps that to a single AOI/OAI compound cell per bit. The ~src
+-- terms are the same function of A in every row, so common subexpression
+-- elimination shares one set of inverters across all 16 rows.
+--
+-- The zero row cannot also be a negated row (the encoder only emits sel(2)='1'
+-- together with sel(0)='1'), which is what makes the four terms sufficient.
+
+architecture fused_selector of mux_and_shift is
+
+  -- the x1 operand: A sign-extended to N+1 bits
+  signal src1 : std_logic_vector(N downto 0);
+
+  -- the x2 operand: A shifted left by one, in N+1 bits
+  signal src2 : std_logic_vector(N downto 0);
+
+  -- row controls, decoded once per row
+  signal pos1 : std_logic;   -- drive  src1   (+A)
+  signal neg1 : std_logic;   -- drive ~src1   (-A)
+  signal pos2 : std_logic;   -- drive  src2   (+2A)
+  signal neg2 : std_logic;   -- drive ~src2   (-2A)
+
+  -- the row before the sign bit gets flipped
+  signal q : std_logic_vector(N downto 0);
+
+begin
+
+  src1 <= A(N-1) & A;
+  src2 <= A & '0';
+
+  pos1 <= sel(0) and (not sel(1)) and (not sel(2));
+  neg1 <= sel(0) and (not sel(1)) and sel(2);
+  pos2 <= sel(0) and sel(1) and (not sel(2));
+  neg2 <= sel(0) and sel(1) and sel(2);
+
+  -- one compound gate per bit, no XOR anywhere
+  gen_bits: for i in 0 to N generate
+    q(i) <= (pos1 and src1(i))
+         or (neg1 and not src1(i))
+         or (pos2 and src2(i))
+         or (neg2 and not src2(i));
+  end generate gen_bits;
+
+  -- sign-extension elimination: store ~s at bit N, zeros above
+  pp(N) <= not q(N);
+  pp(N-1 downto 0) <= q(N-1 downto 0);
+  pp(2*N-1 downto N+1) <= (others => '0');
+
+end architecture fused_selector;

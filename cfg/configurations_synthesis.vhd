@@ -35,6 +35,17 @@ end configuration CFG_BOOTHMUL_REG_DADDA;
 
 ------------------------------------------------------
 
+-- dadda tree, fused selector in mux and shift version 
+configuration CFG_BOOTHMUL_REG_DADDA_FUSED_SEL of boothmul_registered is
+  for structural
+    for mul : boothmul
+        use configuration work.CFG_BOOTHMUL_DADDA_FUSED_SEL;
+    end for;
+  end for;
+end configuration CFG_BOOTHMUL_REG_DADDA_FUSED_SEL;
+
+------------------------------------------------------
+
 -- behavioral version 
 configuration CFG_BOOTHMUL_REG_BEH of boothmul_registered is
   for structural

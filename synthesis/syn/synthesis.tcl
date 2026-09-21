@@ -10,11 +10,12 @@ suppress_message LINK-14
 suppress_message TIM-134
 
 set blockName boothmul_registered
-set fp [open "../configs.txt" r]
-set configs [read $fp]
-close $fp
+# set fp [open "../configs.txt" r]
+# set configs [read $fp]
+# close $fp
 #set configs {CFG_BOOTHMUL_REG_WAL_BASE CFG_BOOTHMUL_REG_WAL_OPT CFG_BOOTHMUL_REG_DADDA CFG_BOOTHMUL_REG_BEH}
 #set configs {CFG_REG_SUPER_BEH}
+set configs {CFG_BOOTHMUL_REG_DADDA_FUSED_SEL}
 # the clock periods of the sweep
 set periods {1.0 1.5 1.7 2.0 2.2 2.5 3.0 3.5 4.0 4.5 5.0 5.5 6.0}
 
