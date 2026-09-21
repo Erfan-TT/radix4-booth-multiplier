@@ -2,17 +2,21 @@
 
 
 ##  the same periods as in synthesis.tcl
-#set periods {1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 5.0 5.5 6.0}
-set periods {1.7 2.2}
+set periods {1.0 1.5 1.7 2.0 2.2 2.5 3.0 3.5 4.0 4.5 5.0 5.5 6.0}
+
+#set BlockName {boothmul_registered}
+set BlockName {super_beh_multiplier_registered}
 
 ## nandgate library cell
 set cell_models /eda/dk/nangate45/verilog/NangateOpenCellLibrary.v
 
-set fp [open "../configs.txt" r]
-set configs [read $fp]
-close $fp
+#set fp [open "../configs.txt" r]
+#set configs [read $fp]
+#close $fp
 
 #set configs {CFG_BOOTHMUL_REG_WAL_BASE CFG_BOOTHMUL_REG_WAL_OPT CFG_BOOTHMUL_REG_DADDA CFG_BOOTHMUL_REG_BEH}
+
+set configs {CFG_super_beh}
 set netlist ../syn/netlist
 file mkdir vcd
 
@@ -50,20 +54,20 @@ foreach cfg $configs {
         echo "=========================================="
 
         ##  the netlist of this period, was synthesized by the synthesis script in this directory.
-        vlog -work work $netlist_dir/boothmul_registered_${cfg}_$tag.v
+        vlog -work work $netlist_dir/${BlockName}_${cfg}_$tag.v
 
         ##  -voptargs=+acc   : keep the internal signals visible, otherwise the optimiser removes them and the VCD is almost empty
         ##  +notimingchecks  : we want the power, not a setup/hold check, otherwise flip flop models complain at time 0 and put X everywhere.
         ##  -sdfmax          : take the gate delays from the SDF file
         ##  -gCLK_PERIOD     : setting the generic CLK_PERIOD of testbench
         vsim -t 1ps -voptargs=+acc +notimingchecks \
-            -sdfmax /tb_boothmul_registered/dut=$netlist_dir/boothmul_registered_${cfg}_${tag}.sdf \
+            -sdfmax /tb_${BlockName}/dut=$netlist_dir/${BlockName}_${cfg}_${tag}.sdf \
             -gCLK_PERIOD=${period}ns \
-            work.tb_boothmul_registered
+            work.tb_${BlockName}
 
         ##  record the VCD
         vcd file $vcd_dir/boothmul_${cfg}_${tag}.vcd
-        vcd add -r /tb_boothmul_registered/dut/*
+        vcd add -r /tb_${BlockName}/dut/*
 
         run -all
 

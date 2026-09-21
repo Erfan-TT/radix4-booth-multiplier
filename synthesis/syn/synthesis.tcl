@@ -14,7 +14,7 @@ set fp [open "../configs.txt" r]
 set configs [read $fp]
 close $fp
 #set configs {CFG_BOOTHMUL_REG_WAL_BASE CFG_BOOTHMUL_REG_WAL_OPT CFG_BOOTHMUL_REG_DADDA CFG_BOOTHMUL_REG_BEH}
-
+#set configs {CFG_REG_SUPER_BEH}
 # the clock periods of the sweep
 set periods {1.0 1.5 1.7 2.0 2.2 2.5 3.0 3.5 4.0 4.5 5.0 5.5 6.0}
 
@@ -59,6 +59,7 @@ analyze -library WORK -format vhdl {../../rtl/multiplier/reg_N.vhd}
 analyze -library WORK -format vhdl {../../rtl/multiplier/boothmul_registered.vhd}
 
 # the configuration, different arch combinations for booth
+analyze -library WORK -format vhdl {../../cfg/configurations_boothmul.vhd}
 analyze -library WORK -format vhdl {../../cfg/configurations_synthesis.vhd}
 
 foreach configuration $configs {
@@ -99,7 +100,9 @@ foreach configuration $configs {
         ## COMPILE
         ## ungroup -all -flatten restructure the adder chain of the partial products across the boundaries of the
         ## encoder and the mux blocks. This is what makes the area optimization better.
-        ungroup -all -flatten
+        
+        ## no ungroup flatten, to use the the FA_X cells of the library instead of gates
+        #ungroup -all -flatten
 
         
         compile_ultra 

@@ -1,0 +1,71 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+Design : boothmul_registered
+Version: W-2024.09-SP2
+Date   : Mon Sep 21 12:07:36 2026
+****************************************
+
+Operating Conditions: typical   Library: NangateOpenCellLibrary
+Wire Load Model Mode: top
+
+  Startpoint: A_reg_Y_temp_reg_1_
+              (rising edge-triggered flip-flop clocked by CLK)
+  Endpoint: p_reg_Y_temp_reg_50_
+            (rising edge-triggered flip-flop clocked by CLK)
+  Path Group: CLK
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  boothmul_registered
+                     5K_hvratio_1_4        NangateOpenCellLibrary
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock CLK (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.05       0.05
+  A_reg_Y_temp_reg_1_/CK (DFF_X1)          0.00       0.05 r
+  A_reg_Y_temp_reg_1_/Q (DFF_X1)           0.11       0.16 r
+  U549/ZN (XNOR2_X1)                       0.07       0.24 r
+  U658/ZN (NAND2_X1)                       0.04       0.28 f
+  U375/Z (BUF_X1)                          0.05       0.33 f
+  U915/ZN (OAI22_X1)                       0.06       0.39 r
+  U916/ZN (INV_X1)                         0.03       0.42 f
+  U986/S (FA_X1)                           0.14       0.56 r
+  U988/S (FA_X1)                           0.12       0.68 f
+  U948/ZN (NAND2_X1)                       0.04       0.72 r
+  U951/ZN (NAND3_X1)                       0.04       0.76 f
+  U1096/CO (FA_X1)                         0.09       0.85 f
+  U1201/S (FA_X1)                          0.14       0.99 r
+  U1245/S (FA_X1)                          0.12       1.11 f
+  U383/ZN (NOR2_X1)                        0.06       1.17 r
+  U1101/ZN (NOR2_X1)                       0.03       1.20 f
+  U2117/ZN (AOI21_X1)                      0.05       1.26 r
+  U2125/ZN (OAI21_X1)                      0.03       1.29 f
+  U2126/ZN (AOI21_X1)                      0.07       1.36 r
+  U563/Z (BUF_X2)                          0.06       1.42 r
+  U2702/ZN (OAI21_X1)                      0.05       1.46 f
+  U2703/ZN (AOI21_X1)                      0.05       1.51 r
+  U2705/ZN (XNOR2_X1)                      0.06       1.57 r
+  U3057/ZN (OAI21_X1)                      0.03       1.60 f
+  p_reg_Y_temp_reg_50_/D (DFF_X1)          0.01       1.61 f
+  data arrival time                                   1.61
+
+  clock CLK (rise edge)                    1.50       1.50
+  clock network delay (ideal)              0.05       1.55
+  clock uncertainty                       -0.05       1.50
+  p_reg_Y_temp_reg_50_/CK (DFF_X1)         0.00       1.50 r
+  library setup time                      -0.03       1.47
+  data required time                                  1.47
+  -----------------------------------------------------------
+  data required time                                  1.47
+  data arrival time                                  -1.61
+  -----------------------------------------------------------
+  slack (VIOLATED)                                   -0.14
+
+
+1

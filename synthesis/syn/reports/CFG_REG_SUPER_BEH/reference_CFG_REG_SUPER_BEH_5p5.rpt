@@ -1,0 +1,86 @@
+ 
+****************************************
+Report : reference
+Design : boothmul_registered
+Version: W-2024.09-SP2
+Date   : Mon Sep 21 12:12:48 2026
+****************************************
+
+Attributes:
+    b - black box (unknown)
+   bo - allows boundary optimization
+    d - dont_touch
+   mo - map_only
+    h - hierarchical
+    n - noncombinational
+    r - removable
+    s - synthetic operator
+    u - contains unmapped logic
+
+Reference          Library       Unit Area   Count    Total Area   Attributes
+-----------------------------------------------------------------------------
+AND2_X1            NangateOpenCellLibrary
+                                  1.064000      16     17.024000  
+AND3_X1            NangateOpenCellLibrary
+                                  1.330000      13     17.290001  
+AND3_X2            NangateOpenCellLibrary
+                                  1.596000       4      6.384000  
+AOI21_X1           NangateOpenCellLibrary
+                                  1.064000      20     21.280000  
+AOI22_X1           NangateOpenCellLibrary
+                                  1.330000     138    183.540006  
+AOI221_X1          NangateOpenCellLibrary
+                                  1.596000       1      1.596000  
+AOI222_X1          NangateOpenCellLibrary
+                                  2.128000     304    646.912006  
+BUF_X1             NangateOpenCellLibrary
+                                  0.798000      25     19.949999  
+BUF_X2             NangateOpenCellLibrary
+                                  1.064000       6      6.384000  
+CLKBUF_X1          NangateOpenCellLibrary
+                                  0.798000      16     12.768000  
+CLKBUF_X2          NangateOpenCellLibrary
+                                  1.064000       1      1.064000  
+DFF_X1             NangateOpenCellLibrary
+                                  4.522000     112    506.463982  n
+DFF_X2             NangateOpenCellLibrary
+                                  5.054000      16     80.863998  n
+FA_X1              NangateOpenCellLibrary
+                                  4.256000     307   1306.592013  r
+INV_X1             NangateOpenCellLibrary
+                                  0.532000     231    122.892001  
+INV_X2             NangateOpenCellLibrary
+                                  0.798000       1      0.798000  
+NAND2_X1           NangateOpenCellLibrary
+                                  0.798000     186    148.427996  
+NAND3_X1           NangateOpenCellLibrary
+                                  1.064000      20     21.280000  
+NAND4_X1           NangateOpenCellLibrary
+                                  1.330000       1      1.330000  
+NOR2_X1            NangateOpenCellLibrary
+                                  0.798000      57     45.485999  
+NOR2_X2            NangateOpenCellLibrary
+                                  1.330000      13     17.290001  
+NOR2_X4            NangateOpenCellLibrary
+                                  2.394000       2      4.788000  
+NOR3_X1            NangateOpenCellLibrary
+                                  1.064000       4      4.256000  
+OAI21_X1           NangateOpenCellLibrary
+                                  1.064000     328    348.992003  
+OAI22_X1           NangateOpenCellLibrary
+                                  1.330000      33     43.890001  
+OAI211_X1          NangateOpenCellLibrary
+                                  1.330000      15     19.950001  
+OAI221_X1          NangateOpenCellLibrary
+                                  1.596000      10     15.960000  
+OR2_X1             NangateOpenCellLibrary
+                                  1.064000      32     34.048000  
+OR3_X1             NangateOpenCellLibrary
+                                  1.330000       1      1.330000  
+XNOR2_X1           NangateOpenCellLibrary
+                                  1.596000     391    624.035983  
+XOR2_X1            NangateOpenCellLibrary
+                                  1.596000     109    173.963995  
+-----------------------------------------------------------------------------
+Total 31 references                                  4456.829985
+1

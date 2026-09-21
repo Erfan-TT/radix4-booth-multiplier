@@ -3,7 +3,7 @@
 Report : reference
 Design : boothmul_registered
 Version: W-2024.09-SP2
-Date   : Thu Aug 27 05:19:57 2026
+Date   : Mon Sep 21 13:17:15 2026
 ****************************************
 
 Attributes:
@@ -24,9 +24,9 @@ AND2_X1            NangateOpenCellLibrary
 AND3_X1            NangateOpenCellLibrary
                                   1.330000       2      2.660000  
 AOI21_X1           NangateOpenCellLibrary
-                                  1.064000      52     55.328001  
+                                  1.064000      51     54.264001  
 AOI21_X2           NangateOpenCellLibrary
-                                  1.862000       4      7.448000  
+                                  1.862000       5      9.310000  
 AOI22_X1           NangateOpenCellLibrary
                                   1.330000     383    509.390016  
 AOI22_X2           NangateOpenCellLibrary
@@ -39,6 +39,8 @@ BUF_X1             NangateOpenCellLibrary
                                   0.798000       3      2.394000  
 BUF_X2             NangateOpenCellLibrary
                                   1.064000       1      1.064000  
+CLKBUF_X1          NangateOpenCellLibrary
+                                  0.798000       1      0.798000  
 DFF_X1             NangateOpenCellLibrary
                                   4.522000     126    569.771979  n
 DFF_X2             NangateOpenCellLibrary
@@ -80,5 +82,5 @@ XOR2_X1            NangateOpenCellLibrary
 XOR2_X2            NangateOpenCellLibrary
                                   2.394000       1      2.394000  
 -----------------------------------------------------------------------------
-Total 30 references                                  6208.439982
+Total 31 references                                  6210.035982
 1

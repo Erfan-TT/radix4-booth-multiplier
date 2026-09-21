@@ -263,4 +263,14 @@ begin
 end BEHAVIOURAL;
 
 
+---------------------------------------------------------------------
+
+architecture super_beh of BOOTHMUL is
+
+begin
+
+    P <= std_logic_vector(signed(A) * signed(B));
+end super_beh;
+
+
 

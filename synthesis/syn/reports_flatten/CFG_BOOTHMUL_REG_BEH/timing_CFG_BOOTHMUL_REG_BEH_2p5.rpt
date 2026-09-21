@@ -1,0 +1,84 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+Design : boothmul_registered
+Version: W-2024.09-SP2
+Date   : Thu Aug 27 05:15:30 2026
+****************************************
+
+Operating Conditions: typical   Library: NangateOpenCellLibrary
+Wire Load Model Mode: top
+
+  Startpoint: B_reg_Y_temp_reg_27_
+              (rising edge-triggered flip-flop clocked by CLK)
+  Endpoint: p_reg_Y_temp_reg_63_
+            (rising edge-triggered flip-flop clocked by CLK)
+  Path Group: CLK
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  boothmul_registered
+                     5K_hvratio_1_4        NangateOpenCellLibrary
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock CLK (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.05       0.05
+  B_reg_Y_temp_reg_27_/CK (DFF_X1)         0.00       0.05 r
+  B_reg_Y_temp_reg_27_/QN (DFF_X1)         0.11       0.16 r
+  U3700/ZN (NOR2_X1)                       0.04       0.20 f
+  U1523/ZN (OR3_X2)                        0.09       0.29 f
+  U1826/ZN (OAI21_X1)                      0.08       0.37 r
+  U3121/ZN (NOR2_X1)                       0.04       0.41 f
+  U3243/ZN (XNOR2_X1)                      0.06       0.47 f
+  U2883/ZN (OAI21_X1)                      0.05       0.53 r
+  U1863/Z (XOR2_X1)                        0.07       0.60 r
+  U1506/Z (XOR2_X1)                        0.08       0.68 r
+  U4852/S (FA_X1)                          0.13       0.80 f
+  U3242/CO (FA_X1)                         0.11       0.91 f
+  U3057/ZN (OAI21_X1)                      0.05       0.96 r
+  U3240/ZN (NAND2_X1)                      0.04       1.00 f
+  U2020/ZN (NAND2_X1)                      0.04       1.04 r
+  U2021/ZN (NAND3_X1)                      0.05       1.08 f
+  U3056/ZN (OAI21_X1)                      0.05       1.13 r
+  U1888/ZN (NAND2_X1)                      0.04       1.17 f
+  U1887/CO (FA_X1)                         0.10       1.27 f
+  U5142/CO (FA_X1)                         0.09       1.36 f
+  U5228/CO (FA_X1)                         0.09       1.46 f
+  U6043/CO (FA_X1)                         0.09       1.55 f
+  U6045/CO (FA_X1)                         0.09       1.65 f
+  U6039/CO (FA_X1)                         0.10       1.74 f
+  U6025/S (FA_X1)                          0.15       1.89 r
+  U2165/ZN (NOR2_X1)                       0.03       1.93 f
+  U6047/ZN (NOR2_X1)                       0.06       1.98 r
+  U6054/ZN (NAND2_X1)                      0.03       2.02 f
+  U6061/ZN (OAI21_X1)                      0.06       2.08 r
+  U6075/ZN (AOI21_X1)                      0.04       2.11 f
+  U6289/ZN (OAI21_X1)                      0.06       2.17 r
+  U2213/ZN (AOI21_X2)                      0.05       2.23 f
+  U3306/ZN (OAI211_X1)                     0.08       2.30 r
+  U2205/ZN (NAND2_X1)                      0.04       2.34 f
+  U1916/ZN (OR2_X1)                        0.06       2.41 f
+  U1917/ZN (OAI211_X1)                     0.04       2.44 r
+  U1919/ZN (OAI21_X1)                      0.03       2.48 f
+  p_reg_Y_temp_reg_63_/D (DFF_X1)          0.01       2.49 f
+  data arrival time                                   2.49
+
+  clock CLK (rise edge)                    2.50       2.50
+  clock network delay (ideal)              0.05       2.55
+  clock uncertainty                       -0.05       2.50
+  p_reg_Y_temp_reg_63_/CK (DFF_X1)         0.00       2.50 r
+  library setup time                      -0.03       2.47
+  data required time                                  2.47
+  -----------------------------------------------------------
+  data required time                                  2.47
+  data arrival time                                  -2.49
+  -----------------------------------------------------------
+  slack (VIOLATED)                                   -0.01
+
+
+1

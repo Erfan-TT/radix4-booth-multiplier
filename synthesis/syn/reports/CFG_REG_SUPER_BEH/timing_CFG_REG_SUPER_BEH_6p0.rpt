@@ -1,0 +1,128 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+Design : boothmul_registered
+Version: W-2024.09-SP2
+Date   : Mon Sep 21 12:13:08 2026
+****************************************
+
+Operating Conditions: typical   Library: NangateOpenCellLibrary
+Wire Load Model Mode: top
+
+  Startpoint: B_reg_Y_temp_reg_1_
+              (rising edge-triggered flip-flop clocked by CLK)
+  Endpoint: p_reg_Y_temp_reg_63_
+            (rising edge-triggered flip-flop clocked by CLK)
+  Path Group: CLK
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  boothmul_registered
+                     5K_hvratio_1_4        NangateOpenCellLibrary
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock CLK (rise edge)                    0.00       0.00
+  clock network delay (ideal)              0.05       0.05
+  B_reg_Y_temp_reg_1_/CK (DFF_X1)          0.00       0.05 r
+  B_reg_Y_temp_reg_1_/Q (DFF_X1)           0.23       0.28 r
+  U579/ZN (NAND2_X1)                       0.07       0.34 f
+  U580/ZN (XNOR2_X1)                       0.11       0.45 f
+  U597/ZN (AOI222_X1)                      0.13       0.58 r
+  U598/ZN (NAND2_X1)                       0.04       0.62 f
+  U599/ZN (XNOR2_X1)                       0.07       0.69 f
+  U608/ZN (NOR2_X1)                        0.07       0.75 r
+  U1111/ZN (OAI21_X1)                      0.04       0.79 f
+  mul_intadd_102_U27/CO (FA_X1)            0.10       0.89 f
+  mul_intadd_102_U26/CO (FA_X1)            0.11       1.00 f
+  mul_intadd_102_U25/CO (FA_X1)            0.09       1.09 f
+  mul_intadd_102_U24/CO (FA_X1)            0.09       1.19 f
+  mul_intadd_102_U23/CO (FA_X1)            0.09       1.28 f
+  mul_intadd_102_U22/CO (FA_X1)            0.09       1.38 f
+  mul_intadd_102_U21/CO (FA_X1)            0.09       1.47 f
+  mul_intadd_102_U20/CO (FA_X1)            0.09       1.56 f
+  mul_intadd_102_U19/CO (FA_X1)            0.09       1.66 f
+  mul_intadd_102_U18/CO (FA_X1)            0.09       1.75 f
+  mul_intadd_102_U17/CO (FA_X1)            0.09       1.85 f
+  mul_intadd_102_U16/CO (FA_X1)            0.10       1.95 f
+  U524/ZN (NAND2_X1)                       0.04       1.99 r
+  U525/ZN (NAND3_X1)                       0.05       2.04 f
+  U986/ZN (NAND2_X1)                       0.04       2.08 r
+  U987/ZN (NAND3_X1)                       0.04       2.12 f
+  mul_intadd_102_U13/CO (FA_X1)            0.09       2.22 f
+  mul_intadd_102_U12/CO (FA_X1)            0.09       2.31 f
+  mul_intadd_102_U11/CO (FA_X1)            0.09       2.41 f
+  mul_intadd_102_U10/CO (FA_X1)            0.09       2.50 f
+  mul_intadd_102_U9/CO (FA_X1)             0.10       2.60 f
+  U1030/ZN (NAND2_X1)                      0.04       2.64 r
+  U1032/ZN (NAND3_X1)                      0.04       2.68 f
+  mul_intadd_102_U7/CO (FA_X1)             0.09       2.77 f
+  mul_intadd_102_U6/CO (FA_X1)             0.09       2.87 f
+  mul_intadd_102_U5/CO (FA_X1)             0.09       2.96 f
+  mul_intadd_102_U4/CO (FA_X1)             0.09       3.06 f
+  mul_intadd_102_U3/CO (FA_X1)             0.09       3.15 f
+  mul_intadd_102_U2/S (FA_X1)              0.12       3.27 f
+  mul_intadd_100_U32/CO (FA_X1)            0.11       3.38 f
+  mul_intadd_100_U31/CO (FA_X1)            0.09       3.47 f
+  mul_intadd_100_U30/CO (FA_X1)            0.10       3.57 f
+  U709/ZN (NAND2_X1)                       0.04       3.61 r
+  U711/ZN (AND3_X2)                        0.06       3.67 r
+  U298/ZN (OAI21_X1)                       0.04       3.71 f
+  U714/ZN (NAND2_X1)                       0.03       3.74 r
+  U277/ZN (AND3_X1)                        0.06       3.80 r
+  U297/ZN (OAI21_X1)                       0.04       3.85 f
+  U718/ZN (NAND2_X1)                       0.04       3.89 r
+  U720/ZN (NAND3_X1)                       0.05       3.93 f
+  U722/ZN (NAND2_X1)                       0.04       3.97 r
+  U305/ZN (AND3_X1)                        0.06       4.03 r
+  U296/ZN (OAI21_X1)                       0.04       4.07 f
+  mul_intadd_100_U22/CO (FA_X1)            0.09       4.16 f
+  mul_intadd_100_U21/CO (FA_X1)            0.09       4.26 f
+  mul_intadd_100_U20/CO (FA_X1)            0.09       4.35 f
+  mul_intadd_100_U19/CO (FA_X1)            0.09       4.44 f
+  mul_intadd_100_U18/CO (FA_X1)            0.09       4.54 f
+  mul_intadd_100_U17/CO (FA_X1)            0.09       4.63 f
+  mul_intadd_100_U16/CO (FA_X1)            0.10       4.73 f
+  U294/ZN (NAND2_X1)                       0.03       4.77 r
+  U293/ZN (NAND2_X1)                       0.04       4.80 f
+  U645/ZN (NAND2_X1)                       0.03       4.84 r
+  U363/ZN (AND3_X1)                        0.06       4.90 r
+  U291/ZN (OAI21_X1)                       0.04       4.94 f
+  U276/ZN (NAND2_X1)                       0.03       4.97 r
+  U275/ZN (NAND2_X1)                       0.03       5.00 f
+  mul_intadd_100_U11/CO (FA_X1)            0.09       5.09 f
+  mul_intadd_100_U10/CO (FA_X1)            0.10       5.20 f
+  U468/ZN (NAND2_X1)                       0.04       5.23 r
+  U470/ZN (NAND3_X1)                       0.05       5.28 f
+  U473/ZN (NAND2_X1)                       0.04       5.32 r
+  U369/ZN (AND3_X1)                        0.06       5.38 r
+  U290/ZN (OAI21_X1)                       0.04       5.42 f
+  mul_intadd_100_U6/CO (FA_X1)             0.09       5.51 f
+  mul_intadd_100_U5/CO (FA_X1)             0.09       5.60 f
+  mul_intadd_100_U4/CO (FA_X1)             0.10       5.71 f
+  U1057/ZN (NAND2_X1)                      0.04       5.74 r
+  U1059/ZN (NAND3_X1)                      0.04       5.78 f
+  mul_intadd_100_U2/CO (FA_X1)             0.09       5.87 f
+  U3/ZN (AOI22_X1)                         0.06       5.94 r
+  U4/ZN (INV_X1)                           0.02       5.96 f
+  p_reg_Y_temp_reg_63_/D (DFF_X1)          0.01       5.97 f
+  data arrival time                                   5.97
+
+  clock CLK (rise edge)                    6.00       6.00
+  clock network delay (ideal)              0.05       6.05
+  clock uncertainty                       -0.05       6.00
+  p_reg_Y_temp_reg_63_/CK (DFF_X1)         0.00       6.00 r
+  library setup time                      -0.03       5.97
+  data required time                                  5.97
+  -----------------------------------------------------------
+  data required time                                  5.97
+  data arrival time                                  -5.97
+  -----------------------------------------------------------
+  slack (MET)                                         0.00
+
+
+1

@@ -1,0 +1,84 @@
+ 
+****************************************
+Report : reference
+Design : boothmul_registered
+Version: W-2024.09-SP2
+Date   : Thu Aug 27 05:19:57 2026
+****************************************
+
+Attributes:
+    b - black box (unknown)
+   bo - allows boundary optimization
+    d - dont_touch
+   mo - map_only
+    h - hierarchical
+    n - noncombinational
+    r - removable
+    s - synthetic operator
+    u - contains unmapped logic
+
+Reference          Library       Unit Area   Count    Total Area   Attributes
+-----------------------------------------------------------------------------
+AND2_X1            NangateOpenCellLibrary
+                                  1.064000      18     19.152000  
+AND3_X1            NangateOpenCellLibrary
+                                  1.330000       2      2.660000  
+AOI21_X1           NangateOpenCellLibrary
+                                  1.064000      52     55.328001  
+AOI21_X2           NangateOpenCellLibrary
+                                  1.862000       4      7.448000  
+AOI22_X1           NangateOpenCellLibrary
+                                  1.330000     383    509.390016  
+AOI22_X2           NangateOpenCellLibrary
+                                  2.394000       3      7.182000  
+AOI22_X4           NangateOpenCellLibrary
+                                  4.522000       2      9.044000  
+AOI221_X1          NangateOpenCellLibrary
+                                  1.596000       1      1.596000  
+BUF_X1             NangateOpenCellLibrary
+                                  0.798000       3      2.394000  
+BUF_X2             NangateOpenCellLibrary
+                                  1.064000       1      1.064000  
+DFF_X1             NangateOpenCellLibrary
+                                  4.522000     126    569.771979  n
+DFF_X2             NangateOpenCellLibrary
+                                  5.054000       2     10.108000  n
+FA_X1              NangateOpenCellLibrary
+                                  4.256000     573   2438.688024  r
+INV_X1             NangateOpenCellLibrary
+                                  0.532000     393    209.076002  
+INV_X2             NangateOpenCellLibrary
+                                  0.798000       1      0.798000  
+MUX2_X1            NangateOpenCellLibrary
+                                  1.862000       4      7.448000  
+NAND2_X1           NangateOpenCellLibrary
+                                  0.798000     593    473.213987  
+NAND3_X1           NangateOpenCellLibrary
+                                  1.064000      10     10.640000  
+NOR2_X1            NangateOpenCellLibrary
+                                  0.798000     579    462.041987  
+NOR2_X2            NangateOpenCellLibrary
+                                  1.330000      12     15.960001  
+NOR2_X4            NangateOpenCellLibrary
+                                  2.394000       2      4.788000  
+OAI21_X1           NangateOpenCellLibrary
+                                  1.064000      40     42.560000  
+OAI21_X2           NangateOpenCellLibrary
+                                  1.862000      12     22.344000  
+OAI22_X1           NangateOpenCellLibrary
+                                  1.330000     257    341.810011  
+OAI33_X1           NangateOpenCellLibrary
+                                  1.862000       1      1.862000  
+OAI211_X1          NangateOpenCellLibrary
+                                  1.330000       1      1.330000  
+OR2_X1             NangateOpenCellLibrary
+                                  1.064000      12     12.768000  
+XNOR2_X1           NangateOpenCellLibrary
+                                  1.596000     471    751.715979  
+XOR2_X1            NangateOpenCellLibrary
+                                  1.596000     134    213.863994  
+XOR2_X2            NangateOpenCellLibrary
+                                  2.394000       1      2.394000  
+-----------------------------------------------------------------------------
+Total 30 references                                  6208.439982
+1

@@ -6,7 +6,7 @@ Report : timing
         -max_paths 1
 Design : boothmul_registered
 Version: W-2024.09-SP2
-Date   : Thu Aug 27 05:18:46 2026
+Date   : Mon Sep 21 13:16:02 2026
 ****************************************
 
 Operating Conditions: typical   Library: NangateOpenCellLibrary
@@ -28,79 +28,80 @@ Wire Load Model Mode: top
   -----------------------------------------------------------
   clock CLK (rise edge)                    0.00       0.00
   clock network delay (ideal)              0.05       0.05
-  B_reg_Y_temp_reg_1_/CK (DFF_X1)          0.00       0.05 r
-  B_reg_Y_temp_reg_1_/Q (DFF_X1)           0.12       0.17 f
-  U1755/ZN (NAND2_X1)                      0.07       0.24 r
-  U1826/ZN (INV_X1)                        0.03       0.27 f
-  U1585/ZN (NOR2_X2)                       0.15       0.42 r
-  U1827/ZN (INV_X2)                        0.12       0.53 f
-  U1672/ZN (OR2_X1)                        0.09       0.62 f
-  U3515/ZN (XNOR2_X1)                      0.06       0.68 f
-  U3516/ZN (NOR2_X1)                       0.06       0.74 r
-  U4070/ZN (AOI21_X1)                      0.04       0.78 f
-  intadd_455_U60/CO (FA_X1)                0.11       0.89 f
-  intadd_455_U59/CO (FA_X1)                0.09       0.98 f
-  intadd_455_U58/CO (FA_X1)                0.10       1.08 f
-  U3536/ZN (NAND2_X1)                      0.04       1.12 r
-  U3538/ZN (NAND3_X1)                      0.04       1.16 f
-  intadd_455_U56/CO (FA_X1)                0.09       1.25 f
-  intadd_455_U55/CO (FA_X1)                0.10       1.36 f
-  U3029/ZN (NAND2_X1)                      0.04       1.40 r
-  U3030/ZN (NAND3_X1)                      0.05       1.45 f
-  U3032/ZN (NAND2_X1)                      0.04       1.48 r
-  U3034/ZN (AND3_X1)                       0.06       1.54 r
-  U3035/ZN (OAI21_X1)                      0.04       1.58 f
-  intadd_455_U51/CO (FA_X1)                0.09       1.67 f
-  intadd_455_U50/CO (FA_X1)                0.09       1.77 f
-  intadd_455_U49/CO (FA_X1)                0.09       1.86 f
-  intadd_455_U48/CO (FA_X1)                0.09       1.96 f
-  intadd_455_U47/CO (FA_X1)                0.09       2.05 f
-  intadd_455_U46/CO (FA_X1)                0.09       2.15 f
-  intadd_455_U45/CO (FA_X1)                0.10       2.25 f
-  U1654/ZN (NAND2_X1)                      0.04       2.29 r
-  U1567/ZN (NAND2_X1)                      0.03       2.32 f
-  intadd_455_U42/CO (FA_X1)                0.09       2.41 f
-  intadd_455_U41/CO (FA_X1)                0.09       2.50 f
-  intadd_455_U40/CO (FA_X1)                0.09       2.60 f
-  intadd_455_U39/CO (FA_X1)                0.09       2.69 f
-  intadd_455_U38/CO (FA_X1)                0.10       2.79 f
-  U1669/ZN (NAND2_X1)                      0.04       2.83 r
-  U1668/ZN (NAND2_X1)                      0.03       2.86 f
-  intadd_455_U35/CO (FA_X1)                0.09       2.96 f
-  intadd_455_U34/CO (FA_X1)                0.09       3.05 f
-  intadd_455_U33/CO (FA_X1)                0.09       3.15 f
-  intadd_455_U32/CO (FA_X1)                0.09       3.24 f
-  intadd_455_U31/CO (FA_X1)                0.09       3.33 f
-  intadd_455_U30/CO (FA_X1)                0.09       3.43 f
-  intadd_455_U29/CO (FA_X1)                0.09       3.52 f
-  intadd_455_U28/CO (FA_X1)                0.09       3.62 f
-  intadd_455_U27/CO (FA_X1)                0.09       3.71 f
-  intadd_455_U26/CO (FA_X1)                0.09       3.81 f
-  intadd_455_U25/CO (FA_X1)                0.09       3.90 f
-  intadd_455_U24/CO (FA_X1)                0.09       3.99 f
-  intadd_455_U23/CO (FA_X1)                0.10       4.10 f
-  U1667/ZN (NAND2_X1)                      0.04       4.13 r
-  U1562/ZN (NAND2_X1)                      0.03       4.16 f
-  intadd_455_U20/CO (FA_X1)                0.10       4.26 f
-  U1670/ZN (NAND3_X1)                      0.05       4.31 r
-  U1659/ZN (NAND2_X1)                      0.03       4.35 f
-  U1660/ZN (NAND3_X1)                      0.04       4.38 r
-  U2966/ZN (OAI21_X1)                      0.04       4.42 f
-  U2967/ZN (NAND2_X1)                      0.05       4.47 r
-  U1597/ZN (OAI21_X1)                      0.05       4.51 f
-  U2973/ZN (NAND2_X1)                      0.03       4.55 r
-  U2974/ZN (NAND2_X1)                      0.04       4.59 f
-  U1662/ZN (NAND2_X1)                      0.03       4.62 r
-  U1580/ZN (NAND4_X1)                      0.06       4.68 f
-  U1658/ZN (NAND2_X1)                      0.05       4.72 r
-  U1581/ZN (OAI211_X1)                     0.05       4.77 f
-  U1664/ZN (NAND2_X1)                      0.04       4.81 r
-  U1516/ZN (NAND2_X1)                      0.03       4.83 f
-  U1572/ZN (XNOR2_X1)                      0.05       4.88 r
-  U2980/ZN (NAND2_X1)                      0.03       4.91 f
-  U4507/ZN (NAND2_X1)                      0.04       4.95 r
-  p_reg_Y_temp_reg_63_/D (DFFS_X1)         0.01       4.96 r
-  data arrival time                                   4.96
+  B_reg_Y_temp_reg_1_/CK (DFF_X2)          0.00       0.05 r
+  B_reg_Y_temp_reg_1_/Q (DFF_X2)           0.18       0.23 r
+  U1766/ZN (NAND2_X1)                      0.07       0.31 f
+  U1767/ZN (OAI21_X1)                      0.06       0.36 r
+  U1776/ZN (INV_X1)                        0.08       0.44 f
+  U1777/ZN (AOI22_X1)                      0.11       0.55 r
+  U1778/ZN (NAND2_X1)                      0.04       0.60 f
+  U1597/ZN (NOR2_X1)                       0.06       0.65 r
+  U1784/ZN (AND2_X1)                       0.05       0.71 r
+  U3029/ZN (OR2_X1)                        0.04       0.75 r
+  U3030/ZN (XNOR2_X1)                      0.04       0.78 f
+  U3031/ZN (NOR2_X1)                       0.08       0.87 r
+  U3519/ZN (AOI21_X1)                      0.04       0.91 f
+  U4071/S (FA_X1)                          0.15       1.06 r
+  U3553/ZN (NAND2_X1)                      0.03       1.09 f
+  U3555/ZN (NAND3_X1)                      0.04       1.13 r
+  intadd_726_U4/S (FA_X1)                  0.12       1.25 f
+  intadd_684_U55/CO (FA_X1)                0.12       1.36 f
+  U3042/ZN (NAND2_X1)                      0.04       1.40 r
+  U3043/ZN (NAND3_X1)                      0.05       1.45 f
+  U3045/ZN (NAND2_X1)                      0.04       1.49 r
+  U3047/ZN (AND3_X1)                       0.06       1.55 r
+  U3048/ZN (OAI21_X1)                      0.04       1.59 f
+  intadd_684_U51/CO (FA_X1)                0.09       1.68 f
+  intadd_684_U50/CO (FA_X1)                0.09       1.77 f
+  intadd_684_U49/CO (FA_X1)                0.09       1.87 f
+  intadd_684_U48/CO (FA_X1)                0.09       1.96 f
+  intadd_684_U47/CO (FA_X1)                0.09       2.06 f
+  intadd_684_U46/CO (FA_X1)                0.09       2.15 f
+  intadd_684_U45/CO (FA_X1)                0.10       2.25 f
+  U1668/ZN (NAND2_X1)                      0.04       2.29 r
+  U1582/ZN (NAND2_X1)                      0.03       2.32 f
+  intadd_684_U42/CO (FA_X1)                0.09       2.42 f
+  intadd_684_U41/CO (FA_X1)                0.09       2.51 f
+  intadd_684_U40/CO (FA_X1)                0.09       2.60 f
+  intadd_684_U39/CO (FA_X1)                0.09       2.70 f
+  intadd_684_U38/CO (FA_X1)                0.10       2.80 f
+  U1683/ZN (NAND2_X1)                      0.04       2.84 r
+  U1682/ZN (NAND2_X1)                      0.03       2.87 f
+  intadd_684_U35/CO (FA_X1)                0.09       2.96 f
+  intadd_684_U34/CO (FA_X1)                0.09       3.06 f
+  intadd_684_U33/CO (FA_X1)                0.09       3.15 f
+  intadd_684_U32/CO (FA_X1)                0.09       3.25 f
+  intadd_684_U31/CO (FA_X1)                0.09       3.34 f
+  intadd_684_U30/CO (FA_X1)                0.09       3.43 f
+  intadd_684_U29/CO (FA_X1)                0.09       3.53 f
+  intadd_684_U28/CO (FA_X1)                0.09       3.62 f
+  intadd_684_U27/CO (FA_X1)                0.09       3.72 f
+  intadd_684_U26/CO (FA_X1)                0.09       3.81 f
+  intadd_684_U25/CO (FA_X1)                0.09       3.91 f
+  intadd_684_U24/CO (FA_X1)                0.09       4.00 f
+  intadd_684_U23/CO (FA_X1)                0.10       4.10 f
+  U1681/ZN (NAND2_X1)                      0.04       4.14 r
+  U1577/ZN (NAND2_X1)                      0.03       4.17 f
+  intadd_684_U20/CO (FA_X1)                0.10       4.27 f
+  U1684/ZN (NAND3_X1)                      0.05       4.32 r
+  U1673/ZN (NAND2_X1)                      0.03       4.35 f
+  U1674/ZN (NAND3_X1)                      0.04       4.39 r
+  U2977/ZN (OAI21_X1)                      0.04       4.43 f
+  U2978/ZN (NAND2_X1)                      0.05       4.47 r
+  U1611/ZN (OAI21_X1)                      0.05       4.52 f
+  U2984/ZN (NAND2_X1)                      0.03       4.55 r
+  U2985/ZN (NAND2_X1)                      0.04       4.59 f
+  U1676/ZN (NAND2_X1)                      0.03       4.63 r
+  U1529/ZN (NAND4_X1)                      0.06       4.68 f
+  U1672/ZN (NAND2_X1)                      0.05       4.73 r
+  U1594/ZN (OAI211_X1)                     0.05       4.78 f
+  U1678/ZN (NAND2_X1)                      0.04       4.81 r
+  U1527/ZN (NAND2_X1)                      0.03       4.84 f
+  U1587/ZN (XNOR2_X1)                      0.05       4.89 r
+  U2991/ZN (NAND2_X1)                      0.03       4.92 f
+  U4520/ZN (NAND2_X1)                      0.04       4.96 r
+  p_reg_Y_temp_reg_63_/D (DFFS_X1)         0.01       4.97 r
+  data arrival time                                   4.97
 
   clock CLK (rise edge)                    5.00       5.00
   clock network delay (ideal)              0.05       5.05
@@ -110,9 +111,9 @@ Wire Load Model Mode: top
   data required time                                  4.97
   -----------------------------------------------------------
   data required time                                  4.97
-  data arrival time                                  -4.96
+  data arrival time                                  -4.97
   -----------------------------------------------------------
-  slack (MET)                                         0.01
+  slack (MET)                                         0.00
 
 
 1
