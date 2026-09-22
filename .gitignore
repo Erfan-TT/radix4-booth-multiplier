@@ -40,3 +40,15 @@ Thumbs.db
 # ---- parked pre-reorg files, safe to delete ----
 .old/
 vcd/
+
+# ---- synthesis / simulation artifacts ----
+# reports_*/ are kept on purpose: they are the measurement data behind the
+# README tables and they are only a few MB of text.
+# netlists and SAIF are regenerable and enormous (500 MB / 150 MB) -- never commit.
+synthesis/syn/netlist_*/
+synthesis/sim/saif/
+synthesis/sim/work/
+synthesis/**/transcript
+tcl_stacktrace.txt
+*.saif
+*.sdf

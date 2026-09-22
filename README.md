@@ -1,21 +1,28 @@
-# Radix-4 Booth Multiplier — Sign-Extension Elimination and Dadda Reduction
+# Radix-4 Booth Multiplier — 32-bit, Nangate 45 nm
 
-A structural VHDL signed multiplier: radix-4 (modified) Booth encoding, a
-selectable partial-product reduction tree, and a P4 sparse-tree carry-propagate
-adder for the final sum. Targets Synopsys Design Compiler with the Nangate
-45 nm open cell library; simulated in ModelSim / Questa.
+A structural VHDL signed multiplier built up through four architectural
+optimizations, each one measured against the previous and against Synopsys
+DesignWare as a reference point. Simulated in ModelSim / Questa, synthesised
+with Design Compiler using `compile_ultra` over a 21-point clock sweep.
 
-Three variants share every source file and are selected by VHDL configuration:
+**Headline result: the final design meets the same 1.9 ns clock period as the
+DesignWare multiplier that `A * B` infers, at 13% more area — recovering 69% of
+the distance between a naive structural implementation and production IP.**
 
-| configuration | partial products | reduction | cells @ N=32 |
+![Pareto front](docs/figures/pareto_area_vs_period_area_zero.png)
+
+| variant | min period | area at relaxed timing | gap closed |
 |---|---|---|---|
-| `cfg_tb_base` | full sign extension | Wallace (uniform CSAs) | 776 |
-| `cfg_tb_opt` | sign extension eliminated | Wallace (uniform CSAs) | 584 |
-| `cfg_tb_opt_dadda` | sign extension eliminated | **Dadda (per-column)** | **480** |
+| Wallace baseline | 2.5 ns | 6345.7 µm² | — |
+| Wallace + sign-extension elimination | 2.2 ns | 5974.9 µm² | 19.5% |
+| Dadda reduction | 2.1 ns | 5619.8 µm² | 38.1% |
+| **Dadda + fused Booth selector** | **1.9 ns** | **5029.0 µm²** | **69.1%** |
+| Behavioural Booth (`+` chain) | 2.5 ns | 6210.0 µm² | 7.1% |
+| `A * B` (DesignWare) | 1.9 ns | 4441.1 µm² | reference |
 
-All three are combinationally identical in function and pass the same exhaustive
-testbench. The interesting parts are *how* the 776 becomes 480, and neither step
-costs a single level of logic depth.
+All variants are the same entity with different architectures bound by VHDL
+configuration, synthesised through an identical script, and verified against the
+same testbench.
 
 ---
 
@@ -24,7 +31,7 @@ costs a single level of logic depth.
 ```mermaid
 flowchart TD
     B[B operand] --> ENC[BOOTH_ENCODER x N/2<br/>radix-4 triplets]
-    A[A operand] --> MUX[mux_and_shift x N/2<br/>0, +/-A, +/-2A in N+1 bits<br/>MSB inverted, zeros above]
+    A[A operand] --> MUX[mux_and_shift x N/2<br/>one partial-product row each]
     ENC -->|sel 2:0| MUX
     ENC -->|sel 2 = neg| CORR[corrector<br/>Booth +1 bits low half<br/>bias constant high half]
     MUX -->|N/2 rows| RT[REDUCTION_TREE<br/>wrapper entity]
@@ -36,74 +43,66 @@ flowchart TD
     P4 --> P[P, 2N bits]
 ```
 
-`REDUCTION_TREE` is a thin wrapper with two architectures — `wallace` and
-`dadda` — each instantiating the corresponding tree entity. Swapping trees is
-one line in `cfg/configurations.vhd`, and `BOOTHMUL` never changes.
-
 | stage | block | what it does |
 |---|---|---|
 | encode | `booth_encoder` | one radix-4 encoder per bit pair of B → `sel = {neg, double, enable}` |
-| generate | `mux_and_shift` | one partial-product row: `0`, `±A`, `±2A`, built in N+1 bits |
-| correct | `corrector` | one extra row: Booth `+1`s in the low half, bias constant in the high half |
+| generate | `mux_and_shift` | one partial-product row: `0`, `±A`, `±2A` |
+| correct | `corrector` | one extra row: Booth `+1`s low, bias constant high |
 | reduce | `wallace_tree` / `dadda_tree` | N/2+1 rows down to carry + sum |
-| add | `P4_adder` | sparse-tree carry-propagate adder → final 2N-bit product |
+| add | `P4_adder` | sparse-tree carry-propagate adder → 2N-bit product |
+
+`REDUCTION_TREE` is a thin wrapper with `wallace` and `dadda` architectures, so
+swapping trees never touches `BOOTHMUL`.
 
 ---
 
-## Sign-extension elimination
+## Optimization 1 — sign-extension elimination
 
-Each Booth row holds an **(N+1)-bit two's complement** value — enough for ±2A.
-Its MSB is a *sign* bit, so its weight is negative, but the reduction tree only
-adds unsigned. The textbook fix is to replicate the sign bit up to bit 2N−1,
-which at N=32 costs **256 of the 800 live bits in the array — 32%** — all of
-them copies of one net.
+Each Booth row holds an **(N+1)-bit two's complement** value. Its MSB is a
+*sign* bit with negative weight, but the reduction tree adds unsigned. The
+textbook fix replicates that sign bit up to bit 2N−1 — at N=32 that is **256 of
+the 800 live bits in the array, 32%**, all copies of one net.
 
-### The identity
-
-The sign needs weight `−s·2^P`. Since `s + ~s = 1`, we have `−s = ~s − 1`:
+Since `s + ~s = 1`, we have `−s = ~s − 1`, so:
 
 $$-s_i \cdot 2^{P} \;=\; \tilde{s_i}\cdot 2^{P} \;-\; 2^{P}$$
 
 `~s` sits at position `P` — the slot the sign bit already occupied. No bit is
-added; one bit is *inverted*, and everything above it is zero-filled.
+added; one bit is *inverted*, everything above it is zero-filled.
 
-### Why the leftover is a constant
+The leftover is a constant because the error does not depend on the data:
 
 | `s` | wanted | array holds `~s` | error |
 |---|---|---|---|
 | 0 | 0 | +2^P | **+2^P** |
 | 1 | −2^P | 0 | **+2^P** |
 
-The overshoot is identical either way, so it can be paid back once at design
-time. Summed over all N/2 rows:
+Summed over all N/2 rows the design owes
+`C = −Σ 2^(2i+N) mod 2^(2N)`, which is the pattern `0xAAAA...AB` in bits
+`2N-1 downto N` (`0xB` at N=4, `0xAAAAAAAB` at N=32). See
+`common_pkg.sign_ext_const`.
 
-$$C \;=\; -\sum_{i=0}^{N/2-1} 2^{2i+N} \bmod 2^{2N}$$
+**It costs no extra row.** `C` occupies only bits `2N-1 downto N`; the Booth
+`+1` carries occupy only `N-1 downto 0`. They never overlap, so one row carries
+both. That is all `corrector` does.
 
-which is the pattern `0xAAAA...AB` in bits `2N-1 downto N` (`0xB` at N=4,
-`0xAB` at N=8, `0xAAAAAAAB` at N=32). See `common_pkg.sign_ext_const`.
-
-### Why it costs no extra row
-
-`C` occupies only bits `2N-1 downto N`; the Booth `+1` carries occupy only bits
-`N-1 downto 0`. They never overlap, so **one row carries both** — the tree still
-sees N/2+1 rows and needs no extra reduction layer. That is all `corrector` does.
+Measured: **6345.7 → 5974.9 µm², 2.5 → 2.2 ns.**
 
 ---
 
-## Dadda reduction
+## Optimization 2 — Dadda reduction
 
 Wallace compresses maximally at every level: every group of three rows goes into
 a CSA across the full width. Wherever fewer than three of those rows have a live
-bit in a column, the CSA degenerates into a **half adder** — a cell that costs
-area and reduces nothing, because it takes two bits in and puts two bits out.
+bit in a column, the CSA degenerates into a **half adder** — a cell that takes
+two bits in and puts two bits out, reducing nothing.
 
-Dadda instead computes a target height per level from the sequence
-`2, 3, 4, 6, 9, 13, 19 …` and **touches only the columns that exceed it**.
-A column already at or below target gets no cell at all.
+Dadda computes a target height per level from the sequence
+`2, 3, 4, 6, 9, 13, 19 …` and **only touches columns that exceed it**.
 
-The full adder count barely moves between the two (436 → 435 at N=32) — every
-eliminated bit costs exactly one full adder, so that number is fixed by the
-array, not by the schedule. What Dadda removes is the half adders: **148 → 45**.
+The full-adder count barely moves (436 → 435 at N=32) — every eliminated bit
+costs exactly one full adder, so that number is fixed by the array. What Dadda
+removes is half adders: **148 → 45**.
 
 ### The rule
 
@@ -112,54 +111,106 @@ them is the trap:
 
 | | meaning |
 |---|---|
-| `carries in` | adders in column `k-1` — these land in column `k` at level L+1 |
-| `carries out` | adders in column `k` — these land in column `k+1` at level L+1 |
+| carries in | adders in column `k-1` — land in column `k` at level L+1 |
+| carries out | adders in column `k` — land in column `k+1` at level L+1 |
 
-Only bits **present at level L** can be fed into an adder, but the target must be
-checked against `present + carries in`:
+Only bits **present at level L** can feed an adder, but the target is checked
+against `present + carries in`:
 
 ```
-excess = count + C_out_count - target
+excess = count + carry_in - target
 while excess > 0 :  FA if excess >= 2 (removes 2), else HA (removes 1)
                     require 3*nFA + 2*nHA <= count
 ```
 
-Columns are visited LSB → MSB, because `carries in` for column `k` is not known
-until column `k-1` has been decided.
+Columns are visited LSB → MSB, because `carries in` for column `k` is unknown
+until `k-1` is decided.
 
 ### Implementation
 
 `dadda_math_pkg.constructing_dadda` builds the whole schedule at elaboration and
-returns one of three matrices selected by an opcode:
+returns three matrices:
 
-| opcode | returns | contents |
+| index | matrix | contents |
 |---|---|---|
 | 0 | `remaining_system` | bits no adder consumed — the pass-through sources |
 | 1 | `HA_matrix` | the two source row positions of each half adder |
 | 2 | `FA_matrix` | the three source row positions of each full adder |
 
-The function walks levels top-down, and for each column marks the actual rows
-feeding each adder and **clears those bits** from `system`. Whatever survives is
-by definition the pass-through set — which is why one pass produces all three
-matrices consistently. `fa_arg_func`, `ha_arg_func` and `remaining_bit_pos` then
-recover the exact row indices for the port maps.
+The function walks levels top-down and, for each column, marks the actual rows
+feeding each adder and **clears those bits**. Whatever survives is by definition
+the pass-through set, which is why one pass produces all three matrices
+consistently. `fa_arg_func`, `ha_arg_func` and `remaining_bit_pos` then recover
+the exact row indices for the port maps.
 
-This matters because columns are *sparse*: live bits are not packed into rows
-0,1,2… Tracking real positions rather than assuming a packed layout is what makes
-the tree correct for a staggered Booth array.
+This matters because columns are *sparse* — live bits are not packed into rows
+0,1,2… Tracking real positions rather than assuming a packed layout is what
+makes the tree correct for a staggered Booth array.
 
 ### Slot convention
 
 Within a column at level L+1, slots are allocated in a fixed order:
 
 ```
-[ carries arriving from column k-1 ]  C_out_count
+[ carries arriving from column k-1 ]  carry_in
 [ sums produced in column k        ]  nFA + nHA
 [ bits passed through untouched    ]  count - 3*nFA - 2*nHA
 ```
 
-Carries are written directly into column `k+1`, so — unlike the CSA tree, where
+Carries are written directly into column `k+1`, so unlike the CSA tree — where
 `Carry(i+1) <= Carry_temp(i)` does the ×2 — there is **no final shift**.
+
+Measured: **5974.9 → 5619.8 µm², 2.2 → 2.1 ns.**
+
+---
+
+## Optimization 3 — fused Booth selector
+
+The biggest single win, and it came from reading the gate-level netlist.
+
+`mux_and_shift(no_sign_extend)` builds each row in **two levels**: a mux picks
+`A`/`2A`/`0`, then every bit is XORed with `sel(2)`:
+
+```vhdl
+q := q xor (q'range => sel(2));    -- N+1 XOR cells, every row
+```
+
+At N=32 that is 33 × 16 = **528 XOR2 cells** whose only job is inverting.
+
+`mux_and_shift(fused_selector)` never separates the two. The row control is
+decoded **once** into four mutually exclusive signals, and each output bit is a
+single flat sum of products:
+
+```vhdl
+q(i) <= (c_pos1 and     src1(i))     -- +A
+     or (c_neg1 and not src1(i))     -- -A
+     or (c_pos2 and     src2(i))     -- +2A
+     or (c_neg2 and not src2(i));    -- -2A
+```
+
+DC maps that to one AOI/OAI compound cell per bit. The `not src` terms are the
+same function of `A` in every row, so common-subexpression elimination shares
+one set of inverters across all 16 rows.
+
+Four terms suffice because the encoder never emits `sel(2)='1'` with
+`sel(0)='0'` — a row is never both zeroed and negated.
+
+### What it did to the netlist
+
+| | XOR2 | XNOR2 | **XOR total** | FA_X1 | total cells |
+|---|---|---|---|---|---|
+| Dadda | 287 | 943 | **1230** | 117 | 3936 |
+| Dadda + fused | 37 | 48 | **85** | **448** | 2819 |
+| `A*B` (DesignWare) | 436 | 123 | 559 | 268 | 3035 |
+
+XORs fell **93%**. The unexpected part is `FA_X1`: **117 → 448**. The tree
+instantiates 435 FA + 45 HA, and it now maps essentially 1:1 onto library
+full-adder cells. The 528 negation XORs had been polluting the logic cone badly
+enough that DC restructured the whole tree into generic gates instead of
+recognising adders. Removing them let the adders map cleanly — a second,
+larger saving that was not the stated goal.
+
+Measured: **5619.8 → 5029.0 µm², 2.1 → 1.9 ns.**
 
 ---
 
@@ -175,32 +226,40 @@ really one fact — *multiples of 2^(2N) are zero*:
 | ones from bit *p* upward `≡ −2^p` | the sign-extension identity |
 | dropping a carry out of bit 2N−1 is free | CSA carry shift; Dadda's top-column carry |
 
-And because a signed N×N product always fits in 2N bits, the residue the
-hardware produces **is** the true answer. If the output were 2N+1 bits wide and
-the top bit mattered, none of these tricks would be legal.
+A signed N×N product always fits in 2N bits, so the residue the hardware
+produces **is** the true answer. If the output were 2N+1 bits wide and the top
+bit mattered, none of these tricks would be legal.
 
 ---
 
-## Results
+## Reading the sweep
 
-Adder cells in the reduction tree (from a bit-level model of the elaborated
-netlist, not from synthesis):
+Two things about `compile_ultra` that shape how the results must be presented:
 
-| N | variant | full adders | half adders | cells | levels |
-|---|---|---|---|---|---|
-| 8 | BASE + wallace | 24 | 17 | 41 | 3 |
-| 8 | OPT + wallace | 17 | 14 | 31 | 3 |
-| 8 | **OPT + dadda** | **15** | **9** | **24** | 3 |
-| 32 | BASE + wallace | 661 | 115 | 776 | 6 |
-| 32 | OPT + wallace | 436 | 148 | 584 | 6 |
-| 32 | **OPT + dadda** | **435** | **45** | **480** | 6 |
+**It is not monotonic in the clock constraint.** A looser period can produce a
+*larger* design — Dadda goes 7603.9 (1.4 ns) → 7717.2 (1.5) → 7772.3 (1.6). This
+is not the area constraint: a controlled run with `set_max_area 0` removed gives
+the same minimum periods (2.1 / 1.9) and areas within 3%, and is still
+non-monotonic. It is the optimizer landing in different local optima per target.
 
-**−38% adder cells at N=32, at unchanged logic depth.** Neither optimization is
-an area-for-timing trade: the removed adders sit on sign-extension columns and
-on columns that never needed reducing, all off the critical path.
+So the plot shows the **Pareto front** — the non-dominated subset of points that
+met timing — not the raw per-period numbers. Violating points are drawn hollow
+so the timing wall is still visible.
 
-Baseline synthesis of the pre-optimization design, Nangate 45 nm,
-`compile -map_effort high`: **8210 µm²**, 6903 combinational cells.
+**A negative-slack netlist is not broken.** DC emits a complete, logically
+correct implementation that simply does not run at the requested period.
+`constraint + |slack|` is a reasonable *estimate* of the achievable period and a
+good next guess for a binary search, but it is not a result: DC's optimization
+effort is target-dependent, so the implied period is not reproducible without
+re-running at that constraint and confirming slack ≥ 0. The written SDC and SDF
+also carry the original constraint, so every downstream tool would read the
+wrong clock.
+
+**There is a genuine Pareto crossing.** Between 2.1 and 2.5 ns plain Dadda is
+smaller than the fused version; past 2.5 ns the fused version drops 22% in one
+step and wins by 10.5%. Under tight constraints DC builds a fast, wide
+structure; past a threshold it flips to the compact FA-mapped solution. Pick the
+variant by the target period, not by a single number.
 
 ---
 
@@ -216,27 +275,29 @@ rtl/
       common_pkg          NBIT, NROWS, pp_word, pp_array, sign_ext_const
       wallace_math_pkg    row counts and layer depth for the Wallace tree
       dadda_types_pkg     NUM_LAYERS_D (deferred constant), matrix types
-      dadda_math_pkg      the Dadda schedule and the port-map position helpers
+      dadda_math_pkg      the Dadda schedule and port-map position helpers
     booth_encoder, mux_and_shift, corrector, CSA
-    reduction_tree        wrapper entity, architectures `wallace` and `dadda`
-    wallace_tree          3:2 CSAs on whole rows
-    dadda_tree            per-column scheduling
-    boothmul              top level
-tb/                       tb_multiplier
-cfg/                      configurations  -- variant selection, analysed last
+    reduction_tree        wrapper, architectures `wallace` and `dadda`
+    wallace_tree, dadda_tree
+    boothmul, reg_N, boothmul_registered
+  super_beh_multiplier_registered      the A*B reference design
+tb/                       tb_multiplier, tb_boothmul_registered
+cfg/                      configurations_boothmul, configurations_tb,
+                          configurations_synthesis
 sim/                      compile.do, sim.do
-docs/                     waveform printouts
+synthesis/
+  syn/                    synthesis.tcl, sdc, reports_*/ and netlist_*/
+  plot_pareto.py          reads the reports directly, writes the Pareto plots
+docs/figures/             generated plots
 ```
 
-`common_pkg` holds the partial-product port types. They have to live in a
-package so both the entity and its instantiator can see them, and a VHDL-93
-package cannot see a generic — so the width comes from the `NBIT` constant
-rather than from a generic. `NBIT` is the single knob for the whole project,
-testbench included.
+`common_pkg` holds the partial-product port types. They must live in a package
+so both the entity and its instantiator can see them, and a VHDL-93 package
+cannot see a generic — so the width comes from the `NBIT` constant. `NBIT` is
+the single knob for the whole project, testbench included.
 
-`dadda_types_pkg` declares `NUM_LAYERS_D` as a **deferred constant** — declared
-in the package header, given its value in the body — because it is computed by a
-function that must be declared first.
+`dadda_types_pkg` declares `NUM_LAYERS_D` as a **deferred constant**, because it
+is computed by a function that has to be declared first.
 
 ---
 
@@ -251,9 +312,12 @@ do sim.do
 The variant is one line at the top of `sim.do`:
 
 ```tcl
-set CFG work.cfg_tb_opt_dadda
-# set CFG work.cfg_tb_opt
-# set CFG work.cfg_tb_base
+set CFG work.cfg_tb_dadda_fused_sel
+# set CFG work.cfg_tb_dadda
+# set CFG work.cfg_tb_wal_opt
+# set CFG work.cfg_tb_wal_base
+# set CFG work.cfg_tb_beh
+# set CFG work.cfg_tb_super_beh
 ```
 
 `NBIT` in `rtl/multiplier/packages/common_pkg.vhd` sets the width; the testbench
@@ -264,50 +328,49 @@ follows it automatically.
 | ≤ 8 | exhaustive — every operand pair, 65536 at 8 bits |
 | > 8 | corner cases (0, ±1, max, min) + 20000 random pairs |
 
-Current status at `NBIT = 8`, all three configurations:
-
-```
-# ** Note: PASS - 65561 vectors, 0 mismatches
-```
+Every configuration in `synthesis/configs.txt` has a matching `cfg_tb_*` here.
+Nothing should reach synthesis without passing this first.
 
 ---
 
 ## Running synthesis
 
-Not yet committed. When adding it, one thing matters more than usual:
-
 ```tcl
-elaborate boothmul
-ungroup -all -flatten      # <-- do not skip this
-compile -map_effort high
+cd synthesis/syn
+dc_shell -f synthesis.tcl
 ```
 
-With plain `compile` and no boundary optimization, DC optimizes each subdesign
-in isolation with unknown input ports. Every constant these optimizations create
-sits on a design boundary — `corrector`'s high half is entirely constant, and the
-zero-filled upper halves of every row cross into the tree's ports. Without
-ungrouping, none of it propagates and the measured improvement is **zero**.
+Sweeps every configuration in `configs.txt` across 21 clock periods, writing a
+netlist, SDC, SDF and five reports per point.
+
+Then the plots:
+
+```bash
+cd synthesis
+python3 plot_pareto.py syn/reports_area_zero -o ../docs/figures
+```
+
+The script reads the reports directly — no intermediate CSV — prints the summary
+table with the gap analysis, and picks up power numbers automatically once
+`syn/reports_power/<cfg>/results_<cfg>.csv` exists.
 
 ---
 
 ## Notes and limitations
 
-- **No `time` generics or `after` clauses anywhere in the RTL.** The VHDL `time`
-  type is not synthesizable; DC ignores `after` but chokes on `time`-typed
-  generics and constants. Keeping them would force a second, stripped copy of
-  the sources for synthesis — which is exactly the duplication this layout
-  removes. The gate-level simulation is therefore zero-delay, which is fine:
-  the design is purely combinational and the testbench settles for 10 ns per
-  vector.
-
 - **The Dadda schedule is specific to the sign-extension-eliminated layout.**
   `making_inital_layer` hard-codes those column heights, so `dadda` is only valid
-  against `mux_and_shift(no_sign_extend)` + `corrector(no_sign_extend)`. That is
-  why there is no `BASE + dadda` configuration. Nothing in the code currently
-  prevents writing one.
-- **The mux/corrector architectures must stay paired.** `no_sign_extend` biases
-  each row by `+2^(2i+N)` and relies on the corrector's constant to cancel it;
-  mixing them is wrong on 100% of inputs.
+  against `mux_and_shift(no_sign_extend)` or `mux_and_shift(fused_selector)` —
+  both produce bit-identical rows. There is deliberately no `BASE + dadda`
+  configuration, and nothing in the code prevents writing one.
+- **The mux/corrector architectures must stay paired.** `no_sign_extend` and
+  `fused_selector` bias each row by `+2^(2i+N)` and rely on the corrector's
+  constant to cancel it; pairing either with `corrector(sign_extend)` is wrong
+  on 100% of inputs.
+- **No `time` generics or `after` clauses anywhere in the RTL.** The VHDL `time`
+  type is not synthesizable, and keeping it would force a second stripped copy of
+  the sources for synthesis. Gate-level simulation is therefore zero-delay, which
+  is fine: the design is purely combinational between registers.
 - `pp_layout_t` in `common_pkg` is currently unused — a leftover from an earlier
   attempt at a layout-generic tree.
 
@@ -315,17 +378,18 @@ ungrouping, none of it propagates and the measured improvement is **zero**.
 
 ## Roadmap
 
-- [x] Sign-extension elimination — 776 → 584 adder cells
-- [x] Dadda reduction — 584 → 480 adder cells, same depth
-- [ ] **Measured synthesis numbers** for all three variants under one flow
-- [ ] **4:2 compressors** if depth rather than area becomes the target
+- [x] Sign-extension elimination — 6345.7 → 5974.9 µm²
+- [x] Dadda reduction — 5974.9 → 5619.8 µm²
+- [x] Fused Booth selector — 5619.8 → 5029.0 µm², and 1.9 ns
+- [ ] **Switching activity + power.** Annotate a VCD from gate-level simulation
+      and re-run `report_power`. The fused selector removes 1145 XOR cells, which
+      should show up in dynamic power more than it did in area.
+- [ ] **Post-synthesis gate-level simulation** of every netlist against the SDF.
+- [ ] **4:2 compressors** if depth rather than area becomes the target.
 - [ ] **Baugh-Wooley comparison.** It produces N rows of N bits, so it reuses the
-      tree and the P4 adder unchanged. Analysis puts radix-4 Booth ~33% ahead at
-      N=32 and roughly level at N=8 — worth confirming under a real flow, and
-      Baugh-Wooley may well win on power.
+      tree and the P4 adder unchanged.
 
-Per-row-width CSAs were considered and dropped. Constant propagation already
+Per-row-width CSAs were considered and dropped: constant propagation already
 removes the dead adders in a uniform-width tree, so hard-coding the widths
-produces *identical* logic — 584 cells either way. It only shrinks the netlist
-you write (960 → 728 instances), which matters solely if you synthesise without
-`ungroup`. The real waste was the scheduling, which is what Dadda fixes.
+produces identical logic. Removing `ungroup -all -flatten` was also tested and
+changed area by under 2% — `compile_ultra` auto-ungroups regardless.

@@ -32,6 +32,16 @@ end configuration cfg_tb_dadda;
 
 ------------------------------------------------------
 
+configuration cfg_tb_dadda_fused_sel of MULTIPLIER_tb is
+  for TEST
+    for uut : BOOTHMUL
+      use configuration work.CFG_BOOTHMUL_DADDA_FUSED_SEL;
+    end for;
+  end for;
+end configuration cfg_tb_dadda_fused_sel;
+
+------------------------------------------------------
+
 configuration cfg_tb_beh of MULTIPLIER_tb is
   for TEST
     for uut : BOOTHMUL

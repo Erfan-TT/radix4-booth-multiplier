@@ -2,10 +2,12 @@
 # usage: do sim.do
 
 # which variant to simulate
-#set CFG work.cfg_tb_dadda
+set CFG work.cfg_tb_dadda_fused_sel
+# set CFG work.cfg_tb_dadda
 # set CFG work.cfg_tb_wal_opt
 # set CFG work.cfg_tb_wal_base
-set CFG work.cfg_tb_beh
+# set CFG work.cfg_tb_beh
+# set CFG work.cfg_tb_super_beh
 
 vsim -voptargs=+acc $CFG
 
