@@ -18,8 +18,8 @@ set blockName boothmul_registered
 set configs {CFG_BOOTHMUL_REG_DADDA_FUSED_SEL CFG_BOOTHMUL_REG_DADDA}
 # the clock periods of the sweep
 #set periods {1.0 1.5 1.7 2.0 2.2 2.5 3.0 3.5 4.0 4.5 5.0 5.5 6.0}
-set periods {1.0 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0 2.1 2.2}
-
+#set periods {0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0 2.1 2.2}
+set periods {0.4 0.5 0.6 0.7 0.8 0.9 }
 file mkdir netlist
 file mkdir reports
 
@@ -111,6 +111,9 @@ foreach configuration $configs {
 
 
         ## SAVE
+        # saving the ddc so later doing STA on them
+        #write -format ddc -hierarchy -output $netlist_dir/${blockName}_${configuration}_${tag}.ddc
+
         change_names -rules verilog -hierarchy
 
         write -format verilog -hierarchy -output $netlist_dir/${blockName}_${configuration}_${tag}.v

@@ -5,20 +5,23 @@ optimizations, each one measured against the previous and against Synopsys
 DesignWare as a reference point. Simulated in ModelSim / Questa, synthesised
 with Design Compiler using `compile_ultra` over a 21-point clock sweep.
 
-**Headline result: the final design meets the same 1.9 ns clock period as the
-DesignWare multiplier that `A * B` infers, at 13% more area — recovering 69% of
-the distance between a naive structural implementation and production IP.**
+**Headline result: the final design runs at 1.76 ns — within 8% of the
+DesignWare multiplier that `A * B` infers — and at relaxed timing comes within
+13% of its area, recovering 69% of the distance between a naive structural
+implementation and production IP.**
 
-![Pareto front](docs/figures/pareto_area_vs_period_area_zero.png)
+![Pareto front](docs/figures/pareto_area_vs_achieved_main.png)
 
-| variant | min period | area at relaxed timing | gap closed |
+| variant | fastest achieved | smallest area | gap closed |
 |---|---|---|---|
-| Wallace baseline | 2.5 ns | 6345.7 µm² | — |
-| Wallace + sign-extension elimination | 2.2 ns | 5974.9 µm² | 19.5% |
-| Dadda reduction | 2.1 ns | 5619.8 µm² | 38.1% |
-| **Dadda + fused Booth selector** | **1.9 ns** | **5029.0 µm²** | **69.1%** |
-| Behavioural Booth (`+` chain) | 2.5 ns | 6210.0 µm² | 7.1% |
-| `A * B` (DesignWare) | 1.9 ns | 4441.1 µm² | reference |
+| Wallace baseline | 1.86 ns | 6345.7 µm² | — |
+| Wallace + sign-extension elimination | 1.87 ns | 5974.9 µm² | 19.5% |
+| Dadda reduction | 1.78 ns | 5619.8 µm² | 38.1% |
+| **Dadda + fused Booth selector** | **1.76 ns** | **5029.0 µm²** | **69.1%** |
+| Behavioural Booth (`+` chain) | 2.01 ns | 6210.0 µm² | 7.1% |
+| `A * B` (DesignWare) | 1.63 ns | 4441.1 µm² | reference |
+
+Periods are **achieved**, not requested — see [Reading the sweep](#reading-the-sweep).
 
 All variants are the same entity with different architectures bound by VHDL
 configuration, synthesised through an identical script, and verified against the
@@ -86,7 +89,7 @@ Summed over all N/2 rows the design owes
 `+1` carries occupy only `N-1 downto 0`. They never overlap, so one row carries
 both. That is all `corrector` does.
 
-Measured: **6345.7 → 5974.9 µm², 2.5 → 2.2 ns.**
+Measured: **6345.7 → 5974.9 µm² at relaxed timing.**
 
 ---
 
@@ -160,7 +163,7 @@ Within a column at level L+1, slots are allocated in a fixed order:
 Carries are written directly into column `k+1`, so unlike the CSA tree — where
 `Carry(i+1) <= Carry_temp(i)` does the ×2 — there is **no final shift**.
 
-Measured: **5974.9 → 5619.8 µm², 2.2 → 2.1 ns.**
+Measured: **5974.9 → 5619.8 µm², fastest achieved 1.87 → 1.78 ns.**
 
 ---
 
@@ -210,7 +213,7 @@ enough that DC restructured the whole tree into generic gates instead of
 recognising adders. Removing them let the adders map cleanly — a second,
 larger saving that was not the stated goal.
 
-Measured: **5619.8 → 5029.0 µm², 2.1 → 1.9 ns.**
+Measured: **5619.8 → 5029.0 µm², fastest achieved 1.78 → 1.76 ns.**
 
 ---
 
@@ -234,32 +237,70 @@ bit mattered, none of these tricks would be legal.
 
 ## Reading the sweep
 
-Two things about `compile_ultra` that shape how the results must be presented:
+### The x axis is the achieved period, not the constraint
 
-**It is not monotonic in the clock constraint.** A looser period can produce a
-*larger* design — Dadda goes 7603.9 (1.4 ns) → 7717.2 (1.5) → 7772.3 (1.6). This
-is not the area constraint: a controlled run with `set_max_area 0` removed gives
-the same minimum periods (2.1 / 1.9) and areas within 3%, and is still
-non-monotonic. It is the optimizer landing in different local optima per target.
+For a **fixed netlist**, setup slack is linear in the clock period:
 
-So the plot shows the **Pareto front** — the non-dominated subset of points that
-met timing — not the raw per-period numbers. Violating points are drawn hollow
-so the timing wall is still visible.
+```
+slack(T) = T − (arrival + setup + uncertainty + output_delay + …)
+         = T − K            K constant for that netlist
+```
 
-**A negative-slack netlist is not broken.** DC emits a complete, logically
-correct implementation that simply does not run at the requested period.
-`constraint + |slack|` is a reasonable *estimate* of the achievable period and a
-good next guess for a binary search, but it is not a result: DC's optimization
-effort is target-dependent, so the implied period is not reproducible without
-re-running at that constraint and confirming slack ≥ 0. The written SDC and SDF
-also carry the original constraint, so every downstream tool would read the
-wrong clock.
+so the period at which that netlist has exactly zero slack is
 
-**There is a genuine Pareto crossing.** Between 2.1 and 2.5 ns plain Dadda is
-smaller than the fused version; past 2.5 ns the fused version drops 22% in one
-step and wins by 10.5%. Under tight constraints DC builds a fast, wide
-structure; past a threshold it flips to the compact FA-mapped solution. Pick the
-variant by the target period, not by a single number.
+```
+achieved = T − slack(T)
+```
+
+That is an identity, not an estimate — **but only because
+`boothmul_registered.sdc` uses absolute input/output delays** (0.25 / 0.15 ns).
+Written as a fraction of `clockPeriod`, K would move with T and the arithmetic
+would be wrong. If the SDC ever changes to percentage-based delays, every plot
+here becomes invalid.
+
+The consequence is that **a run which "violated timing" is not a failed run.**
+It produced a real, logically correct netlist that simply runs slower than
+requested, and `(achieved, area)` is a perfectly good design point. Discarding
+those points throws away the *fastest* designs in the sweep, because DC only
+builds its most aggressive netlists when you ask for a period it cannot reach:
+
+| constraint | Dadda + fused: slack | achieved | area |
+|---|---|---|---|
+| 1.0 ns | −0.76 | **1.76 ns** | 8007.9 µm² |
+| 1.8 ns | −0.14 | 1.94 ns | 7301.7 µm² |
+| 1.9 ns | +0.00 | 1.90 ns | 7166.0 µm² |
+
+Asking for 1.8 does **not** give a netlist that runs at 1.76 — it gives a
+different, less aggressively optimized netlist that runs at 1.94. Every
+constraint produces its own netlist; this is not re-timing one design.
+
+Re-running STA on a saved `.ddc` with a different `create_clock` adds nothing:
+for a uniform constraint shift the result is exactly `slack + ΔT`. The reason to
+eventually use PrimeTime is accuracy post-layout, not this.
+
+### compile_ultra is not monotonic
+
+A looser period can produce a *larger* design — Dadda goes 7603.9 (1.4 ns) →
+7717.2 (1.5) → 7772.3 (1.6). This is not the area constraint: a controlled run
+with `set_max_area 0` removed gives the same minimum periods and areas within
+3%, and is still non-monotonic. It is the optimizer landing in different local
+optima per target.
+
+So the solid line is the **Pareto front over all runs** — the non-dominated
+`(achieved, area)` pairs. Dominated runs are drawn hollow.
+
+### The Dadda / fused crossover
+
+![Zoom on the crossover](docs/figures/pareto_zoom_main.png)
+
+The two variants cross twice. Below ~2.0 ns the fused selector is both faster
+and smaller. Between ~2.0 and ~2.75 ns the plain Dadda tree is smaller. Past
+~2.75 ns the fused version drops sharply and wins by 10.5%.
+
+Under tight constraints DC builds a fast, wide structure from either source;
+past a threshold it switches to the compact FA-mapped solution, which the fused
+RTL reaches and the XOR-heavy one does not. Pick the variant by target period,
+not by a single number.
 
 ---
 
@@ -347,12 +388,14 @@ Then the plots:
 
 ```bash
 cd synthesis
-python3 plot_pareto.py syn/reports_area_zero -o ../docs/figures
+python3 plot_pareto.py syn/reports -o ../docs/figures --zoom 1.7 3.2
 ```
 
 The script reads the reports directly — no intermediate CSV — prints the summary
 table with the gap analysis, and picks up power numbers automatically once
-`syn/reports_power/<cfg>/results_<cfg>.csv` exists.
+`syn/reports_power/<cfg>/results_<cfg>.csv` exists. `--zoom LO HI` sets the
+window for the second plot and `--zoom-only` picks which curves appear in it
+(default: the two Dadda variants plus the DesignWare reference).
 
 ---
 
