@@ -178,30 +178,24 @@ def setup_axes(ax, xlabel, ylabel, title, subtitle=None):
     ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:,.0f}"))
 
 
-def draw(ax, data, annotate=True, dominated=True):
+def draw(ax, data, annotate=True):
+    """Only the Pareto front is drawn. Dominated runs are deliberately omitted:
+    they are strictly worse on both axes, so showing them adds clutter and no
+    information."""
     for cfg in ordered(data):
         label, colour, dash = style_for(cfg)
-        pts = data[cfg]
-        front = pareto_front(pts)
-        front_ids = {id(p) for p in front}
-
-        if dominated:
-            rest = [p for p in pts if id(p) not in front_ids]
-            if rest:
-                ax.scatter([p["achieved"] for p in rest], [p["area"] for p in rest],
-                           s=13, facecolors="none", edgecolors=colour,
-                           alpha=0.28, linewidths=0.9, zorder=2)
-
+        front = pareto_front(data[cfg])
+        if not front:
+            continue
         ax.plot([p["achieved"] for p in front], [p["area"] for p in front],
-                marker="o", markersize=4.5, linewidth=2,
+                marker="o", markersize=4, linewidth=1.8,
                 color=colour, linestyle=dash, label=label, zorder=3)
 
-        if annotate and front:
+        if annotate:
             f = front[0]
-            ax.annotate(f"{f['achieved']:.2f} ns",
-                        (f["achieved"], f["area"]),
-                        textcoords="offset points", xytext=(6, 7),
-                        fontsize=8, color=colour)
+            ax.annotate(f"{f['achieved']:.2f}", (f["achieved"], f["area"]),
+                        textcoords="offset points", xytext=(-4, 9),
+                        fontsize=7.5, color=colour, ha="right")
 
 
 def plot_full(data, out_png):
@@ -210,7 +204,8 @@ def plot_full(data, out_png):
     setup_axes(ax, "achieved clock period  (constraint - slack)  [ns]",
                "total cell area [um2]",
                "Area vs achieved clock period",
-               "solid = Pareto front over all runs   hollow = dominated run")
+               "Pareto front over the whole sweep; label = fastest point of each curve")
+    ax.margins(y=0.10)
     ax.legend(frameon=False, fontsize=9, loc="upper right")
     fig.tight_layout()
     fig.savefig(out_png, dpi=160)
@@ -219,7 +214,7 @@ def plot_full(data, out_png):
 
 
 def plot_zoom(data, out_png, lo, hi, only=None):
-    """only: list of config-name substrings to draw, so the window stays readable"""
+    """only: substrings of the configs to draw, so the window stays readable"""
     if only:
         data = {c: p for c, p in data.items() if any(k.lower() in c.lower() for k in only)}
     if not data:
@@ -227,25 +222,34 @@ def plot_zoom(data, out_png, lo, hi, only=None):
         return
 
     fig, ax = plt.subplots(figsize=(9.5, 5.6))
-    # fronts are computed on the FULL data so the window does not invent a front
+
+    # labels alternate above / below per series so they never sit on a line
+    side = {}
+    for i, cfg in enumerate(ordered(data)):
+        side[cfg] = (7, 13) if i % 2 == 0 else (7, -17)
+
     for cfg in ordered(data):
         label, colour, dash = style_for(cfg)
+        # the front is computed on the FULL sweep so the window cannot invent one
         front = [p for p in pareto_front(data[cfg]) if lo <= p["achieved"] <= hi]
         if not front:
             continue
         ax.plot([p["achieved"] for p in front], [p["area"] for p in front],
-                marker="o", markersize=6, linewidth=2.2,
+                marker="o", markersize=5, linewidth=2,
                 color=colour, linestyle=dash, label=label, zorder=3)
-        for p in front:
+        for j, p in enumerate(front):
+            if j % 2 and len(front) > 6:      # thin the labels out when crowded
+                continue
             ax.annotate(f"{p['area']:,.0f}", (p["achieved"], p["area"]),
-                        textcoords="offset points", xytext=(0, 9),
-                        fontsize=7.5, color=colour, ha="center")
+                        textcoords="offset points", xytext=side[cfg],
+                        fontsize=7, color=colour, ha="left")
 
     ax.set_xlim(lo, hi)
+    ax.margins(y=0.14)
     setup_axes(ax, "achieved clock period  (constraint - slack)  [ns]",
                "total cell area [um2]",
                f"Zoom: {lo}-{hi} ns",
-               "the crossover: plain Dadda is smaller until ~2.6 ns, fused wins beyond it")
+               "the crossover: plain Dadda is smaller until ~2.75 ns, fused wins beyond it")
     ax.legend(frameon=False, fontsize=9, loc="upper right")
     fig.tight_layout()
     fig.savefig(out_png, dpi=160)

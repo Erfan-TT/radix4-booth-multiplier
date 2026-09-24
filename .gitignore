@@ -52,3 +52,14 @@ synthesis/**/transcript
 tcl_stacktrace.txt
 *.saif
 *.sdf
+
+# ---- LaTeX build artifacts (the .tex and .pdf are both kept) ----
+*.aux
+*.log
+*.out
+*.toc
+*.nav
+*.snm
+*.vrb
+*.fls
+*.fdb_latexmk
