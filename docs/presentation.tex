@@ -44,7 +44,7 @@
 \lstdefinestyle{vhdl}{language=VHDL,
   morekeywords={architecture,entity,generate,downto,natural,variable,signal,configuration,constant}}
 
-\newcommand{\um}{\,\textmu m$^2$}
+\newcommand{\um}{\,um$^2$}
 
 \title{\textbf{A Radix-4 Booth Multiplier in Structural VHDL}}
 \subtitle{Architecture, optimization and synthesis at 32 bits in Nangate 45\,nm}
@@ -91,6 +91,7 @@ Every variant verified exhaustively at $8$ bits before synthesis at $32$.
 
 \begin{columns}[T]
 \begin{column}{0.56\textwidth}
+\small
 \textbf{Single source tree.}\\[2pt]
 Every variant is an alternative \texttt{architecture} of an existing entity,
 selected by a VHDL \texttt{configuration}. No file is duplicated.
@@ -103,7 +104,9 @@ baseline alone.
 
 \vspace{8pt}
 \textbf{Verification before measurement.}\\[2pt]
-No variant is synthesised before it passes the self-checking testbench.
+A variant is synthesised only after it passes the self-checking testbench
+exhaustively at $8$ bits. Area and timing reports do not distinguish a correct
+design from an incomplete one.
 \end{column}
 
 \begin{column}{0.42\textwidth}
@@ -113,11 +116,8 @@ No variant is synthesised before it passes the self-checking testbench.
 \item Implement it as a new architecture.
 \item Verify exhaustively at $N=8$.
 \item Sweep $21$ clock periods at $N=32$.
-\item Reconcile measurement with prediction.
+\item Reconcile the measurement with the prediction.
 \end{enumerate}
-\vspace{6pt}
-{\color{soft}Step 5 mattered: two predictions were wrong, and one of the
-disagreements led to the largest single improvement.}
 \end{column}
 \end{columns}
 
@@ -571,10 +571,10 @@ which is what a shorter, more uniform reduction depth should produce.
 % =====================================================================
 \section{Optimization 3}
 
-\begin{frame}{Optimization 3 --- the diagnosis}
+\begin{frame}{Optimization 3 --- the cost of the separate negation stage}
 
-After Optimization~2 the design was still $1180$\um{} larger than the inferred
-reference. A cell census localised the difference.
+After Optimization~2 the design is $1180$\um{} larger than the inferred
+reference. A cell census localises the difference.
 
 \vspace{4pt}
 \centering\small
@@ -590,19 +590,18 @@ Inferred \texttt{A * B} &  559 & 268 & 311 & 3035 \\
 \vspace{8pt}
 \raggedright\small
 \textbf{$671$ excess XOR cells, and only $117$ of $435$ scheduled full adders
-mapped to library adder cells.} One cause for both:
-
-\vspace{4pt}
-\texttt{mux\_and\_shift} builds a row in two steps --- a multiplexer picks
+mapped to library adder cells.} Both follow from the structure of
+\texttt{mux\_and\_shift}, which builds a row in two steps --- a multiplexer picks
 $A$, $2A$ or zero, then every bit is XORed with $\mathtt{sel}(2)$ to negate.
 That is $N+1$ XOR2 per row $\times$ $16$ rows $= 528$ cells $\approx 843$\um{}
-doing nothing but conditional inversion.
+performing nothing but conditional inversion.
 
 \vspace{4pt}
-A full adder is itself XOR-dominated. With an XOR layer feeding the tree, the
-mapper sees cones that mix negation and compression, and decomposes them into
-generic gates instead of recognising \texttt{FA\_X1}. The low adder count is a
-\emph{symptom}, not a separate problem.
+The indirect cost is the larger of the two. A full adder is itself
+XOR-dominated; with an XOR layer feeding the tree, the mapper sees cones that
+mix negation and compression and decomposes them into generic gates rather than
+matching \texttt{FA\_X1}. The low adder count is a consequence of the XOR layer,
+not an independent effect.
 
 \end{frame}
 
@@ -675,9 +674,9 @@ XOR cells $1230 \rightarrow 85$. Adder cells $117 \rightarrow 448$ --- within
 $7\%$ of the $480$ compressors the Dadda schedule actually contains.
 
 \vspace{4pt}
-\textbf{The gain is indirect.} Removing the XOR layer did not just delete $528$
-cells; it let the mapper recognise the compressors that had been in the RTL all
-along.
+\textbf{The gain is indirect.} Removing the XOR layer does not merely delete
+$528$ cells; it lets the mapper match the compressors already present in the
+RTL.
 
 \end{frame}
 
@@ -702,29 +701,31 @@ $> 8$    & corners $+$ $20\,000$ random \\
 
 \vspace{6pt}
 \raggedright\small
-Reference model: \texttt{signed(A) * signed(B)} truncated to $2N$ bits.
-Mismatches are counted, not asserted, so a failing variant reports how badly it
-fails.
+Reference model: \texttt{signed(A) * signed(B)} truncated to $2N$ bits,
+evaluated independently of the design. Mismatches are counted rather than
+asserted, so a failing variant reports the number of failing vectors.
 \end{column}
 
 \begin{column}{0.48\textwidth}
-\small
-Exhaustive coverage at $N=8$ is worth more than random coverage at $N=32$: the
-properties under test --- the recoding table, the bias cancellation, the
-four-term cover, the column schedule --- are structural, and fail identically at
-both widths.
+\footnotesize
+Exhaustive coverage at $N=8$ is stronger evidence than random coverage at
+$N=32$. The properties under test are all \textbf{structural}:
+
+\vspace{4pt}
+\begin{itemize}\itemsep2pt
+\item the recoding table,
+\item the bias cancellation of Optimization~1,
+\item the four-term cover of Optimization~3,
+\item the column schedule of Optimization~2.
+\end{itemize}
+
+\vspace{4pt}
+Each is a statement about how the array is constructed, not about particular
+operand values, so each fails identically at both widths.
 
 \vspace{6pt}
-\textbf{Two defects found this way:}
-
-\vspace{2pt}
-$-2A$ formed by shifting without complementing: $256$ of $1280$ directed cases
-failed.
-
-\vspace{2pt}
-A variant missing the Booth increment entirely: $61\,440$ of $65\,536$ failed.
-Its \emph{area} results looked excellent, because the missing logic was
-genuinely absent.
+Each synthesis configuration has a matching testbench configuration, so the
+binding verified is the binding synthesised.
 \end{column}
 \end{columns}
 
@@ -851,42 +852,43 @@ trade-off, not optimizer noise.
 
 \begin{columns}[T]
 \begin{column}{0.52\textwidth}
-\small
+\footnotesize
 \textbf{Result.} $1.76$\,ns and $5029$\um{} against $1.63$\,ns and $4441$\um{}
 for an inferred \texttt{A * B} multiplier. $69.1\%$ of the initial area gap
 recovered.
 
 \vspace{6pt}
-\textbf{The contributions were unequal, and not as predicted.}
+\textbf{The three contributions are unequal, and do not follow the size of the
+structural change each makes.}
 
 \vspace{2pt}
 Sign-extension elimination removes $29.9\%$ of the array but $5.8\%$ of the
-area --- constant propagation had already taken most of it.
+area --- constant propagation removes most of that logic independently of it.
 
 \vspace{2pt}
-The Dadda schedule gives a comparable area gain and the largest delay gain.
+The Dadda schedule gives a comparable area gain and the largest delay gain,
+consistent with a shorter and more uniform reduction depth.
 
 \vspace{2pt}
 The fused selector gives the largest area gain, indirectly: not the $528$ XOR
-cells it deletes, but the $331$ additional full adders the mapper can then
-recognise.
+cells it deletes, but the $331$ additional full adders the mapper matches once
+they are gone.
 \end{column}
 
 \begin{column}{0.44\textwidth}
-\small
-\textbf{The general point.}\\[2pt]
+\footnotesize
+\textbf{The general result.}\\[2pt]
 The cost of an RTL construct is set as much by what it prevents the tool from
-recognising as by the gates it implies. One layer of XOR gates between the row
-generators and the tree was worth $\approx 600$\um{} --- by concealing the
-structure behind it.
+matching as by the gates it implies. One layer of XOR gates between the row
+generators and the tree accounts for $\approx 600$\um{}, most of it in the logic
+behind the layer rather than in the layer itself.
 
 \vspace{10pt}
 \textbf{Open.}
-\begin{itemize}\itemsep1pt\small
+\begin{itemize}\itemsep1pt\footnotesize
 \item Switching activity and power
 \item Gate-level simulation against SDF
 \item Sweep below $1.0$\,ns
-\item Baugh--Wooley comparison
 \end{itemize}
 \end{column}
 \end{columns}

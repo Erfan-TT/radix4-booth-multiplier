@@ -16,7 +16,22 @@
 \usepackage{listings}
 \usepackage{caption}
 \usepackage[section]{placeins}
+\usepackage{etoolbox}
 \usepackage[hidelinks]{hyperref}
+
+% Keep every float inside the (sub)section that introduces it: placeins gives
+% the barrier at \section, this extends it to \subsection.
+\preto\subsection{\par\FloatBarrier}
+% and prefer here/top, so a float lands where it is declared
+\makeatletter
+\renewcommand{\fps@figure}{!ht}
+\renewcommand{\fps@table}{!ht}
+\makeatother
+\setcounter{topnumber}{3}
+\setcounter{totalnumber}{4}
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\textfraction}{0.08}
+\renewcommand{\floatpagefraction}{0.75}
 
 \definecolor{codebg}{HTML}{F7F6F2}
 \definecolor{rule}{HTML}{B4B2A9}
@@ -67,8 +82,8 @@ identical conditions and used as an absolute reference point.
 
 The final design reaches a minimum achieved period of
 \textbf{1.76\,ns}\src{R4} against \textbf{1.63\,ns}\src{R6} for the inferred
-reference, and a minimum area of \textbf{5029\,\textmu m$^2$}\src{R4} against
-\textbf{4441\,\textmu m$^2$}\src{R6}. Relative to the unoptimized Wallace
+reference, and a minimum area of \textbf{5029\,um$^2$}\src{R4} against
+\textbf{4441\,um$^2$}\src{R6}. Relative to the unoptimized Wallace
 baseline, the three optimizations together recover \textbf{69\%} of the area
 difference between the structural design and the inferred reference.
 Every measured quantity in this report carries a tag such as \src{R4}
@@ -77,21 +92,25 @@ Appendix~\ref{app:prov}.
 \end{abstract}
 
 \tableofcontents
-\bigskip
-\hrule
+\clearpage
 
 % =====================================================================
 \section{Introduction}
 
-A parallel multiplier is one of the few datapath blocks in which the choice of
-architecture, rather than the choice of library or the effort level of the
-synthesis tool, dominates the result. The objective of this work is to quantify
-that dependence: to implement a radix-4 Booth multiplier structurally, apply a
-sequence of well-defined architectural optimizations, and measure each one under
-an identical synthesis flow.
+The objective of this work is a hand-built signed multiplier that comes as close
+as possible to the multiplier Design Compiler infers from a plain \texttt{A * B}
+statement, and a quantitative account of where the remaining difference lies.
+The inferred design is a mature, tuned implementation; treating it as a fixed
+target turns every architectural decision into a measurable one.
 
-The design is generic in the operand width $N$. All results reported here are
-for $N=32$, signed, with the product taken modulo $2^{2N}$.
+The design is a radix-4 Booth multiplier written in structural VHDL, generic in
+the operand width $N$ and instantiated at $N=32$, signed, with the product taken
+modulo $2^{2N}$. Three architectural optimizations are applied in sequence ---
+elimination of the partial-product sign extension, a Dadda reduction schedule in
+place of a Wallace tree, and fusion of the Booth selection and negation steps.
+Each is derived analytically, implemented as an alternative VHDL architecture,
+verified against a reference model, and measured over a sweep of clock
+constraints.
 
 Three constraints govern the implementation throughout:
 
@@ -99,16 +118,15 @@ Three constraints govern the implementation throughout:
 \item \textbf{Single source tree.} Every variant is an alternative
       \texttt{architecture} of an existing entity, selected by a VHDL
       \texttt{configuration}. No file is duplicated, so a variant differs from
-      its predecessor only in the component it binds.
-\item \textbf{Absolute reference.} A separate design consisting of the single
-      statement \texttt{P <= A * B} is synthesised with the same script,
-      constraints and library. It provides a fixed point against which the
-      structural variants are measured, so that improvements are not reported
-      relative to an arbitrary baseline alone.
-\item \textbf{Verification precedes measurement.} No variant is synthesised
-      before it passes the self-checking testbench. This is not a formality:
-      an early variant that skipped this step produced excellent area figures
-      precisely because it was missing logic.
+      its predecessor only in the component it binds, and the measured
+      difference is attributable to that component alone.
+\item \textbf{Absolute reference.} The inferred \texttt{A * B} design is
+      synthesised with the same script, constraints and library, so results are
+      absolute rather than relative to an arbitrary baseline.
+\item \textbf{Verification precedes measurement.} A variant is synthesised only
+      after it passes the self-checking testbench exhaustively at $N=8$. Area
+      and timing reports do not distinguish a correct design from an incomplete
+      one, so functional equivalence is established first.
 \end{itemize}
 
 Section~\ref{sec:arch} describes the architecture and establishes the
@@ -123,11 +141,26 @@ configuration mechanism are documented in Appendix~\ref{app:code}.
 \section{Architecture}
 \label{sec:arch}
 
+The datapath is shown in Figure~\ref{fig:schem}: Booth encoders drive one
+row generator each, a corrector supplies one additional row, a reduction tree
+compresses the $N/2+1$ rows to two, and a carry-propagate adder produces the
+$2N$-bit product.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=\textwidth]{schematic.pdf}
+\caption{Top level of the structural multiplier. The partial-product rows are
+drawn generically: there are $N/2$ of them plus the corrector row. Only
+\texttt{reduction\_tree} differs between the Wallace and Dadda variants, and
+only \texttt{mux\_and\_shift} differs between the sign-extension variants.}
+\label{fig:schem}
+\end{figure}
+
 \subsection{Radix-4 modified Booth recoding}
 
 A direct implementation of an $N\times N$ product accumulates one shifted copy
 of $A$ per bit of $B$, giving $N$ partial-product rows. Radix-4 modified Booth
-recoding~\cite{booth,macsorley} inspects overlapping triplets of $B$ --- bits
+recoding inspects overlapping triplets of $B$ --- bits
 $(2i{+}1,\,2i,\,2i{-}1)$ with the convention $B_{-1}=0$ --- and maps each
 triplet to a single signed digit $d_i\in\{0,\pm1,\pm2\}$, so that
 
@@ -136,7 +169,7 @@ A \cdot B \;=\; \sum_{i=0}^{N/2-1} d_i \, A \cdot 4^{\,i}.
 \label{eq:booth}
 \end{equation}
 
-\begin{table}[htbp]
+\begin{table}[!ht]
 \centering\small
 \begin{tabular}{@{}cccl@{}}
 \toprule
@@ -164,19 +197,9 @@ presented below.
 
 \subsection{Datapath organisation}
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{schematic.pdf}
-\caption{Top level of the structural multiplier. The partial-product rows are
-drawn generically: there are $N/2$ of them plus the corrector row. Only
-\texttt{reduction\_tree} differs between the Wallace and Dadda variants, and
-only \texttt{mux\_and\_shift} differs between the sign-extension variants.}
-\label{fig:schem}
-\end{figure}
+The datapath consists of five stages.
 
-The datapath is shown in Figure~\ref{fig:schem} and consists of five stages.
-
-\begin{table}[htbp]
+\begin{table}[!ht]
 \centering\small
 \begin{tabular}{@{}lll@{}}
 \toprule
@@ -309,7 +332,7 @@ quantity $(2^N-1)/3$ has the binary form $0101\ldots01$, and subtracting it from
 $2^N$ yields $1010\ldots1011$. The constant therefore occupies bits $2N-1$ down
 to $N$ with the hexadecimal pattern $\mathtt{AA}\ldots\mathtt{AB}$.
 
-\begin{table}[htbp]
+\begin{table}[!ht]
 \centering\small
 \begin{tabular}{@{}rrl@{}}
 \toprule
@@ -392,26 +415,26 @@ q(N) := not q(N);                                  -- stored sign
 pp   <= std_logic_vector(resize(unsigned(q), 2*N));
 \end{lstlisting}
 
-The \texttt{mux\_and\_shift} and \texttt{corrector} architectures must be bound
-in matching pairs. The \texttt{no\_sign\_extend} row format biases every row by
-$+2^{\,2i+N}$ and depends on the matching corrector architecture to cancel it.
-The configurations in \texttt{cfg/} enforce the pairing; the language does not.
+The two row formats define two corrector architectures. The
+\texttt{no\_sign\_extend} format biases every row by $+2^{\,2i+N}$, which
+\texttt{corrector(no\_sign\_extend)} cancels; the baseline format has no bias and
+takes \texttt{corrector(sign\_extend)}. Each pair is bound as a unit by the
+configurations in \texttt{cfg/}.
 
 \subsection{Measured effect}
 
 The array shrinks from $800$ to $561$ partial-product bits, a reduction of
 $29.9\%$. At relaxed timing the synthesised area falls from
-$6346\,\mathrm{\textmu m^2}$\src{R1} to $5975\,\mathrm{\textmu m^2}$\src{R2},
+$6346\,\mathrm{um}^2$\src{R1} to $5975\,\mathrm{um}^2$\src{R2},
 a reduction of $5.8\%$, and the cell count at a $3.0$\,ns constraint falls from
 $4639$ to $4455$\src{R7}.
 
-The distance between a $29.9\%$ reduction in partial-product bits and a $5.8\%$
-reduction in area is itself informative. The removed bits are constant-valued
-sign replications, and constant propagation in \texttt{compile\_ultra} already
-eliminates much of the logic that would otherwise process them. What the
-optimization removes with certainty, and what constant propagation cannot
-remove, is the structural height of the columns. That is what Optimization~2
-exploits.
+The area reduction is much smaller than the reduction in partial-product bits.
+The removed bits are constant-valued sign replications, and constant propagation
+in \texttt{compile\_ultra} eliminates most of the associated logic independently
+of the optimization. The contribution that constant propagation cannot make is
+the reduction in structural column height, which determines the size of the
+reduction network; that is what Optimization~2 exploits.
 
 % =====================================================================
 \section{Optimization 2: a generic Dadda reduction schedule}
@@ -436,14 +459,15 @@ reduces the total dot count by one; a half adder does not reduce it at all.
 This gives an exact invariant, used as a correctness check in
 Section~\ref{sec:ddcheck}: if the array begins with $D_0$ dots and terminates
 with $D_f$, the number of full adders required is exactly $D_0 - D_f$,
-independently of the schedule. Half adders fall outside this accounting and are
-therefore worth minimising.
+independently of the schedule. Half adders fall outside this accounting: they
+occupy cells without contributing to the reduction, so the quality of a schedule
+is measured by how few of them it places.
 
 \subsection{Wallace and Dadda placement criteria}
 
-Wallace reduction~\cite{wallace} compresses as early as possible: at every
+Wallace reduction compresses as early as possible: at every
 stage, every group of three dots in a column is given a full adder. Dadda
-reduction~\cite{dadda} compresses as late as possible: a target height is fixed
+reduction compresses as late as possible: a target height is fixed
 for each stage, and only enough compressors are placed to meet it.
 
 The targets follow the Dadda sequence
@@ -517,11 +541,11 @@ end loop;
 
 The three parts of the corrector row correspond term by term to the
 decomposition of Section~\ref{sec:opt1}: the Booth increments in the low half,
-the bit at position $N$, and the alternating pattern above it. Because this
-matrix hard-codes the optimized layout, the Dadda architecture is valid only in
-combination with \texttt{mux\_and\_shift(no\_sign\_extend)} or
-\texttt{mux\_and\_shift(fused\_selector)}; no configuration pairs it with the
-baseline.
+the bit at position $N$, and the alternating pattern above it. The matrix
+encodes the optimized layout, so the Dadda architecture is defined for the
+sign-extension-eliminated row format only, and is bound with
+\texttt{mux\_and\_shift(no\_sign\_extend)} or
+\texttt{mux\_and\_shift(fused\_selector)}.
 
 \subsection{The scheduling algorithm}
 
@@ -583,11 +607,11 @@ C_{\mathrm{in}} + (F+H) + \bigl(n - 3F - 2H\bigr)
 \end{equation}
 
 so the compressor count must satisfy
-$C_{\mathrm{in}} + n - 2F - H \leq d_{\mathrm{lev}-1}$. A column must therefore
-be sized against a quantity that does not exist in its own layer. Omitting
-$C_{\mathrm{in}}$ from the test yields a schedule that is locally plausible and
-globally wrong: columns overflow their target height and the array fails to
-reach two rows in the allotted number of stages.
+$C_{\mathrm{in}} + n - 2F - H \leq d_{\mathrm{lev}-1}$. A column is therefore
+sized against a quantity that does not exist in its own layer. A test that
+counts only the dots of column $k$ satisfies the target locally but not
+globally: columns exceed their target height and the array does not reach two
+rows within the allotted number of stages.
 
 The loop implements exactly this, using the fact that a full adder removes two
 dots from the height and a half adder removes one:
@@ -630,7 +654,7 @@ elaborated independently and cannot inherit a running counter from the previous
 column --- so every offset must be recomputable from the matrices alone. This is
 the purpose of the analysis functions in \texttt{dadda\_math\_pkg}.
 
-\begin{table}[htbp]
+\begin{table}[!ht]
 \centering\small
 \begin{tabular}{@{}ll@{}}
 \toprule
@@ -651,12 +675,12 @@ scheduling matrices. All are pure and evaluated at elaboration time.}
 \label{tab:helpers}
 \end{table}
 
-\texttt{num\_C\_out\_from\_prev\_col} resolves the generate-statement problem
+\texttt{num\_C\_out\_from\_prev\_col} resolves the generate-statement constraint
 directly: instead of propagating $C_{\mathrm{in}}$ forward, it recomputes it by
-counting the compressors of column $k-1$ in the same layer. Two assertions guard
-the invariants at elaboration time --- that no column is assigned more than one
-half adder, and that the half-adder source positions are unique. A violation
-fails elaboration rather than producing a silently mis-wired tree.
+counting the compressors of column $k-1$ in the same layer. Two assertions
+enforce the schedule invariants at elaboration time --- at most one half adder
+per column, and unique half-adder source positions --- so that a violation
+terminates elaboration rather than producing a mis-wired tree.
 
 The structural instantiation then reads directly from the matrices. The generate
 nest is three levels deep --- layer, column, compressor --- and its constant
@@ -692,7 +716,7 @@ schedule produces $435$. The identity holds at every width tested, and row $2$
 of the final layer is empty at all widths, confirming that the reduction really
 does terminate at two rows.
 
-\begin{table}[htbp]
+\begin{table}[!ht]
 \centering\small
 \begin{tabular}{@{}rrrrrrrrr@{}}
 \toprule
@@ -747,8 +771,8 @@ body.
 
 \subsection{Measured effect}
 
-At relaxed timing the area falls from $5975\,\mathrm{\textmu m^2}$\src{R2} to
-$5620\,\mathrm{\textmu m^2}$\src{R3}, a further $5.9\%$, and the minimum
+At relaxed timing the area falls from $5975\,\mathrm{um}^2$\src{R2} to
+$5620\,\mathrm{um}^2$\src{R3}, a further $5.9\%$, and the minimum
 achieved period improves from $1.87$\,ns to $1.78$\,ns\src{R3} --- the largest
 single improvement in delay among the three optimizations. The cell count at a
 $3.0$\,ns constraint falls from $4455$ to $3936$\src{R7}.
@@ -757,13 +781,13 @@ $3.0$\,ns constraint falls from $4455$ to $3936$\src{R7}.
 \section{Optimization 3: fusion of the Booth selector}
 \label{sec:opt3}
 
-\subsection{Diagnosis}
+\subsection{Cost of the separate negation stage}
 
-After Optimization~2 the design remained $1180\,\mathrm{\textmu m^2}$ larger
-than the inferred reference. A cell census of the two netlists at a $3.0$\,ns
-constraint\src{R7} localised the difference.
+After Optimization~2 the design is $1180\,\mathrm{um}^2$ larger than the
+inferred reference. A cell census of the two netlists at a $3.0$\,ns
+constraint\src{R7} localises the difference.
 
-\begin{table}[htbp]
+\begin{table}[!ht]
 \centering\small
 \begin{tabular}{@{}lrrrr@{}}
 \toprule
@@ -776,21 +800,21 @@ Inferred \texttt{A * B}      &  559 & 268 & 311 & 3035 \\
 \caption{Cell census at a $3.0$\,ns constraint\src{R7}, before Optimization~3.}
 \end{table}
 
-The structural design contained $671$ more exclusive-or cells than the inferred
-one, and mapped only $117$ of its $435$ scheduled full adders to library adder
-cells. The two observations have a common cause. \texttt{mux\_and\_shift} builds
+The structural design contains $671$ more exclusive-or cells than the inferred
+one, and maps only $117$ of its $435$ scheduled full adders to library adder
+cells. Both follow from the structure of \texttt{mux\_and\_shift}, which builds
 a row in two steps: a multiplexer selects $A$, $2A$ or zero, and every bit of
 the result is then exclusive-ored with $\mathtt{sel}(2)$ to perform the
-negation. That is $N+1$ XOR2 cells per row and $16$ rows, or $528$ cells at
-$N=32$, approximately $843\,\mathrm{\textmu m^2}$ performing nothing but
+negation. That is $N+1$ XOR2 cells per row across $16$ rows, or $528$ cells at
+$N=32$, approximately $843\,\mathrm{um}^2$ performing nothing but
 conditional inversion.
 
-The secondary effect is more damaging than the direct cost. A full adder is
-itself an exclusive-or-dominated function. With a layer of XOR gates immediately
-feeding the reduction tree, the logic cones presented to the technology mapper
-mix negation and compression, and the mapper decomposes them into generic gates
-instead of recognising the \texttt{FA\_X1} pattern. The low adder-cell count is
-a symptom of the XOR layer, not an independent problem.
+The indirect cost is the larger of the two. A full adder is itself an
+exclusive-or-dominated function. With a layer of XOR gates immediately feeding
+the reduction tree, the logic cones presented to the technology mapper mix
+negation and compression, and the mapper decomposes them into generic gates
+rather than matching the \texttt{FA\_X1} pattern. The low adder-cell count is
+therefore a consequence of the XOR layer and not an independent effect.
 
 \subsection{Algebraic formulation}
 
@@ -847,15 +871,15 @@ complemented terms $\overline{\mathrm{src}_1}$ and $\overline{\mathrm{src}_2}$
 are the same function of $A$ in all $N/2$ rows, so common-subexpression
 elimination shares one set of inverters across the array.
 
-\begin{table}[htbp]
+\begin{table}[!ht]
 \centering\small
 \begin{tabular}{@{}lrrrrr@{}}
 \toprule
 & \textbf{XOR + XNOR} & \textbf{FA cells} & \textbf{AOI/OAI} & \textbf{total cells} & \textbf{area} \\
 \midrule
-Dadda, separate negation & 1230 & 117 & 1405 & 3936 & 5725\,\textmu m$^2$ \\
-Dadda, fused selector    &   85 & 448 & 1311 & 2819 & 5125\,\textmu m$^2$ \\
-Inferred \texttt{A * B}  &  559 & 268 &  950 & 3035 & 4910\,\textmu m$^2$ \\
+Dadda, separate negation & 1230 & 117 & 1405 & 3936 & 5725\,um$^2$ \\
+Dadda, fused selector    &   85 & 448 & 1311 & 2819 & 5125\,um$^2$ \\
+Inferred \texttt{A * B}  &  559 & 268 &  950 & 3035 & 4910\,um$^2$ \\
 \bottomrule
 \end{tabular}
 \caption{Cell census at a $3.0$\,ns constraint\src{R7}. The adder-cell count
@@ -866,15 +890,14 @@ the schedule specifies.}
 
 Exclusive-or cells fall from $1230$ to $85$, and the adder-cell count rises from
 $117$ to $448$, within $7\%$ of the $480$ compressors the schedule contains.
-Removing the XOR layer allowed the mapper to recognise compressors that had been
-present in the RTL all along, which is why this optimization produces the
-largest area gain of the three despite consisting of a rewrite of a single
-architecture.
+With the XOR layer removed, the mapper matches the compressors already present
+in the RTL. This is why a rewrite confined to a single architecture produces the
+largest area reduction of the three optimizations.
 
 \subsection{Measured effect}
 
-Area falls from $5620\,\mathrm{\textmu m^2}$\src{R3} to
-$5029\,\mathrm{\textmu m^2}$\src{R4}, a reduction of $10.5\%$, and the minimum
+Area falls from $5620\,\mathrm{um}^2$\src{R3} to
+$5029\,\mathrm{um}^2$\src{R4}, a reduction of $10.5\%$, and the minimum
 achieved period improves from $1.78$\,ns to $1.76$\,ns\src{R4}. Total cell count
 falls by $28\%$.
 
@@ -886,7 +909,7 @@ All variants share one self-checking testbench, \texttt{tb\_multiplier}, which
 reads the operand width from \texttt{common\_pkg} and selects its coverage mode
 accordingly.
 
-\begin{table}[htbp]
+\begin{table}[!ht]
 \centering\small
 \begin{tabular}{@{}ll@{}}
 \toprule
@@ -899,23 +922,17 @@ $> 8$    & corner cases $\{0, \pm1, 2^{N-1}-1, -2^{N-1}\}$ plus $20\,000$ random
 \end{table}
 
 The reference model is \texttt{signed(A) * signed(B)} truncated to $2N$ bits,
-evaluated independently of the design. Mismatches are counted and reported, so a
-failing variant produces a mismatch count rather than a single assertion.
+evaluated independently of the design. Mismatches are counted rather than
+asserted, so a failing variant reports the number of failing vectors.
 
 Every variant is verified exhaustively at $N=8$ before being synthesised at
-$N=32$. Exhaustive coverage at the smaller width is more valuable than random
-coverage at the larger one, because the properties under test --- the recoding
-table, the bias cancellation, the completeness of the fused selector's cover and
-the column scheduling --- are structural, and their failure modes appear at
-$N=8$ exactly as they would at $N=32$.
-
-Two defects were found this way that would not have been found otherwise. In the
-first, the $-2A$ row was formed by shifting without complementing, failing $256$
-of $1280$ directed cases. In the second, a behavioural variant omitted the Booth
-increment entirely and failed $61\,440$ of $65\,536$ exhaustive cases; its
-synthesis results were excellent because the missing logic was genuinely absent.
-Both defects were invisible in the area and timing reports and immediately
-visible in simulation.
+$N=32$. Exhaustive coverage at the smaller width is stronger evidence than
+random coverage at the larger one, because the properties under test --- the
+recoding table, the bias cancellation of Section~\ref{sec:opt1}, the
+completeness of the four-term cover of Section~\ref{sec:opt3}, and the column
+schedule of Section~\ref{sec:opt2} --- are structural. Each is a statement about
+the construction of the array rather than about particular operand values, and
+each fails identically at both widths.
 
 Each synthesis configuration has a matching testbench configuration
 (Appendix~\ref{app:code}), so the binding verified in simulation is the binding
@@ -932,7 +949,7 @@ combinational multiplier between input and output registers. This makes the
 critical path internal --- register to register through the multiplier --- so
 that the reported timing measures the design rather than the test environment.
 
-\begin{table}[htbp]
+\begin{table}[!ht]
 \centering\small
 \begin{tabular}{@{}ll@{}}
 \toprule
@@ -972,9 +989,9 @@ place-and-route and not to this flow.
 \label{sec:achieved}
 
 A synthesis run that fails to meet its constraint still produces a valid
-netlist; it is simply slower than requested. Discarding such runs would discard
-the fastest netlists in the sweep, because the tool produces its most aggressive
-structures only when the constraint is tight enough to force them.
+netlist, slower than requested. Discarding such runs would discard the fastest
+netlists in the sweep, because the tool produces its most aggressive structures
+only under a constraint tight enough to force them.
 
 The quantity reported here is therefore the period the netlist actually
 supports:
@@ -1003,10 +1020,10 @@ Area is not a monotonic function of the clock constraint under
 the Wallace baseline the run at $1.1$\,ns is larger than the run at
 $1.0$\,ns\src{R1}, and similar reversals occur elsewhere in the sweep.
 
-This was verified not to be an artefact of the area constraint. A controlled
-sweep with \texttt{set\_max\_area 0} removed\src{R8} gave identical minimum
-achieved periods and area differences below $3\%$, and remained non-monotonic.
-The cause is the heuristic nature of the optimizer, not the constraint.
+The behaviour is not attributable to the area constraint. A controlled sweep
+with \texttt{set\_max\_area 0} removed\src{R8} gives identical minimum achieved
+periods, area differences below $3\%$, and the same non-monotonicity. The cause
+is the heuristic nature of the optimizer.
 
 All curves in Section~\ref{sec:results} are therefore Pareto fronts computed
 over the whole sweep rather than raw per-constraint traces: a point is plotted
@@ -1019,19 +1036,19 @@ points are omitted.
 
 \subsection{Area and delay}
 
-\begin{table}[htbp]
+\begin{table}[!ht]
 \centering\small
 \begin{tabular}{@{}lrrrr@{}}
 \toprule
 \textbf{Variant} & \textbf{min. achieved} & \textbf{min. area} & \textbf{gap closed} & \textbf{ref.} \\
 \midrule
-Wallace, sign-extended (baseline)  & 1.86\,ns & 6346\,\textmu m$^2$ & ---     & \src{R1} \\
-\quad $+$ sign-extension elimination & 1.87\,ns & 5975\,\textmu m$^2$ & 19.5\% & \src{R2} \\
-\quad $+$ Dadda reduction            & 1.78\,ns & 5620\,\textmu m$^2$ & 38.1\% & \src{R3} \\
-\quad \textbf{$+$ fused selector}    & \textbf{1.76\,ns} & \textbf{5029\,\textmu m$^2$} & \textbf{69.1\%} & \src{R4} \\
+Wallace, sign-extended (baseline)  & 1.86\,ns & 6346\,um$^2$ & ---     & \src{R1} \\
+\quad $+$ sign-extension elimination & 1.87\,ns & 5975\,um$^2$ & 19.5\% & \src{R2} \\
+\quad $+$ Dadda reduction            & 1.78\,ns & 5620\,um$^2$ & 38.1\% & \src{R3} \\
+\quad \textbf{$+$ fused selector}    & \textbf{1.76\,ns} & \textbf{5029\,um$^2$} & \textbf{69.1\%} & \src{R4} \\
 \midrule
-Behavioural Booth (adder chain)    & 2.01\,ns & 6210\,\textmu m$^2$ &  7.1\% & \src{R5} \\
-Inferred \texttt{A * B}            & 1.63\,ns & 4441\,\textmu m$^2$ & reference & \src{R6} \\
+Behavioural Booth (adder chain)    & 2.01\,ns & 6210\,um$^2$ &  7.1\% & \src{R5} \\
+Inferred \texttt{A * B}            & 1.63\,ns & 4441\,um$^2$ & reference & \src{R6} \\
 \bottomrule
 \end{tabular}
 \caption{Summary of the sweep. Periods are achieved values per
@@ -1050,11 +1067,11 @@ The behavioural Booth variant, which replaces the reduction tree with a chain of
 signed additions, is the slowest design in the sweep at $2.01$\,ns\src{R5}. It
 is nevertheless smaller than the Wallace baseline at relaxed timing, because the
 synthesis tool implements the adder chain with its own carry-save structures
-rather than the explicitly instantiated ones. It is included as a measurement of
-what inference achieves when given a structurally poor description, and its
-timing result is the more informative of its two figures.
+rather than the explicitly instantiated ones. It measures what inference
+achieves from a structurally poor description; its timing result is the more
+informative of its two figures.
 
-\begin{figure}[htbp]
+\begin{figure}[!ht]
 \centering
 \includegraphics[width=0.94\textwidth]{figures/pareto_area_vs_achieved_main.png}
 \caption{Area against achieved period. Each curve is the Pareto front of one
@@ -1071,24 +1088,23 @@ on speed.
 
 \subsection{Cell-level analysis}
 
-Table~\ref{tab:census3} gave the cell census at a fixed $3.0$\,ns constraint.
-Two observations are worth restating.
+Table~\ref{tab:census3} gives the cell census at a fixed $3.0$\,ns constraint.
+Two properties of the sequence follow from it.
 
-First, the area reduction from Optimization~1 ($5.8\%$) is much smaller than the
-reduction in partial-product bits ($29.9\%$). Constant propagation removes most
-of the logic associated with sign replication before the optimization is
-applied, so what the optimization contributes is the reduction in structural
-column height, which is realised by Optimization~2.
+The area reduction from Optimization~1 ($5.8\%$) is much smaller than its
+reduction in partial-product bits ($29.9\%$), because constant propagation
+removes most of the logic associated with sign replication independently of the
+optimization. Its contribution is the reduction in structural column height,
+which is realised by Optimization~2.
 
-Second, the three optimizations are not independent. Optimization~3 could not
-have produced its measured gain without Optimization~2 in place, because the
-compressors that the mapper was then able to recognise are the ones the Dadda
-schedule instantiates. Measured in isolation, each optimization would appear
-smaller than it does in sequence.
+The three optimizations are not independent. The gain of Optimization~3 depends
+on Optimization~2, because the compressors the mapper matches after the XOR
+layer is removed are the ones the Dadda schedule instantiates. Measured in
+isolation, each optimization is smaller than it is in sequence.
 
 \subsection{Crossover in the mid-period region}
 
-\begin{figure}[htbp]
+\begin{figure}[!ht]
 \centering
 \includegraphics[width=0.84\textwidth]{figures/pareto_zoom_main.png}
 \caption{Detail of the region between $1.7$ and $3.1$\,ns. The two Dadda
@@ -1103,12 +1119,13 @@ negation is the smaller of the two. The fused selector presents deeper compound
 gates to the optimizer; at intermediate constraints the tool must upsize them to
 meet timing, and the upsizing costs more than the exclusive-or cells that were
 removed. At relaxed constraints the upsizing is unnecessary and the fused
-variant is smaller by $591\,\mathrm{\textmu m^2}$; at tight constraints it is
+variant is smaller by $591\,\mathrm{um}^2$; at tight constraints it is
 faster.
 
-This is an architectural trade-off rather than optimizer noise: the crossing is
-reproduced across adjacent constraint points, and it appears in the cell census
-as a shift in drive strengths rather than in cell counts.
+The crossing is reproduced across adjacent constraint points and appears in the
+cell census as a shift in drive strengths rather than in cell counts, which
+identifies it as an architectural trade-off rather than run-to-run variation in
+the optimizer.
 
 % =====================================================================
 \section{Conclusions}
@@ -1118,32 +1135,31 @@ VHDL and optimized in three stages. Measured against an unoptimized Wallace
 baseline and an inferred \texttt{A * B} reference synthesised under identical
 conditions, the result is a minimum achieved period of $1.76$\,ns against
 $1.63$\,ns for the reference, and a minimum area of
-$5029\,\mathrm{\textmu m^2}$ against $4441\,\mathrm{\textmu m^2}$, recovering
+$5029\,\mathrm{um}^2$ against $4441\,\mathrm{um}^2$, recovering
 $69.1\%$ of the initial area difference.
 
-The individual contributions were unequal in a way not predictable from the
-analysis alone. Sign-extension elimination removes $29.9\%$ of the
-partial-product bits but only $5.8\%$ of the area, because constant propagation
-had already removed most of the associated logic. The Dadda schedule contributes
-a comparable area reduction and the largest single improvement in delay. Fusing
-the Booth selector contributes the largest area reduction of the three, and does
-so indirectly: its measurable effect is not the $528$ exclusive-or cells it
-removes but the $331$ additional full adders the technology mapper is then able
-to recognise.
+The three contributions are unequal, and their sizes do not follow the size of
+the structural change each one makes. Sign-extension elimination removes
+$29.9\%$ of the partial-product bits but only $5.8\%$ of the area, because
+constant propagation removes most of the associated logic independently of it.
+The Dadda schedule contributes a comparable area reduction and the largest
+single improvement in delay, consistent with a shorter and more uniform
+reduction depth. Fusing the Booth selector contributes the largest area
+reduction of the three, and does so indirectly: its measurable effect is not the
+$528$ exclusive-or cells it removes but the $331$ additional full adders the
+technology mapper matches once they are gone.
 
-The general observation is that the cost of an RTL construct is determined as
-much by what it prevents the synthesis tool from recognising as by the gates it
-directly implies. In this design a single layer of exclusive-or gates between
-the row generators and the reduction tree was worth approximately
-$600\,\mathrm{\textmu m^2}$ --- not through its own area, but by concealing the
-structure of everything behind it.
+The general result is that the cost of an RTL construct is determined as much by
+what it prevents the synthesis tool from matching as by the gates it directly
+implies. A single layer of exclusive-or gates between the row generators and the
+reduction tree accounts for approximately $600\,\mathrm{um}^2$, most of
+it in the logic behind the layer rather than in the layer itself.
 
-Four directions remain open: switching-activity-based power analysis, for which
+Three directions remain open: switching-activity-based power analysis, in which
 the removal of $1145$ exclusive-or cells should be more visible than it is in
-area; gate-level simulation of each netlist against its SDF; extension of the
-sweep below $1.0$\,ns, since every variant reached its fastest netlist at the
-tightest constraint attempted; and a Baugh--Wooley~\cite{baughwooley}
-implementation as an alternative treatment of the sign problem.
+area; gate-level simulation of each netlist against its SDF; and extension of
+the sweep below $1.0$\,ns, since every variant reaches its fastest netlist at
+the tightest constraint in the present sweep.
 
 % =====================================================================
 \appendix
@@ -1153,7 +1169,7 @@ implementation as an alternative treatment of the sign problem.
 
 \subsection{Directory layout}
 
-\begin{table}[htbp]
+\begin{table}[!ht]
 \centering\small
 \begin{tabular}{@{}ll@{}}
 \toprule
@@ -1174,7 +1190,7 @@ implementation as an alternative treatment of the sign problem.
 
 \subsection{The packages}
 
-\begin{table}[htbp]
+\begin{table}[!ht]
 \centering\small
 \begin{tabular}{@{}ll@{}}
 \toprule
@@ -1216,14 +1232,15 @@ end configuration;
 \end{lstlisting}
 
 A configuration of \texttt{BOOTHMUL} has no effect on its own, because the
-testbench instantiates a \emph{component}. Without a second, testbench-level
-configuration the default binding rule silently selects the most recently
-analysed architecture. Each design configuration therefore has a matching
+testbench instantiates a \emph{component}. In the absence of a second,
+testbench-level configuration, the default binding rule selects the most
+recently analysed architecture. Each design configuration therefore has a
+matching
 \texttt{cfg\_tb\_*} in \texttt{cfg/configurations\_tb.vhd} and a matching
 \texttt{CFG\_BOOTHMUL\_REG\_*} in \texttt{cfg/configurations\_synthesis.vhd},
 so that the binding simulated is the binding synthesised.
 
-\begin{table}[htbp]
+\begin{table}[!ht]
 \centering\footnotesize
 \begin{tabular}{@{}p{0.60\textwidth}l@{}}
 \toprule
@@ -1253,7 +1270,7 @@ per clock period. File names follow the pattern
 \noindent
 where the period is written with \texttt{p} in place of the decimal point.
 
-\begin{table}[htbp]
+\begin{table}[!ht]
 \centering\small
 \begin{tabular}{@{}lll@{}}
 \toprule
@@ -1271,7 +1288,7 @@ where the period is written with \texttt{p} in place of the decimal point.
 \end{tabular}
 \end{table}
 
-\begin{table}[htbp]
+\begin{table}[!ht]
 \centering\small
 \begin{tabular}{@{}lll@{}}
 \toprule
@@ -1301,23 +1318,5 @@ python3 plot_pareto.py syn/reports -o ../docs/figures --zoom 1.7 3.1
 
 which parses the report tree directly, with no intermediate data file.
 
-% =====================================================================
-\begin{thebibliography}{9}
-\bibitem{booth} A. D. Booth, ``A Signed Binary Multiplication Technique,''
-  \emph{Quarterly Journal of Mechanics and Applied Mathematics}, vol.~4,
-  no.~2, pp.~236--240, 1951.
-\bibitem{macsorley} O. L. MacSorley, ``High-Speed Arithmetic in Binary
-  Computers,'' \emph{Proceedings of the IRE}, vol.~49, no.~1, pp.~67--91, 1961.
-\bibitem{wallace} C. S. Wallace, ``A Suggestion for a Fast Multiplier,''
-  \emph{IEEE Transactions on Electronic Computers}, vol.~EC-13, no.~1,
-  pp.~14--17, 1964.
-\bibitem{dadda} L. Dadda, ``Some Schemes for Parallel Multipliers,''
-  \emph{Alta Frequenza}, vol.~34, pp.~349--356, 1965.
-\bibitem{baughwooley} C. R. Baugh and B. A. Wooley, ``A Two's Complement
-  Parallel Array Multiplication Algorithm,'' \emph{IEEE Transactions on
-  Computers}, vol.~C-22, no.~12, pp.~1045--1047, 1973.
-\bibitem{nangate} \emph{Nangate 45\,nm Open Cell Library}, Nangate Inc.
-\bibitem{dc} \emph{Design Compiler User Guide}, W-2024.09-SP2, Synopsys Inc.
-\end{thebibliography}
 
 \end{document}
