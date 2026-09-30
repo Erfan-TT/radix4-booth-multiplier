@@ -1,0 +1,23 @@
+Information: Updating design information... (UID-85)
+Warning: There are 4663 switching activity information conflicts. (PWR-19)
+ 
+****************************************
+Report : saif
+        -hierarchy
+Design : boothmul_registered
+Version: W-2024.09-SP2
+Date   : Wed Sep 30 22:04:36 2026
+****************************************
+
+  
+
+--------------------------------------------------------------------------------
+              User              Default           Propagated
+Object type   Annotated (%)     Activity (%)      Activity (%)       Total
+--------------------------------------------------------------------------------
+  
+ Nets         6762(100.00%)     0(0.00%)          0(0.00%)           6762
+ Ports        131(100.00%)      0(0.00%)          0(0.00%)           131
+ Pins         20235(100.00%)    0(0.00%)          0(0.00%)           20235
+--------------------------------------------------------------------------------
+1

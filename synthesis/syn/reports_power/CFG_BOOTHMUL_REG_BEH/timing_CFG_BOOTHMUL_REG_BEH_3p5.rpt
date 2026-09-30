@@ -6,7 +6,7 @@ Report : timing
         -max_paths 1
 Design : boothmul_registered
 Version: W-2024.09-SP2
-Date   : Wed Sep 30 19:54:29 2026
+Date   : Wed Sep 30 22:05:29 2026
 ****************************************
 
 Operating Conditions: typical   Library: NangateOpenCellLibrary

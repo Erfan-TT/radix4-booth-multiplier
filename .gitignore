@@ -1,5 +1,6 @@
 # ---- ModelSim / Questa ----
 work/
+work_*/
 *.wlf
 *.wlf.*
 wlf*
