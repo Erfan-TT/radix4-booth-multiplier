@@ -1,0 +1,89 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+Design : boothmul_registered
+Version: W-2024.09-SP2
+Date   : Wed Sep 30 19:51:58 2026
+****************************************
+
+Operating Conditions: typical   Library: NangateOpenCellLibrary
+Wire Load Model Mode: top
+
+  Startpoint: B_reg_Y_temp_reg_1_
+              (rising edge-triggered flip-flop clocked by CLK)
+  Endpoint: p_reg_Y_temp_reg_60_
+            (rising edge-triggered flip-flop clocked by CLK)
+  Path Group: CLK
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  boothmul_registered
+                     5K_hvratio_1_4        NangateOpenCellLibrary
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock CLK (rise edge)                0.000000   0.000000
+  clock network delay (ideal)          0.050000   0.050000
+  B_reg_Y_temp_reg_1_/CK (DFF_X1)      0.000000   0.050000 r
+  B_reg_Y_temp_reg_1_/Q (DFF_X1)       0.103166   0.153166 r
+  U3311/ZN (NAND2_X1)                  0.039238   0.192404 f
+  U2688/ZN (AND2_X2)                   0.054053   0.246458 f
+  U2685/ZN (NAND2_X2)                  0.059054   0.305512 r
+  U3802/Z (MUX2_X1)                    0.069432   0.374944 r
+  U3804/ZN (NAND2_X1)                  0.033680   0.408625 f
+  U3805/ZN (OR2_X1)                    0.060749   0.469374 f
+  U2484/ZN (AND2_X2)                   0.044194   0.513568 f
+  U3118/ZN (AND2_X1)                   0.039392   0.552960 f
+  U6353/ZN (OAI22_X1)                  0.056154   0.609114 r
+  intadd_381_U3/S (FA_X1)              0.132301   0.741415 f
+  U3816/ZN (NAND2_X1)                  0.043045   0.784460 r
+  U3115/ZN (NAND2_X1)                  0.032860   0.817320 f
+  U2475/ZN (OR2_X2)                    0.054870   0.872190 f
+  U2980/ZN (AND2_X1)                   0.038825   0.911015 f
+  U2969/ZN (NAND2_X1)                  0.033012   0.944027 r
+  U4040/ZN (AND2_X1)                   0.048747   0.992774 r
+  U4041/ZN (OAI21_X1)                  0.032647   1.025420 f
+  U4042/ZN (OAI211_X1)                 0.040027   1.065448 r
+  U4045/ZN (NAND2_X1)                  0.028563   1.094010 f
+  U4089/ZN (AND2_X1)                   0.040003   1.134013 f
+  U4290/ZN (OAI211_X1)                 0.056599   1.190612 r
+  U4327/ZN (AOI21_X1)                  0.032275   1.222887 f
+  U4328/ZN (OR2_X1)                    0.056596   1.279483 f
+  U4340/ZN (AOI21_X1)                  0.039026   1.318509 r
+  U4341/ZN (OR2_X1)                    0.039852   1.358361 r
+  U4372/ZN (NAND2_X1)                  0.028989   1.387350 f
+  U4378/ZN (NAND2_X1)                  0.026394   1.413744 r
+  U4380/ZN (AND2_X1)                   0.040274   1.454018 r
+  U4382/ZN (OAI21_X1)                  0.031235   1.485252 f
+  U4395/ZN (OAI211_X1)                 0.052247   1.537499 r
+  U4396/ZN (INV_X1)                    0.024720   1.562219 f
+  U3123/ZN (OAI21_X1)                  0.048007   1.610226 r
+  U2633/ZN (OR2_X2)                    0.053827   1.664053 r
+  U2675/ZN (NAND2_X1)                  0.033741   1.697794 f
+  U2676/ZN (AND2_X1)                   0.040509   1.738303 f
+  U3135/ZN (OAI21_X1)                  0.042258   1.780561 r
+  U4580/ZN (NAND2_X1)                  0.035452   1.816013 f
+  U4587/Z (BUF_X1)                     0.044480   1.860494 f
+  U6318/ZN (XNOR2_X1)                  0.057115   1.917608 f
+  U3203/ZN (OAI21_X1)                  0.039376   1.956984 r
+  p_reg_Y_temp_reg_60_/D (DFF_X2)      0.010884   1.967869 r
+  data arrival time                               1.967869
+
+  clock CLK (rise edge)                1.700000   1.700000
+  clock network delay (ideal)          0.050000   1.750000
+  clock uncertainty                    -0.050000  1.700000
+  p_reg_Y_temp_reg_60_/CK (DFF_X2)     0.000000   1.700000 r
+  library setup time                   -0.028313  1.671687
+  data required time                              1.671687
+  -----------------------------------------------------------
+  data required time                              1.671687
+  data arrival time                               -1.967869
+  -----------------------------------------------------------
+  slack (VIOLATED)                                -0.296182
+
+
+1
