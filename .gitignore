@@ -45,7 +45,9 @@ vcd/
 # reports_*/ are kept on purpose: they are the measurement data behind the
 # README tables and they are only a few MB of text.
 # netlists and SAIF are regenerable and enormous (500 MB / 150 MB) -- never commit.
-synthesis/syn/netlist_*/
+!synthesis/syn/netlist/CFG_*/*.v
+synthesis/syn/netlist/CFG_*/*.sdc
+synthesis/syn/netlist/CFG_*/*.sdf
 synthesis/sim/saif/
 synthesis/sim/work/
 synthesis/**/transcript
