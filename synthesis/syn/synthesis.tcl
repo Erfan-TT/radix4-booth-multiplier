@@ -10,59 +10,69 @@ suppress_message LINK-14
 suppress_message TIM-134
 
 set blockName boothmul_registered
+
+#define_design_lib WORK_SEC -path ./work_second
+
 # set fp [open "../configs.txt" r]
 # set configs [read $fp]
 # close $fp
-#set configs {CFG_BOOTHMUL_REG_WAL_BASE CFG_BOOTHMUL_REG_WAL_OPT CFG_BOOTHMUL_REG_DADDA CFG_BOOTHMUL_REG_BEH}
+set configs {CFG_BOOTHMUL_REG_DADDA_FUSED_SEL CFG_BOOTHMUL_REG_WAL_BASE CFG_BOOTHMUL_REG_WAL_OPT CFG_BOOTHMUL_REG_DADDA CFG_BOOTHMUL_REG_BEH}
 #set configs {CFG_REG_SUPER_BEH}
-set configs {CFG_BOOTHMUL_REG_DADDA_FUSED_SEL CFG_BOOTHMUL_REG_DADDA}
+#set configs {CFG_BOOTHMUL_REG_DADDA_FUSED_SEL CFG_BOOTHMUL_REG_DADDA}
 # the clock periods of the sweep
-#set periods {1.0 1.5 1.7 2.0 2.2 2.5 3.0 3.5 4.0 4.5 5.0 5.5 6.0}
+set periods {1.0 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0 2.2 2.5 3.0 3.5 4.0 4.5 5.0 5.5 6.0}
+#set periods {1.1 1.3 1.4 1.6 1.8 1.9}
 #set periods {0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0 2.1 2.2}
-set periods {0.4 0.5 0.6 0.7 0.8 0.9 }
+#set periods {0.4 0.5 0.6 0.7 0.8 0.9 }
 file mkdir netlist
 file mkdir reports
 
+set FILES {
+    ../../rtl/multiplier/packages/common_pkg.vhd
+    ../../rtl/multiplier/packages/dadda_types_pkg.vhd
+    ../../rtl/multiplier/packages/wallace_math_pkg.vhd
+    ../../rtl/multiplier/packages/dadda_math_pkg.vhd
+    ../../rtl/common/iv.vhd
+    ../../rtl/common/nd2.vhd
+    ../../rtl/common/mux21.vhd
+    ../../rtl/common/mux21_generic.vhd
+    ../../rtl/common/fa.vhd
+    ../../rtl/common/ha.vhd
+    ../../rtl/adder/rca.vhd
+    ../../rtl/adder/carry_select_block.vhd
+    ../../rtl/adder/PG_block.vhd
+    ../../rtl/adder/G_block.vhd
+    ../../rtl/adder/PG_elem.vhd
+    ../../rtl/adder/carry_generator.vhd
+    ../../rtl/adder/sum_generator.vhd
+    ../../rtl/adder/P4_adder.vhd
+    ../../rtl/multiplier/booth_encoder.vhd
+    ../../rtl/multiplier/mux_and_shift.vhd
+    ../../rtl/multiplier/corrector.vhd
+    ../../rtl/multiplier/CSA.vhd
+    ../../rtl/multiplier/dadda_tree.vhd
+    ../../rtl/multiplier/wallace_tree.vhd
+    ../../rtl/multiplier/reduction_tree.vhd
+    ../../rtl/multiplier/boothmul.vhd
+    ../../rtl/multiplier/reg_N.vhd
+    ../../rtl/multiplier/boothmul_registered.vhd
+    ../../cfg/configurations_boothmul.vhd
+    ../../cfg/configurations_synthesis.vhd
+}
 
-## the packages
-analyze -library WORK -format vhdl {../../rtl/multiplier/packages/common_pkg.vhd}
-analyze -library WORK -format vhdl {../../rtl/multiplier/packages/dadda_types_pkg.vhd}
-analyze -library WORK -format vhdl {../../rtl/multiplier/packages/wallace_math_pkg.vhd}
-analyze -library WORK -format vhdl {../../rtl/multiplier/packages/dadda_math_pkg.vhd}
+foreach f $FILES {
+    if {![file exists $f]} {
+        echo "*** MISSING: $f"
+        exit 1
+    }
+    if {[catch {analyze -library WORK -format vhdl $f} msg]} {
+        echo "*** ANALYZE FAILED: $f"
+        echo "    $msg"
+        exit 1
+    }
+}
+echo "=== analyze OK: [llength $FILES] files ==="
 
-# basic gates
-analyze -library WORK -format vhdl {../../rtl/common/iv.vhd}
-analyze -library WORK -format vhdl {../../rtl/common/nd2.vhd}
-analyze -library WORK -format vhdl {../../rtl/common/mux21.vhd}
-analyze -library WORK -format vhdl {../../rtl/common/mux21_generic.vhd}
-analyze -library WORK -format vhdl {../../rtl/common/fa.vhd}
-analyze -library WORK -format vhdl {../../rtl/common/ha.vhd}
-
-# P4 sparse-tree adder
-analyze -library WORK -format vhdl {../../rtl/adder/rca.vhd}
-analyze -library WORK -format vhdl {../../rtl/adder/carry_select_block.vhd}
-analyze -library WORK -format vhdl {../../rtl/adder/PG_block.vhd}
-analyze -library WORK -format vhdl {../../rtl/adder/G_block.vhd}
-analyze -library WORK -format vhdl {../../rtl/adder/PG_elem.vhd}
-analyze -library WORK -format vhdl {../../rtl/adder/carry_generator.vhd}
-analyze -library WORK -format vhdl {../../rtl/adder/sum_generator.vhd}
-analyze -library WORK -format vhdl {../../rtl/adder/P4_adder.vhd}
-
-# the multiplier
-analyze -library WORK -format vhdl {../../rtl/multiplier/booth_encoder.vhd}
-analyze -library WORK -format vhdl {../../rtl/multiplier/mux_and_shift.vhd}
-analyze -library WORK -format vhdl {../../rtl/multiplier/corrector.vhd}
-analyze -library WORK -format vhdl {../../rtl/multiplier/CSA.vhd}
-analyze -library WORK -format vhdl {../../rtl/multiplier/dadda_tree.vhd}
-analyze -library WORK -format vhdl {../../rtl/multiplier/wallace_tree.vhd}
-analyze -library WORK -format vhdl {../../rtl/multiplier/reduction_tree.vhd}
-analyze -library WORK -format vhdl {../../rtl/multiplier/boothmul.vhd}
-analyze -library WORK -format vhdl {../../rtl/multiplier/reg_N.vhd}
-analyze -library WORK -format vhdl {../../rtl/multiplier/boothmul_registered.vhd}
-
-# the configuration, different arch combinations for booth
-analyze -library WORK -format vhdl {../../cfg/configurations_boothmul.vhd}
-analyze -library WORK -format vhdl {../../cfg/configurations_synthesis.vhd}
 
 foreach configuration $configs {
 

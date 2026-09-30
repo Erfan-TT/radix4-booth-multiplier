@@ -6,7 +6,7 @@ Report : timing
         -max_paths 1
 Design : boothmul_registered
 Version: W-2024.09-SP2
-Date   : Mon Sep 21 13:16:41 2026
+Date   : Wed Sep 30 12:35:25 2026
 ****************************************
 
 Operating Conditions: typical   Library: NangateOpenCellLibrary
@@ -37,49 +37,49 @@ Wire Load Model Mode: top
   U1655/ZN (NOR2_X1)                       0.05       0.40 r
   U1656/Z (XOR2_X1)                        0.08       0.48 r
   U1660/ZN (NOR2_X1)                       0.04       0.52 f
-  intadd_743_U61/CO (FA_X1)                0.10       0.61 f
-  intadd_743_U60/CO (FA_X1)                0.09       0.71 f
-  intadd_743_U59/CO (FA_X1)                0.10       0.80 f
-  intadd_743_U58/CO (FA_X1)                0.11       0.91 f
-  intadd_743_U57/CO (FA_X1)                0.09       1.00 f
-  intadd_743_U56/CO (FA_X1)                0.10       1.11 f
+  intadd_1838_U61/CO (FA_X1)               0.10       0.61 f
+  intadd_1838_U60/CO (FA_X1)               0.09       0.71 f
+  intadd_1838_U59/CO (FA_X1)               0.10       0.80 f
+  intadd_1838_U58/CO (FA_X1)               0.11       0.91 f
+  intadd_1838_U57/CO (FA_X1)               0.09       1.00 f
+  intadd_1838_U56/CO (FA_X1)               0.10       1.11 f
   U3439/ZN (NAND2_X1)                      0.04       1.14 r
   U3441/ZN (NAND3_X1)                      0.04       1.18 f
-  intadd_743_U54/CO (FA_X1)                0.09       1.28 f
-  intadd_743_U53/CO (FA_X1)                0.09       1.37 f
-  intadd_743_U52/CO (FA_X1)                0.09       1.47 f
-  intadd_743_U51/CO (FA_X1)                0.09       1.56 f
-  intadd_743_U50/CO (FA_X1)                0.09       1.65 f
-  intadd_743_U49/CO (FA_X1)                0.09       1.75 f
-  intadd_743_U48/CO (FA_X1)                0.09       1.84 f
-  intadd_743_U47/CO (FA_X1)                0.09       1.94 f
-  intadd_743_U46/CO (FA_X1)                0.09       2.03 f
-  intadd_743_U45/CO (FA_X1)                0.09       2.13 f
-  intadd_743_U44/CO (FA_X1)                0.09       2.22 f
-  intadd_743_U43/CO (FA_X1)                0.09       2.32 f
-  intadd_743_U42/CO (FA_X1)                0.09       2.41 f
-  intadd_743_U41/CO (FA_X1)                0.09       2.50 f
-  intadd_743_U40/CO (FA_X1)                0.09       2.60 f
-  intadd_743_U39/CO (FA_X1)                0.09       2.69 f
-  intadd_743_U38/CO (FA_X1)                0.09       2.79 f
-  intadd_743_U37/CO (FA_X1)                0.09       2.88 f
-  intadd_743_U36/CO (FA_X1)                0.09       2.98 f
-  intadd_743_U35/CO (FA_X1)                0.09       3.07 f
-  intadd_743_U34/CO (FA_X1)                0.09       3.16 f
-  intadd_743_U33/CO (FA_X1)                0.09       3.26 f
-  intadd_743_U32/CO (FA_X1)                0.09       3.35 f
-  intadd_743_U31/CO (FA_X1)                0.09       3.45 f
-  intadd_743_U30/CO (FA_X1)                0.09       3.54 f
-  intadd_743_U29/CO (FA_X1)                0.09       3.64 f
-  intadd_743_U28/CO (FA_X1)                0.09       3.73 f
-  intadd_743_U27/CO (FA_X1)                0.09       3.83 f
-  intadd_743_U26/CO (FA_X1)                0.09       3.92 f
-  intadd_743_U25/CO (FA_X1)                0.09       4.01 f
-  intadd_743_U24/CO (FA_X1)                0.10       4.12 f
+  intadd_1838_U54/CO (FA_X1)               0.09       1.28 f
+  intadd_1838_U53/CO (FA_X1)               0.09       1.37 f
+  intadd_1838_U52/CO (FA_X1)               0.09       1.47 f
+  intadd_1838_U51/CO (FA_X1)               0.09       1.56 f
+  intadd_1838_U50/CO (FA_X1)               0.09       1.65 f
+  intadd_1838_U49/CO (FA_X1)               0.09       1.75 f
+  intadd_1838_U48/CO (FA_X1)               0.09       1.84 f
+  intadd_1838_U47/CO (FA_X1)               0.09       1.94 f
+  intadd_1838_U46/CO (FA_X1)               0.09       2.03 f
+  intadd_1838_U45/CO (FA_X1)               0.09       2.13 f
+  intadd_1838_U44/CO (FA_X1)               0.09       2.22 f
+  intadd_1838_U43/CO (FA_X1)               0.09       2.32 f
+  intadd_1838_U42/CO (FA_X1)               0.09       2.41 f
+  intadd_1838_U41/CO (FA_X1)               0.09       2.50 f
+  intadd_1838_U40/CO (FA_X1)               0.09       2.60 f
+  intadd_1838_U39/CO (FA_X1)               0.09       2.69 f
+  intadd_1838_U38/CO (FA_X1)               0.09       2.79 f
+  intadd_1838_U37/CO (FA_X1)               0.09       2.88 f
+  intadd_1838_U36/CO (FA_X1)               0.09       2.98 f
+  intadd_1838_U35/CO (FA_X1)               0.09       3.07 f
+  intadd_1838_U34/CO (FA_X1)               0.09       3.16 f
+  intadd_1838_U33/CO (FA_X1)               0.09       3.26 f
+  intadd_1838_U32/CO (FA_X1)               0.09       3.35 f
+  intadd_1838_U31/CO (FA_X1)               0.09       3.45 f
+  intadd_1838_U30/CO (FA_X1)               0.09       3.54 f
+  intadd_1838_U29/CO (FA_X1)               0.09       3.64 f
+  intadd_1838_U28/CO (FA_X1)               0.09       3.73 f
+  intadd_1838_U27/CO (FA_X1)               0.09       3.83 f
+  intadd_1838_U26/CO (FA_X1)               0.09       3.92 f
+  intadd_1838_U25/CO (FA_X1)               0.09       4.01 f
+  intadd_1838_U24/CO (FA_X1)               0.10       4.12 f
   U2961/ZN (NAND2_X1)                      0.03       4.15 r
   U1568/ZN (AND3_X1)                       0.06       4.21 r
   U2963/ZN (OAI21_X1)                      0.04       4.25 f
-  intadd_743_U21/CO (FA_X1)                0.10       4.35 f
+  intadd_1838_U21/CO (FA_X1)               0.10       4.35 f
   U1662/ZN (OAI21_X1)                      0.04       4.39 r
   U1663/ZN (NAND2_X1)                      0.04       4.43 f
   U1673/ZN (NAND2_X1)                      0.04       4.46 r

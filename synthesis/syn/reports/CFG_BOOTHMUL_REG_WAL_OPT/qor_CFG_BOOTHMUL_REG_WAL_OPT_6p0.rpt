@@ -3,7 +3,7 @@
 Report : qor
 Design : boothmul_registered
 Version: W-2024.09-SP2
-Date   : Mon Sep 21 12:48:11 2026
+Date   : Wed Sep 30 11:43:10 2026
 ****************************************
 
 
@@ -63,12 +63,12 @@ Date   : Mon Sep 21 12:48:11 2026
 
   Compile CPU Statistics
   -----------------------------------------
-  Resource Sharing:                    0.67
-  Logic Optimization:                  1.09
-  Mapping Optimization:                3.71
+  Resource Sharing:                    0.71
+  Logic Optimization:                  1.14
+  Mapping Optimization:                3.88
   -----------------------------------------
-  Overall Compile Time:               39.67
-  Overall Compile Wall Clock Time:    42.34
+  Overall Compile Time:               41.48
+  Overall Compile Wall Clock Time:    44.34
 
   --------------------------------------------------------------------
 

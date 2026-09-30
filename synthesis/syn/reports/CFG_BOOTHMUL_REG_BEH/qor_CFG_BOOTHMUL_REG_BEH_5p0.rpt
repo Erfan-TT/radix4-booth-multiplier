@@ -3,7 +3,7 @@
 Report : qor
 Design : boothmul_registered
 Version: W-2024.09-SP2
-Date   : Mon Sep 21 13:16:02 2026
+Date   : Wed Sep 30 12:34:46 2026
 ****************************************
 
 
@@ -38,16 +38,16 @@ Date   : Mon Sep 21 13:16:02 2026
 
   Area
   -----------------------------------
-  Combinational Area:     5708.892003
-  Noncombinational Area:   584.401981
+  Combinational Area:     5709.158003
+  Noncombinational Area:   583.869981
   Buf/Inv Area:            215.194002
   Total Buffer Area:             5.85
   Total Inverter Area:         209.34
   Macro/Black Box Area:      0.000000
   Net Area:                  0.000000
   -----------------------------------
-  Cell Area:              6293.293984
-  Design Area:            6293.293984
+  Cell Area:              6293.027984
+  Design Area:            6293.027984
 
 
   Design Rules
@@ -63,12 +63,12 @@ Date   : Mon Sep 21 13:16:02 2026
 
   Compile CPU Statistics
   -----------------------------------------
-  Resource Sharing:                    2.50
-  Logic Optimization:                  2.36
-  Mapping Optimization:                8.25
+  Resource Sharing:                    2.54
+  Logic Optimization:                  2.51
+  Mapping Optimization:                8.30
   -----------------------------------------
-  Overall Compile Time:               33.45
-  Overall Compile Wall Clock Time:    36.36
+  Overall Compile Time:               34.60
+  Overall Compile Wall Clock Time:    37.81
 
   --------------------------------------------------------------------
 

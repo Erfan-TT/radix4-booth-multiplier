@@ -6,7 +6,7 @@ Report : timing
         -max_paths 1
 Design : boothmul_registered
 Version: W-2024.09-SP2
-Date   : Mon Sep 21 18:27:19 2026
+Date   : Wed Sep 30 11:51:57 2026
 ****************************************
 
 Operating Conditions: typical   Library: NangateOpenCellLibrary
@@ -40,10 +40,10 @@ Wire Load Model Mode: top
   U7437/ZN (XNOR2_X1)                      0.07       0.61 r
   U5117/CO (FA_X1)                         0.07       0.68 r
   U8800/ZN (INV_X1)                        0.03       0.71 f
-  intadd_581_U5/CO (FA_X1)                 0.10       0.81 f
-  intadd_581_U4/S (FA_X1)                  0.14       0.95 r
+  intadd_1415_U5/CO (FA_X1)                0.10       0.81 f
+  intadd_1415_U4/S (FA_X1)                 0.14       0.95 r
   U8729/ZN (INV_X1)                        0.03       0.98 f
-  intadd_588_U3/S (FA_X1)                  0.14       1.12 r
+  intadd_1422_U3/S (FA_X1)                 0.14       1.12 r
   U4218/ZN (OR2_X1)                        0.05       1.17 r
   U4688/ZN (OAI21_X1)                      0.04       1.21 f
   U7529/ZN (NAND2_X1)                      0.03       1.24 r
