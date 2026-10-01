@@ -1,14 +1,14 @@
 ##  Gate level simulation of the synthesised Booth multiplier.
 
-##  the same periods as in synthesis.tcl
-set periods {1.0 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0 2.2 2.5 3.0 3.5 4.0 4.5 5.0 5.5 6.0}
+## The same configurations and periods used by synthesis and power analysis.
+source ../sweep_config.tcl
 
-proc read_csv_col {filename} {
+proc read_achieved_periods {filename} {
     set fp [open $filename r]
 
     gets $fp header
 
-    set achieved_clk {}
+    set achieved_by_period [dict create]
 
     while {[gets $fp line] >= 0} {
 
@@ -18,13 +18,14 @@ proc read_csv_col {filename} {
         }
 
         set fields [split $line ","]
+        set period   [lindex $fields 0]
         set achieved [lindex $fields 2]
-        lappend achieved_clk $achieved
+        dict set achieved_by_period $period $achieved
     }
 
     close $fp
 
-    return $achieved_clk
+    return $achieved_by_period
 }
 
 set BlockName {boothmul_registered}
@@ -32,46 +33,21 @@ set BlockName {boothmul_registered}
 ## nandgate library cell
 set cell_models /eda/dk/nangate45/verilog/NangateOpenCellLibrary.v
 
-#set fp [open "../configs.txt" r]
-#set configs [read $fp]
-#close $fp
-
-#set configs {CFG_BOOTHMUL_REG_WAL_BASE CFG_BOOTHMUL_REG_WAL_OPT CFG_BOOTHMUL_REG_DADDA CFG_BOOTHMUL_REG_BEH}
-
-#set configs {CFG_BOOTHMUL_REG_WAL_BASE}
-set configs {CFG_BOOTHMUL_REG_WAL_OPT}
-set configs {CFG_BOOTHMUL_REG_DADDA}
-set configs {CFG_BOOTHMUL_REG_DADDA_FUSED_SEL}
-set configs {CFG_REG_SUPER_BEH}
-set configs {CFG_BOOTHMUL_REG_BEH}
-
-#set cfg_wk_dir {CFG_BOOTHMUL_REG_WAL_BASE}
-set cfg_wk_dir {CFG_BOOTHMUL_REG_WAL_OPT}
-set cfg_wk_dir {CFG_BOOTHMUL_REG_DADDA}
-set cfg_wk_dir {CFG_BOOTHMUL_REG_DADDA_FUSED_SEL}
-set cfg_wk_dir {CFG_REG_SUPER_BEH}
-set cfg_wk_dir {CFG_BOOTHMUL_REG_BEH}
-
-
-
 set netlist ../syn/netlist
 file mkdir vcd
 
 
-
-## COMPILE
-
-if {[file exists work_${cfg_wk_dir}]} { vdel -all -lib work_${cfg_wk_dir} }
-vlib work_${cfg_wk_dir}
-
-## Nangate cell model compiling
-vlog -work work_${cfg_wk_dir} $cell_models
-
-##  the testbench
-vcom -work work_${cfg_wk_dir} tb_boothmul_registered.vhd
-
-
 foreach cfg $configs {
+
+    set cfg_wk_dir $cfg
+
+    ## Each configuration gets an independent work library.
+    if {[file exists work_${cfg_wk_dir}]} {
+        vdel -all -lib work_${cfg_wk_dir}
+    }
+    vlib work_${cfg_wk_dir}
+    vlog -work work_${cfg_wk_dir} $cell_models
+    vcom -work work_${cfg_wk_dir} tb_boothmul_registered.vhd
         
     # directory for the netlist for each cfg
     set netlist_dir "${netlist}/${cfg}"
@@ -83,15 +59,16 @@ foreach cfg $configs {
 
     ## the achieved clocks
     set csv_achieved "../syn/reports/achieved_clk/results_${cfg}.csv"
-    set achieved_clks [read_csv_col $csv_achieved]
-    set i 0
+    set achieved_by_period [read_achieved_periods $csv_achieved]
     ## THE SWEEP
     foreach period $periods {
 
         set tag [string map {. p} $period]
 
-        set sim_clk [lindex $achieved_clks $i]
-        incr i
+        if {![dict exists $achieved_by_period $period]} {
+            error "No achieved period for $cfg at requested period $period"
+        }
+        set sim_clk [dict get $achieved_by_period $period]
 
         echo "=========================================="
         echo "  simulation with achieved clock period $sim_clk ns, synthesized at $period"

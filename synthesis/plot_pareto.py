@@ -2,12 +2,12 @@
 """
 Pareto plots for the Booth multiplier synthesis sweep.
 
-Reads the Design Compiler reports directly -- no intermediate CSV -- so it works
-straight after synthesis.tcl finishes. Power is picked up from
-reports_power/<cfg>/results_<cfg>.csv when that file exists, skipped when not.
+Reads the Design Compiler synthesis reports directly for area and timing.
+Post-synthesis power is read from reports_power/<cfg>/results_<cfg>.csv. Those
+CSVs contain activity-based measurements from gate-level SDF simulation run at
+each netlist's achieved period.
 
     python3 plot_pareto.py                          # syn/reports
-    python3 plot_pareto.py syn/reports_no_area_constraint
     python3 plot_pareto.py syn/reports -o ../docs/figures
     python3 plot_pareto.py syn/reports --zoom 1.7 3.2
 
@@ -130,19 +130,33 @@ def read_reports(reports_dir):
     return data
 
 
-def read_power(cfg, syn_dir):
-    csv_file = Path(syn_dir) / "reports_power" / cfg / f"results_{cfg}.csv"
+def read_power(cfg, power_dir):
+    """Return measured power points for one configuration.
+
+    The achieved period is taken from the power CSV rather than reconstructed
+    from the synthesis reports. This keeps the x coordinate tied to the exact
+    value used by the gate-level simulation that generated the VCD/SAIF.
+    """
+    csv_file = Path(power_dir) / cfg / f"results_{cfg}.csv"
     if not csv_file.exists():
-        return {}
-    out = {}
+        return []
+    out = []
     with open(csv_file, newline="") as f:
         for row in csv.DictReader(f):
             try:
-                out[float(row["period_ns"])] = (float(row["dynamic_power_W"])
-                                                + float(row["leakage_power_W"]))
+                dynamic = float(row["dynamic_power_W"])
+                leakage = float(row["leakage_power_W"])
+                out.append({
+                    "period": float(row["period_ns"]),
+                    "achieved": float(row["achieved_ns"]),
+                    "area": float(row["area_um2"]),
+                    "dynamic": dynamic,
+                    "leakage": leakage,
+                    "total": dynamic + leakage,
+                })
             except (KeyError, ValueError):
                 continue
-    return out
+    return sorted(out, key=lambda r: r["achieved"])
 
 
 # --------------------------------------------------------------------------
@@ -150,12 +164,17 @@ def read_power(cfg, syn_dir):
 # is simply the non-dominated subset: nothing to its left is also smaller
 # --------------------------------------------------------------------------
 
-def pareto_front(points):
+def pareto_front(points, objective="area"):
+    """Return points nondominated in achieved period and *objective*.
+
+    Both axes are minimized. Sorting the secondary objective as well makes the
+    result deterministic when two netlists have the same achieved period.
+    """
     front, best = [], float("inf")
-    for p in sorted(points, key=lambda r: r["achieved"]):
-        if p["area"] < best:
+    for p in sorted(points, key=lambda r: (r["achieved"], r[objective])):
+        if p[objective] < best:
             front.append(p)
-            best = p["area"]
+            best = p[objective]
     return front
 
 
@@ -249,7 +268,7 @@ def plot_zoom(data, out_png, lo, hi, only=None):
     setup_axes(ax, "achieved clock period  (constraint - slack)  [ns]",
                "total cell area [um2]",
                f"Zoom: {lo}-{hi} ns",
-               "the crossover: plain Dadda is smaller until ~2.75 ns, fused wins beyond it")
+               "plain Dadda is smaller near 2.0 ns, fused wins at relaxed timing")
     ax.legend(frameon=False, fontsize=9, loc="upper right")
     fig.tight_layout()
     fig.savefig(out_png, dpi=160)
@@ -257,29 +276,50 @@ def plot_zoom(data, out_png, lo, hi, only=None):
     print("saved", out_png)
 
 
-def plot_power(data, syn_dir, out_png):
-    have = {cfg: read_power(cfg, syn_dir) for cfg in data}
+def plot_power(data, power_dir, out_png):
+    have = {cfg: read_power(cfg, power_dir) for cfg in data}
     if not any(have.values()):
         print("no power CSVs found -- skipping the power plot")
         return
     fig, ax = plt.subplots(figsize=(9.5, 5.6))
     for cfg in ordered(data):
-        pw = have.get(cfg) or {}
-        if not pw:
+        points = have.get(cfg) or []
+        if not points:
             continue
         label, colour, dash = style_for(cfg)
-        pts = [p for p in pareto_front(data[cfg]) if p["period"] in pw]
-        if pts:
-            ax.plot([p["achieved"] for p in pts], [pw[p["period"]] * 1e3 for p in pts],
+        front = pareto_front(points, objective="dynamic")
+        if front:
+            ax.plot([p["achieved"] for p in front],
+                    [p["dynamic"] * 1e3 for p in front],
                     marker="o", markersize=4.5, linewidth=2,
                     color=colour, linestyle=dash, label=label)
-    setup_axes(ax, "achieved clock period [ns]", "total power [mW]",
-               "Total power vs achieved clock period")
+    setup_axes(ax, "achieved clock period [ns]", "dynamic power [mW]",
+               "Dynamic power vs achieved clock period",
+               "Pareto front from activity-annotated post-synthesis netlists")
+    ax.margins(y=0.10)
     ax.legend(frameon=False, fontsize=9, loc="upper right")
     fig.tight_layout()
     fig.savefig(out_png, dpi=160)
     plt.close(fig)
     print("saved", out_png)
+
+
+def print_power_table(data, power_dir):
+    print()
+    print("dynamic-power Pareto summary")
+    print(f"{'configuration':<30}{'fastest ns':>12}{'mW there':>12}"
+          f"{'min mW':>11}{'at ns':>10}{'front pts':>11}")
+    print("-" * 86)
+    for cfg in ordered(data):
+        front = pareto_front(read_power(cfg, power_dir), objective="dynamic")
+        if not front:
+            continue
+        fastest = front[0]
+        lowest = min(front, key=lambda p: p["dynamic"])
+        print(f"{style_for(cfg)[0]:<30}{fastest['achieved']:>12.4f}"
+              f"{fastest['dynamic'] * 1e3:>12.3f}"
+              f"{lowest['dynamic'] * 1e3:>11.3f}"
+              f"{lowest['achieved']:>10.4f}{len(front):>11}")
 
 
 def print_table(data):
@@ -312,6 +352,9 @@ def main():
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("reports", nargs="?", default="syn/reports")
     ap.add_argument("-o", "--outdir", default=".")
+    ap.add_argument("--power-reports", default=None,
+                    help="power-results directory (default: reports_power next "
+                         "to the synthesis reports directory)")
     ap.add_argument("--zoom", nargs=2, type=float, metavar=("LO", "HI"),
                     default=[1.7, 3.2], help="window for the zoomed plot [ns]")
     ap.add_argument("--zoom-only", nargs="*", default=["DADDA", "SUPER_BEH"],
@@ -320,6 +363,8 @@ def main():
     args = ap.parse_args()
 
     data = read_reports(args.reports)
+    power_dir = (Path(args.power_reports) if args.power_reports else
+                 Path(args.reports).parent / "reports_power")
     outdir = Path(args.outdir)
     outdir.mkdir(parents=True, exist_ok=True)
     tag = Path(args.reports).name.replace("reports_", "").replace("reports", "main")
@@ -331,10 +376,11 @@ def main():
               f"all {len(pts)} usable at their achieved period")
 
     print_table(data)
+    print_power_table(data, power_dir)
     plot_full(data, outdir / f"pareto_area_vs_achieved_{tag}.png")
     plot_zoom(data, outdir / f"pareto_zoom_{tag}.png", *args.zoom, only=args.zoom_only)
-    plot_power(data, Path(args.reports).parent,
-               outdir / f"pareto_power_vs_achieved_{tag}.png")
+    plot_power(data, power_dir,
+               outdir / f"pareto_dynamic_power_vs_achieved_{tag}.png")
 
 
 if __name__ == "__main__":

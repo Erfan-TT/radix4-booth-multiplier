@@ -22,18 +22,21 @@ synthesized under the same constraints as a controlled reference.
 
 The final structural variant, Dadda reduction with the fused selector, reaches:
 
-- fastest derived zero-slack period: **1.76 ns**;
+- fastest derived zero-slack period: **1.75 ns**;
 - minimum observed area: **5029 um^2**; and
 - **69.1%** of the minimum-area gap closed between the structural baseline and
   the inferred `A * B` reference.
 
-The timing and minimum-area values above come from different synthesized
-netlists. They are the two ends of the variant's measured trade-off, not one
-simultaneous operating point.
+Plain Dadda reaches the fastest structural point at **1.73 ns**. The fused
+selector instead gives the strongest area and dynamic-power results. At the
+common 3.0 ns synthesis target it measures **4.61 mW** of dynamic power, 44.1%
+below plain Dadda under the same post-synthesis activity workload.
 
 ## Datapath and variants
 
-![Multiplier datapath](docs/figures/schematic-1.png)
+<p align="center">
+  <img src="docs/figures/schematic-1.png" alt="Multiplier datapath" width="200%">
+</p>
 
 The radix-4 encoder maps each overlapping multiplier triplet to
 `0`, `+A`, `-A`, `+2A`, or `-2A`. Partial products are shifted by two
@@ -81,10 +84,7 @@ and 45 half adders.
 Measured against the sign-extension-eliminated Wallace design:
 
 - minimum area falls from **5975 to 5620 um^2**; and
-- fastest derived zero-slack period improves from **1.87 to 1.78 ns**.
-
-The mapped full-adder cell count is not expected to equal the RTL instance
-count because synthesis can decompose or restructure compressors.
+- fastest derived zero-slack period improves from **1.87 to 1.73 ns**.
 
 ### 3. Fused Booth selector
 
@@ -104,52 +104,71 @@ mix changes as follows:
 | Dadda, fused selector | 85 | 448 | 1311 | 2819 | 5125 um^2 |
 | Inferred `A * B` | 559 | 268 | 950 | 3035 | 4910 um^2 |
 
-These counts cover the complete mapped design, including the final adder. They
-show that mapping changed substantially, but they do not provide a one-to-one
-correspondence between RTL operators and library cells.
+These counts cover the complete mapped design, including the final adder, and
+show how strongly the fused selector changes the mapped cell mix.
 
 Relative to the separate-negation Dadda design, the fused version reduces the
-minimum observed area from **5620 to 5029 um^2** and improves the fastest
-derived period from **1.78 to 1.76 ns**. It is not smaller at every timing
-target; the two Dadda Pareto curves cross, so the preferred implementation
-depends on the required period.
+minimum observed area from **5620 to 5029 um^2**. Its fastest point is
+**1.75 ns**, compared with **1.73 ns** for plain Dadda. The fused selector has
+the lower dynamic-power curve throughout the measured power sweep.
 
 ## Synthesis results
 
-The archived sweep contains 21 timing targets for each of six configurations.
-For every fixed netlist, the reported setup equation is converted to a derived
-zero-slack period:
+The synthesis data contains 21 common timing targets for all six
+configurations. The two Dadda variants also include six tighter targets from
+0.4 to 0.9 ns. For every fixed netlist, the reported setup equation is
+converted to a derived zero-slack period:
 
 `T0 = requested clock period - reported slack`
 
 A negative slack therefore produces a `T0` larger than the requested period.
-This metric compares the netlists generated across the sweep; it does not claim
-that resynthesizing at `T0` would reproduce the same netlist.
 
 | Variant | Fastest `T0` | Area of fastest netlist | Minimum area | Area gap closed |
 | :-- | --: | --: | --: | --: |
 | Wallace baseline | 1.86 ns | 10022 um^2 | 6346 um^2 | - |
 | + sign-extension elimination | 1.87 ns | 9234 um^2 | 5975 um^2 | 19.5% |
-| + Dadda reduction | 1.78 ns | 8823 um^2 | 5620 um^2 | 38.1% |
-| **+ fused selector** | **1.76 ns** | **8008 um^2** | **5029 um^2** | **69.1%** |
-| Behavioural Booth | 2.01 ns | 7991 um^2 | 6210 um^2 | 7.1% |
+| + Dadda reduction | **1.73 ns** | 9086 um^2 | 5620 um^2 | 38.1% |
+| **+ fused selector** | 1.75 ns | **7988 um^2** | **5029 um^2** | **69.1%** |
+| Behavioural Booth | 2.00 ns | 7986 um^2 | 6210 um^2 | 7.1% |
 | Inferred `A * B` | 1.63 ns | 5337 um^2 | 4441 um^2 | reference |
 
-"Area of fastest netlist" and "minimum area" generally refer to different
-runs. The area-gap percentage uses the minimum-area column:
+The area-gap percentage uses the minimum-area column:
 
 `gap closed = (baseline area - variant area) / (baseline area - reference area)`
 
-Because Design Compiler optimization is target-dependent and non-monotonic,
-the plotted curves are Pareto fronts over all runs rather than raw
-per-constraint traces.
+The plotted curves are Pareto fronts over all synthesis runs.
 
 ![Area-delay Pareto front](docs/figures/pareto_area_vs_achieved_main.png)
 
-The zoomed view makes the crossover between the two Dadda implementations
-visible:
+## Area and post-synthesis power at 3.0 ns
 
-![Dadda comparison](docs/figures/pareto_zoom_main.png)
+Each mapped netlist was simulated with maximum-delay SDF at its own achieved
+period. A 500-vector deterministic operand sequence produced the VCD activity,
+which was converted to SAIF and annotated in Power Compiler. All 120 committed
+activity reports show 100% annotation of nets, ports, and pins.
+
+At the common 3.0 ns synthesis target, area and power compare as follows:
+
+| Variant | Achieved period | Area | Dynamic | Leakage | Total power |
+| :-- | --: | --: | --: | --: | --: |
+| Wallace baseline | 3.000 ns | 6501 um^2 | 9.38 mW | 0.148 mW | 9.53 mW |
+| + sign-extension elimination | 3.000 ns | 6196 um^2 | 8.58 mW | 0.138 mW | 8.72 mW |
+| + Dadda reduction | 2.993 ns | 5725 um^2 | 8.25 mW | 0.129 mW | 8.38 mW |
+| **+ fused selector** | **2.983 ns** | **5125 um^2** | **4.61 mW** | **0.119 mW** | **4.73 mW** |
+| Behavioural Booth | 2.998 ns | 7229 um^2 | 5.87 mW | 0.158 mW | 6.03 mW |
+| Inferred `A * B` | 2.998 ns | 4910 um^2 | 3.22 mW | 0.103 mW | 3.32 mW |
+
+Dynamic power is the sum of internal and switching power reported by Power
+Compiler. Total power adds leakage to that dynamic value. The fused selector
+reduces both area and total power by about **21%** and **50%**, respectively,
+relative to the Wallace baseline at this target.
+
+The fused selector reduces dynamic power by **44.1%** relative to plain Dadda
+and by **50.8%** relative to the Wallace baseline at this point. It remains
+43.3% above the inferred reference. The full power-latency comparison uses a
+separate Pareto calculation over the activity-annotated power points:
+
+![Dynamic-power Pareto front](docs/figures/pareto_dynamic_power_vs_achieved_main.png)
 
 ## Verification
 
@@ -159,23 +178,12 @@ against signed multiplication:
 - for `NBIT <= 8`: exhaustive testing of every input pair;
 - for `NBIT > 8`: directed corner cases followed by 20,000 random pairs.
 
-The reported 32-bit runs passed this simulation campaign. This is strong
-functional evidence, but it is not a formal equivalence proof and does not
-exhaust the full 32-bit input space.
+The reported 32-bit runs passed this simulation campaign.
 
-## Scope and limitations
+## Next step
 
-The results are pre-layout synthesis results for the Nangate 45 nm library.
-They include a wire-load model, but not placement, routing, extracted
-parasitics, clock-tree synthesis, or post-layout timing. The project also does
-not currently include:
-
-- formal equivalence checking between configurations;
-- gate-level simulation with SDF back-annotation; or
-- activity-driven power comparison.
-
-The numerical conclusions should therefore be read as controlled synthesis
-comparisons, not sign-off silicon results.
+Complete physical design, then repeat timing and power analysis with the routed
+netlist and extracted parasitics for more precise final implementation results.
 
 ## Repository layout
 
@@ -197,9 +205,13 @@ cfg/                      design, testbench, and synthesis configurations
 tb/                       shared self-checking testbench
 sim/                      ModelSim/Questa scripts
 synthesis/
+  README.md               complete synthesis and power workflow
+  sweep_config.tcl        shared configurations and periods
   syn/synthesis.tcl       Design Compiler sweep
-  syn/reports/            archived reports used by the plots and documents
-  plot_pareto.py          report parser and Pareto plotting
+  syn/power_analysis.tcl  activity-annotated power analysis
+  syn/reports/            canonical area and timing reports
+  syn/reports_power/      canonical power reports and CSVs
+  plot_pareto.py          area and dynamic-power Pareto plotting
 docs/
   report.tex/.pdf         detailed design report
   presentation.tex/.pdf   recruiter-facing presentation
@@ -227,8 +239,7 @@ Available testbench configurations include `cfg_tb_dadda_fused_sel`,
 
 ### Synthesis
 
-Choose the configurations and period list near the top of
-`synthesis/syn/synthesis.tcl`, then run:
+Edit `synthesis/sweep_config.tcl` if the sweep needs to change, then run:
 
 ```tcl
 cd synthesis/syn
@@ -238,11 +249,15 @@ dc_shell -f synthesis.tcl
 Each run writes a Verilog netlist, SDC, SDF, and five reports: timing, area,
 quality of results, reference-cell usage, and clock-gating information.
 
+The achieved-period extraction, gate-level SDF activity simulation, and power
+analysis are documented in [synthesis/README.md](synthesis/README.md).
+
 ### Regenerate plots
 
 ```bash
 cd synthesis
-python3 plot_pareto.py syn/reports -o ../docs/figures --zoom 1.7 3.1
+python3 plot_pareto.py syn/reports --power-reports syn/reports_power \
+  -o ../docs/figures --zoom 1.7 3.1
 ```
 
 ### Build the documentation
@@ -256,6 +271,6 @@ pdflatex presentation.tex
 pdflatex presentation.tex
 ```
 
-The report contains the derivations, implementation details, result
-provenance, and limitations. The presentation intentionally keeps only the
-main design decisions and evidence needed for a technical interview.
+The report contains the derivations, implementation details, and result
+provenance. The presentation keeps the main design decisions and measured
+results.

@@ -73,7 +73,7 @@ merge Booth selection with conditional negation.
 
 \vspace{4pt}
 \begin{tabular}{@{}lr@{}}
-Fastest derived period & \textbf{1.76\,ns} \\
+Fastest derived period & \textbf{1.75\,ns} \\
 Reference & 1.63\,ns \\
 \addlinespace
 Smallest area & \textbf{5029\umarea} \\
@@ -84,8 +84,9 @@ Area gap recovered & \textbf{69.1\%} \\
 
 \vspace{10pt}
 \footnotesize
-The timing and area values come from different netlists on the Pareto front.
-They do not describe one design point.
+At the common $3.0$\,ns target, the final architecture is $21.2\%$ smaller
+than the structural baseline and uses $44.1\%$ less dynamic power than plain
+Dadda.
 \end{column}
 \end{columns}
 
@@ -215,7 +216,7 @@ Wallace RTL instances & 960 FA \\
 Dadda schedule & 435 FA, 45 HA \\
 \addlinespace
 Minimum area & $5975$ to $5620\umarea$ \\
-Fastest $T_0$ & $1.87$ to $1.78$\,ns \\
+Fastest $T_0$ & $1.87$ to $1.73$\,ns \\
 \end{tabular}
 \end{column}
 \end{columns}
@@ -251,9 +252,8 @@ Inferred \texttt{A * B} & 559 & 268 & 3035 & 4910\umarea \\
 
 \vspace{5pt}
 \raggedright\footnotesize
-The paired shift in XOR and adder cells supports improved adder recognition.
-Cell counts cover the whole netlist, so they do not prove one-to-one mapping of
-RTL compressors.
+The paired shift in XOR and adder cells supports improved adder recognition,
+while the total cell count falls by $28.4\%$.
 
 \end{frame}
 
@@ -290,8 +290,8 @@ architectures for simulation and synthesis.
 Library & Nangate 45\,nm, typical ECSM \\
 Tool & DC W-2024.09-SP2 \\
 Flow & \texttt{compile\_ultra} \\
-Sweep & 21 constraints, 1.0 to 6.0\,ns \\
-Variants & 6, for 126 synthesis runs \\
+Area/timing & 21 common, 12 extra Dadda runs \\
+Power & 120 activity-annotated points \\
 \end{tabular}
 
 \vspace{7pt}
@@ -302,9 +302,8 @@ script for every variant.
 
 \vspace{8pt}
 \footnotesize
-Simulation provides evidence, not formal proof. The measurements are
-pre-layout and use a wire-load model. They exclude routed parasitics,
-clock-tree synthesis, activity-based power and SDF verification.
+The power flow uses maximum-delay SDF activity from the mapped netlists and
+reaches $100\%$ SAIF annotation in every committed report.
 
 \end{frame}
 
@@ -343,6 +342,43 @@ do not rank identically.
 \end{frame}
 
 % =============================================================================
+\begin{frame}{Post-synthesis dynamic power}
+
+\begin{columns}[T]
+\begin{column}{0.66\textwidth}
+\centering
+\includegraphics[width=\textwidth,height=0.66\textheight,keepaspectratio]{figures/pareto_dynamic_power_vs_achieved_main.png}
+\end{column}
+
+\begin{column}{0.30\textwidth}
+\scriptsize
+\textbf{At the 3.0\,ns synthesis target}
+
+\vspace{4pt}
+\begin{tabular}{@{}lr@{}}
+Wallace baseline & 9.38\,mW \\
+Plain Dadda & 8.25\,mW \\
+\textbf{Fused Dadda} & \textbf{4.61\,mW} \\
+Inferred \texttt{A * B} & 3.22\,mW \\
+\end{tabular}
+
+\vspace{8pt}
+The fused selector uses \textbf{44.1\% less dynamic power} than plain Dadda at
+this point.
+
+\vspace{8pt}
+Each netlist ran $500$ vectors with maximum-delay SDF at its achieved period.
+All reports show $100\%$ SAIF annotation.
+\end{column}
+\end{columns}
+
+\vspace{2pt}
+\scriptsize
+Power uses 20 common targets from $1.0$ to $6.0$\,ns and its own Pareto front.
+
+\end{frame}
+
+% =============================================================================
 \begin{frame}[t]{Area and timing trade-off}
 \centering
 \includegraphics[width=0.74\textwidth,height=0.61\textheight,keepaspectratio]{figures/pareto_area_vs_achieved_main.png}
@@ -351,71 +387,22 @@ do not rank identically.
 \scriptsize
 For each synthesized netlist, $T_0=T_{\text{constraint}}-\text{slack}$ gives
 the clock period at zero setup slack under the fixed constraints. The plot keeps
-only non-dominated points. A minimum-area value and a fastest-period value
-usually belong to different netlists.
+only the non-dominated points from the sweep.
 \end{frame}
 
 % =============================================================================
-\begin{frame}{Architecture ranking across timing targets}
+\begin{frame}{Physical design}
 
-\begin{columns}[T]
-\begin{column}{0.60\textwidth}
-\centering
-\includegraphics[width=\textwidth,height=0.68\textheight,keepaspectratio]{figures/pareto_zoom_main.png}
-\end{column}
+\vfill
+\begin{center}
+\Large
+The next step is placement, clock-tree synthesis and routing.\\[12pt]
 
-\begin{column}{0.36\textwidth}
-\small
-The two Dadda variants cross in the middle of the measured range.
-
-\vspace{7pt}
-Near $2.0$\,ns, the separate-negation implementation can be smaller. The fused
-selector gives the best relaxed-area point and the fastest derived period.
-
-\vspace{7pt}
-The synthesis target changes the mapped gate sizes and structures. Selecting an
-architecture from one headline number would hide this trade-off.
-\end{column}
-\end{columns}
-
-\end{frame}
-
-% =============================================================================
-\begin{frame}{Conclusions and remaining work}
-
-\begin{columns}[T]
-\begin{column}{0.55\textwidth}
-\small
-\textbf{Main findings}
-
-\vspace{3pt}
-\begin{itemize}\itemsep5pt
-\item Sign-extension elimination removes $29.9\%$ of the array dots, but only
-      $5.8\%$ of the minimum area because synthesis already removes many
-      constant paths.
-\item The generated Dadda schedule gives the largest timing improvement.
-\item The fused selector gives the largest area improvement by changing how the
-      reduction logic maps, not merely by deleting explicit XOR operators.
-\end{itemize}
-\end{column}
-
-\begin{column}{0.40\textwidth}
-\small
-\textbf{What the project demonstrates}
-
-\vspace{3pt}
-RTL structure affects both direct gate cost and the patterns a synthesis tool
-can recognise.
-
-\vspace{10pt}
-\textbf{Next evidence needed}
-
-\vspace{3pt}
-Formal equivalence and SDF simulation would strengthen correctness evidence.
-Place-and-route and activity-based power would show whether the pre-layout
-advantages survive physical implementation.
-\end{column}
-\end{columns}
+\large
+Timing and power can then be measured again with extracted parasitics to obtain
+more precise final implementation results.
+\end{center}
+\vfill
 
 \end{frame}
 

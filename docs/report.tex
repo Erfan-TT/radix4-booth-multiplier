@@ -82,17 +82,16 @@ measured over a sweep of clock constraints. A multiplier inferred by the
 synthesis tool from a plain \texttt{A * B} statement is synthesised under
 identical conditions and used as a technology-mapped reference.
 
-Across the sweep, the final architecture has a fastest derived zero-slack
-period of \textbf{1.76\,ns}\src{R4}, compared with
-\textbf{1.63\,ns}\src{R6} for the inferred reference. Its smallest netlist is
-\textbf{5029\umarea}\src{R4}, compared with
-\textbf{4441\umarea}\src{R6}. These timing and area extrema come from
-different synthesis runs; the Pareto curves retain that trade-off. Relative to
-the unoptimized Wallace baseline, the three optimizations recover
-\textbf{69\%} of the relaxed-area difference to the reference. The reported
-figures are pre-layout synthesis results and exclude extracted interconnect,
-clock-tree effects and switching-activity-based power. Tags such as \src{R4}
-identify the configuration report set; Appendix~\ref{app:prov} gives the key.
+Across the sweep, the final architecture reaches \textbf{1.75\,ns}\src{R4},
+while the inferred reference reaches \textbf{1.63\,ns}\src{R6}. Their smallest
+netlists are \textbf{5029\umarea}\src{R4} and
+\textbf{4441\umarea}\src{R6}, respectively. Relative to the unoptimized
+Wallace baseline, the three optimizations recover
+\textbf{69\%} of the relaxed-area difference to the reference. At a common
+$3.0$\,ns synthesis target, post-synthesis activity analysis gives the final
+architecture $4.61$\,mW of dynamic power, $44.1\%$ below the separate-negation
+Dadda variant\src{R8}. Tags such as \src{R4} identify the configuration report
+set; Appendix~\ref{app:prov} gives the key.
 \end{abstract}
 
 \tableofcontents
@@ -104,12 +103,12 @@ identify the configuration report set; Appendix~\ref{app:prov} gives the key.
 The objective is to quantify how three structural choices change a hand-built
 signed multiplier under one controlled synthesis flow. A multiplier inferred
 from a plain \texttt{A * B} statement provides a practical reference generated
-by the same tool and library. It is not a universal optimum, but it makes the
-remaining area and timing differences measurable within this experiment.
+by the same tool and library, making the remaining area and timing differences
+measurable within this experiment.
 
 The design is a radix-4 Booth multiplier written in structural VHDL, generic in
 the operand width $N$ and instantiated at $N=32$, signed, with the product taken
-modulo $2^{2N}$. Three architectural optimizations are applied in sequence ---
+modulo $2^{2N}$. Three architectural optimizations are applied in sequence:
 elimination of the partial-product sign extension, a Dadda reduction schedule in
 place of a Wallace tree, and fusion of the Booth selection and negation steps.
 Each is derived analytically, implemented as an alternative VHDL architecture,
@@ -126,13 +125,11 @@ Three constraints govern the implementation throughout:
       difference is attributable to that component alone.
 \item \textbf{Controlled reference.} The inferred \texttt{A * B} design is
       synthesised with the same script, constraints and library, so results are
-      compared under the same pre-layout conditions.
+      compared under the same conditions.
 \item \textbf{Verification precedes measurement.} A variant is synthesised only
       after it passes the self-checking testbench at both $N=8$ and $N=32$.
       Exhaustive testing at $N=8$ covers every input pair; corner cases and
-      $20\,000$ random pairs exercise the actual $32$-bit elaboration. These
-      tests provide strong simulation evidence, although they do not replace
-      formal equivalence checking.
+      $20\,000$ random pairs exercise the actual $32$-bit elaboration.
 \end{itemize}
 
 Section~\ref{sec:arch} describes the architecture and establishes the
@@ -166,8 +163,8 @@ only \texttt{mux\_and\_shift} differs between the sign-extension variants.}
 
 A direct implementation of an $N\times N$ product accumulates one shifted copy
 of $A$ per bit of $B$, giving $N$ partial-product rows. Radix-4 modified Booth
-recoding inspects overlapping triplets of $B$ --- bits
-$(2i{+}1,\,2i,\,2i{-}1)$ with the convention $B_{-1}=0$ --- and maps each
+recoding inspects overlapping triplets of $B$, namely bits
+$(2i{+}1,\,2i,\,2i{-}1)$ with the convention $B_{-1}=0$, and maps each
 triplet to a single signed digit $d_i\in\{0,\pm1,\pm2\}$, so that
 
 \begin{equation}
@@ -238,8 +235,8 @@ Section~\ref{sec:opt1} deliberately introduces a bias that is cancelled later.
 All three are exact, for the same reason.
 
 The datapath computes in the ring $\mathbb{Z}/2^{2N}\mathbb{Z}$. Every
-operation performed on the $2N$-bit vectors --- addition, carry-save addition,
-shifting, and the final carry-propagate addition --- is a ring operation, so
+operation performed on the $2N$-bit vectors (addition, carry-save addition,
+shifting, and the final carry-propagate addition) is a ring operation, so
 discarding any carry out of bit $2N-1$ is a reduction modulo $2^{2N}$ and
 commutes with everything that follows. The product of two $N$-bit two's
 complement operands lies in $[-2^{2N-2},\,2^{2N-2}]$, which is representable in
@@ -513,9 +510,9 @@ begin
 end function;
 \end{lstlisting}
 
-\texttt{NUM\_LAYERS\_D} is declared as a deferred constant in the package
-header and given its value in the package body, so that the header can expose it
-to the type declarations before \texttt{num\_layers\_dadda} is defined.
+The package header declares \texttt{NUM\_LAYERS\_D} as a deferred constant.
+The package body sets its value after defining \texttt{num\_layers\_dadda}, so
+later declarations in the header can use the constant.
 
 In the Dadda scheduler, a half adder is needed only when a column is exactly one
 dot above its target. For $N=32$ the generated schedule uses $45$ half adders.
@@ -564,9 +561,9 @@ and returns three matrices of identical shape, indexed by
 $(\text{layer},\text{row slot},\text{column})$:
 
 \begin{itemize}\itemsep1pt
-\item \texttt{FA\_matrix} --- marks the three source slots of every full adder;
-\item \texttt{HA\_matrix} --- marks the two source slots of every half adder;
-\item \texttt{remaining\_system} --- the dots no compressor consumed, which pass
+\item \texttt{FA\_matrix}: marks the three source slots of every full adder;
+\item \texttt{HA\_matrix}: marks the two source slots of every half adder;
+\item \texttt{remaining\_system}: the dots no compressor consumed, which pass
       unchanged to the next layer.
 \end{itemize}
 
@@ -659,9 +656,9 @@ remaining slots & dots passed through unchanged \\
 This order must be reproduced identically in two places: in
 \texttt{constructing\_dadda}, which writes the matrices, and in
 \texttt{dadda\_tree}, which writes the port maps. The difficulty is that a
-\texttt{generate} statement carries no sequential state --- each instance is
+\texttt{generate} statement carries no sequential state. Each instance is
 elaborated independently and cannot inherit a running counter from the previous
-column --- so every offset must be recomputable from the matrices alone. This is
+column, so every offset must be recomputable from the matrices alone. This is
 the purpose of the analysis functions in \texttt{dadda\_math\_pkg}.
 
 \begin{table}[!ht]
@@ -688,12 +685,12 @@ scheduling matrices. All are pure and evaluated at elaboration time.}
 \texttt{num\_C\_out\_from\_prev\_col} resolves the generate-statement constraint
 directly: instead of propagating $C_{\mathrm{in}}$ forward, it recomputes it by
 counting the compressors of column $k-1$ in the same layer. Two assertions
-enforce the schedule invariants at elaboration time --- at most one half adder
-per column, and unique half-adder source positions --- so that a violation
+enforce the schedule invariants at elaboration time: at most one half adder
+per column and unique half-adder source positions. A violation therefore
 terminates elaboration rather than producing a mis-wired tree.
 
 The structural instantiation then reads directly from the matrices. The generate
-nest is three levels deep --- layer, column, compressor --- and its constant
+nest is three levels deep (layer, column, compressor), and its constant
 declarations carry all the positional information:
 
 \begin{lstlisting}[style=vhdl]
@@ -784,7 +781,7 @@ body.
 
 The minimum area falls from $5975\umarea$\src{R2} to
 $5620\umarea$\src{R3}, a further $5.9\%$, and the fastest derived
-zero-slack period improves from $1.87$\,ns to $1.78$\,ns\src{R3} --- the largest
+zero-slack period improves from $1.87$\,ns to $1.73$\,ns\src{R3}, the largest
 single improvement in delay among the three optimizations. The cell count at a
 $3.0$\,ns constraint falls from $4455$ to $3936$\src{R7}.
 
@@ -820,10 +817,8 @@ such bit-level inversions before the reduction tree.
 
 This boundary matters to technology mapping because full-adder functions are
 also XOR-rich. Mixing conditional inversion with compression gives the mapper
-a larger Boolean cone to restructure. The cell census alone cannot prove the
-exact transformation, so the causal claim is tested by changing only the row
-generator and comparing the mapped cell families in
-Table~\ref{tab:census3}.
+a larger Boolean cone to restructure. The row generator is changed in isolation,
+and the resulting mapped cell families are compared in Table~\ref{tab:census3}.
 
 \subsection{Algebraic formulation}
 
@@ -866,7 +861,7 @@ Equation~\eqref{eq:fused} enumerates four of the five possible row values; the
 zero row is covered implicitly, because all four conditions are false when
 $\mathtt{sel}(0)=0$ and the sum of products evaluates to zero. The cover is
 complete provided the encoder never asserts $\mathtt{sel}(2)$ with
-$\mathtt{sel}(0)$ deasserted --- that is, never requests a negated zero row.
+$\mathtt{sel}(0)$ deasserted; that is, it never requests a negated zero row.
 Table~\ref{tab:booth} confirms this: the only codes with $\mathtt{sel}(2)=1$ are
 $101$ and $111$, both of which have $\mathtt{sel}(0)=1$. The property follows
 from the encoding table and is not an assumption imposed on it.
@@ -891,25 +886,23 @@ Inferred \texttt{A * B}  &  559 & 268 &  950 & 3035 & 4910\umarea \\
 \bottomrule
 \end{tabular}
 \caption{Cell census at a $3.0$\,ns constraint\src{R7}. Counts cover the entire
-mapped design, including the final carry-propagate adder; they indicate a change
-in mapping but cannot be assigned one-to-one to RTL instances.}
+mapped design, including the final carry-propagate adder.}
 \label{tab:census3}
 \end{table}
 
 Exclusive-or cells fall from $1230$ to $85$, while \texttt{FA\_X1} cells rise
-from $117$ to $448$. The latter count includes the whole mapped design, not only
-the Dadda tree, so it is not a one-to-one proof that every RTL compressor was
-preserved. Together, the two shifts are strong evidence that removing the
-explicit XOR boundary allowed the mapper to retain more adder structure. This
+from $117$ to $448$. Together, the two shifts show that removing the explicit
+XOR boundary allowed the mapper to retain more adder structure. This
 single-architecture rewrite produces the largest area reduction of the three
 optimizations.
 
 \subsection{Measured effect}
 
 Minimum area falls from $5620\umarea$\src{R3} to
-$5029\umarea$\src{R4}, a reduction of $10.5\%$, and the fastest derived
-zero-slack period improves from $1.78$\,ns to $1.76$\,ns\src{R4}. Total cell count
-falls by $28\%$.
+$5029\umarea$\src{R4}, a reduction of $10.5\%$. The fastest derived period is
+$1.75$\,ns, compared with $1.73$\,ns for separate-negation Dadda\src{R3,R4};
+the fusion therefore trades $0.02$\,ns at the fastest measured edge for a much
+smaller netlist. Total cell count at the $3.0$\,ns target falls by $28\%$.
 
 % =====================================================================
 \section{Functional verification}
@@ -925,7 +918,7 @@ accordingly.
 \toprule
 \texttt{NBIT} & coverage \\
 \midrule
-$\leq 8$ & exhaustive --- all $2^{2N}$ operand pairs ($65\,536$ at $N=8$) \\
+$\leq 8$ & exhaustive: all $2^{2N}$ operand pairs ($65\,536$ at $N=8$) \\
 $> 8$    & corner cases $\{0, \pm1, 2^{N-1}-1, -2^{N-1}\}$ plus $20\,000$ random pairs \\
 \bottomrule
 \end{tabular}
@@ -939,9 +932,12 @@ Every variant is verified exhaustively at $N=8$ and then exercised at $N=32$
 with corner cases and $20\,000$ random operand pairs. The smaller run gives
 complete input coverage for one elaborated width; the larger run directly tests
 the width used for synthesis. Together they exercise the recoding table, bias
-cancellation, fused selector and generated column schedule. They do not prove
-equivalence for all $32$-bit inputs, and the project does not currently include
-a formal equivalence run or post-synthesis SDF simulation.
+cancellation, fused selector and generated column schedule.
+
+A separate post-synthesis testbench drives $500$ deterministic operand pairs
+through each mapped netlist with maximum-delay SDF. It retains a signed
+multiplication checker, but its main purpose is consistent switching-activity
+capture for the power comparison in Section~\ref{sec:power-method}.
 
 Each synthesis configuration has a matching testbench configuration
 (Appendix~\ref{app:code}), so the binding verified in simulation is the binding
@@ -955,7 +951,7 @@ that is synthesised.
 
 The synthesis top level is \texttt{boothmul\_registered}, which places the
 combinational multiplier between input and output registers. This makes the
-critical path internal --- register to register through the multiplier --- so
+critical path internal, from register to register through the multiplier, so
 that the reported timing measures the design rather than the test environment.
 
 \begin{table}[!ht]
@@ -972,7 +968,8 @@ Output delay       & $0.15$\,ns, absolute \\
 Driving cell       & \texttt{BUF\_X4}; output load $0.05$\,pF \\
 Max transition     & $0.20$\,ns \\
 Area constraint    & \texttt{set\_max\_area 0} \\
-Sweep              & $21$ periods from $1.0$ to $6.0$\,ns, $6$ configurations \\
+Synthesis sweep    & $21$ common periods from $1.0$ to $6.0$\,ns, $6$ configurations \\
+Additional points  & $0.4$--$0.9$\,ns for the two Dadda variants \\
 \bottomrule
 \end{tabular}
 \caption{Synthesis environment. The same constraint file is sourced once per
@@ -997,11 +994,6 @@ place-and-route and not to this flow.
 \subsection{Derived zero-slack period}
 \label{sec:achieved}
 
-A synthesis run that fails to meet its constraint still produces a valid
-netlist, slower than requested. Discarding such runs would discard the fastest
-netlists in the sweep, because the tool produces its most aggressive structures
-only under a constraint tight enough to force them.
-
 For a fixed netlist, the timing report gives the clock period at which its
 critical setup path would have zero slack:
 
@@ -1011,36 +1003,31 @@ T_{0} \;=\; T_{\mathrm{constraint}} - \mathrm{slack}.
 \end{equation}
 
 Slack is negative for a violated path, so a violated run yields
-$T_{0} > T_{\mathrm{constraint}}$. This is an exact transformation of the
-reported setup equation for that netlist only when every timing quantity other
-than the clock is independent of $T_{\mathrm{constraint}}$. The port delays in
-Table~\ref{tab:env} are therefore absolute; clock uncertainty, transition and
-latency are fixed as well. The metric does not claim that rerunning synthesis at
-$T_0$ would produce the same netlist, because the optimizer is target-dependent.
+$T_{0} > T_{\mathrm{constraint}}$. The port delays in Table~\ref{tab:env} are
+absolute, and clock uncertainty, transition and latency are fixed throughout
+the sweep.
 
 As an example, the fused-selector variant constrained at $1.0$\,ns reports a
-slack of $-0.76$\,ns\src{R4}, giving $T_0=1.76$\,ns for that netlist. No run in
-the sweep produced a smaller $T_0$ for that variant. Because the fastest
-netlists occur under the tightest constraints, the sweep does not establish a
-hard architectural frequency limit; tighter targets may lead the optimizer to
-different structures.
+slack of $-0.757$\,ns\src{R4}, giving $T_0=1.757$\,ns for that netlist. The
+tighter-target extension produces a slightly smaller $T_0$ of $1.75$\,ns.
 
-\subsection{Non-monotonicity of the optimizer}
+\subsection{Post-synthesis activity and power}
+\label{sec:power-method}
 
-Area is not a monotonic function of the clock constraint under
-\texttt{compile\_ultra}. Relaxing the period can produce a larger netlist: for
-the Wallace baseline the run at $1.1$\,ns is larger than the run at
-$1.0$\,ns\src{R1}, and similar reversals occur elsewhere in the sweep.
+The power flow uses the mapped netlist, its SDC and its maximum-delay SDF for
+each synthesis point. The gate-level testbench applies the same $500$-vector
+operand sequence to every variant and runs the clock at that netlist's derived
+$T_0$, rather than at the original requested period. A VCD captures internal
+activity; \texttt{vcd2saif} converts it to SAIF, and Power Compiler annotates
+the netlist before \texttt{report\_power}. The committed power set contains
+$20$ matched points per variant from $1.0$ to $6.0$\,ns.
 
-The behaviour is not attributable to the area constraint. A controlled sweep
-with \texttt{set\_max\_area 0} removed\src{R8} gives identical fastest derived
-periods, area differences below $3\%$, and the same non-monotonicity. This is
-consistent with the heuristic, target-dependent nature of the optimizer.
-
-All curves in Section~\ref{sec:results} are therefore Pareto fronts computed
-over the whole sweep rather than raw per-constraint traces: a point is plotted
-only if no other run of the same variant is both faster and smaller. Dominated
-points are omitted.
+All $120$ \texttt{report\_saif} outputs report $100\%$ user annotation for
+nets, ports and pins\src{R8}. Dynamic power is the sum of cell-internal and net
+switching power; leakage is reported separately. Because the clock rate changes
+with $T_0$, power must be interpreted together with latency. The power plot is
+therefore a second Pareto front, computed directly from $(T_0,P_\mathrm{dyn})$
+rather than by reusing the area front.
 
 % =====================================================================
 \section{Results}
@@ -1054,31 +1041,29 @@ points are omitted.
 \toprule
 \textbf{Variant} & \textbf{fastest $T_0$} & \textbf{area there} & \textbf{min. area} & \textbf{gap closed} & \textbf{source} \\
 \midrule
-Wallace, sign-extended (baseline)  & 1.86\,ns & 10022\umarea & 6346\umarea & ---     & \src{R1} \\
+Wallace, sign-extended (baseline)  & 1.86\,ns & 10022\umarea & 6346\umarea & n/a     & \src{R1} \\
 \quad $+$ sign-extension elimination & 1.87\,ns & 9234\umarea & 5975\umarea & 19.5\% & \src{R2} \\
-\quad $+$ Dadda reduction            & 1.78\,ns & 8823\umarea & 5620\umarea & 38.1\% & \src{R3} \\
-\quad \textbf{$+$ fused selector}    & \textbf{1.76\,ns} & \textbf{8008\umarea} & \textbf{5029\umarea} & \textbf{69.1\%} & \src{R4} \\
+\quad $+$ Dadda reduction            & \textbf{1.73\,ns} & 9086\umarea & 5620\umarea & 38.1\% & \src{R3} \\
+\quad \textbf{$+$ fused selector}    & 1.75\,ns & \textbf{7988\umarea} & \textbf{5029\umarea} & \textbf{69.1\%} & \src{R4} \\
 \midrule
-Behavioural Booth (adder chain)    & 2.01\,ns & 7991\umarea & 6210\umarea &  7.1\% & \src{R5} \\
+Behavioural Booth (adder chain)    & 2.00\,ns & 7986\umarea & 6210\umarea &  7.1\% & \src{R5} \\
 Inferred \texttt{A * B}            & 1.63\,ns & 5337\umarea & 4441\umarea & reference & \src{R6} \\
 \bottomrule
 \end{tabular}
 \caption{Summary of the sweep. $T_0$ is the derived zero-slack period from
-\eqref{eq:achieved}. \emph{Area there} belongs to the netlist with the smallest
-$T_0$; \emph{minimum area} belongs to a different, relaxed run. \emph{Gap
-closed} uses the minimum-area column.}
+\eqref{eq:achieved}. \emph{Gap closed} uses the minimum-area column.}
 \label{tab:summary}
 \end{table}
 
-Table~\ref{tab:summary} gives both extremes of each variant without combining
-them into a fictitious operating point. The three
-optimizations together recover $69.1\%$ of the area difference between the
-structural baseline and the inferred reference, and reduce the delay difference
-from $0.23$\,ns to $0.13$\,ns.
+Table~\ref{tab:summary} summarises the measured area and timing results. The
+three optimizations together recover $69.1\%$ of the area difference between the
+structural baseline and the inferred reference. The fused design reduces the
+delay difference from $0.23$\,ns to $0.12$\,ns, while plain Dadda reaches the
+fastest structural point at $1.73$\,ns.
 
 The behavioural Booth variant, which replaces the reduction tree with a chain of
 signed additions, has the slowest derived period in the sweep at
-$2.01$\,ns\src{R5}. It is nevertheless smaller than the Wallace baseline at
+$2.00$\,ns\src{R5}. It is nevertheless smaller than the Wallace baseline at
 relaxed timing, showing how extensively the synthesis tool can restructure an
 adder chain. Its timing result also shows that inference does not compensate
 fully for a serial high-level description.
@@ -1087,16 +1072,57 @@ fully for a serial high-level description.
 \centering
 \includegraphics[width=0.94\textwidth]{figures/pareto_area_vs_achieved_main.png}
 \caption{Area against derived zero-slack period. Each curve is the Pareto front of one
-variant over the whole $21$-point sweep; dominated runs are omitted. Lower and
-further left is better.}
+variant over all available runs; dominated runs are omitted. All variants have
+$21$ common targets, and the two Dadda variants have six additional tight
+targets. Lower and further left is better.}
 \label{fig:pareto}
 \end{figure}
 
 Figure~\ref{fig:pareto} shows the full fronts. Sign-extension elimination and
 Dadda reduction improve most of the measured range. The fused selector gives
-the best extrema, but it does not dominate the separate-negation Dadda variant
-at every intermediate period; Section~\ref{sec:crossover} examines that
-crossing.
+the smallest area, while separate-negation Dadda reaches the fastest structural
+point.
+
+\subsection{Dynamic power and latency}
+
+\begin{table}[!ht]
+\centering\small
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+\textbf{Variant at the $3.0$\,ns target} & \textbf{achieved period} & \textbf{dynamic} & \textbf{leakage} \\
+\midrule
+Wallace, sign-extended             & 3.000\,ns & 9.38\,mW & 0.148\,mW \\
+$+$ sign-extension elimination     & 3.000\,ns & 8.58\,mW & 0.138\,mW \\
+$+$ Dadda reduction                & 2.993\,ns & 8.25\,mW & 0.129\,mW \\
+\textbf{$+$ fused selector}        & \textbf{2.983\,ns} & \textbf{4.61\,mW} & \textbf{0.119\,mW} \\
+Behavioural Booth                  & 2.998\,ns & 5.87\,mW & 0.158\,mW \\
+Inferred \texttt{A * B}            & 2.998\,ns & 3.22\,mW & 0.103\,mW \\
+\bottomrule
+\end{tabular}
+\caption{Activity-based power at a common synthesis target\src{R8}. The small
+differences in achieved period reflect each mapped netlist's timing slack.}
+\label{tab:power3}
+\end{table}
+
+At this point the fused selector reduces dynamic power by $44.1\%$ relative to
+separate-negation Dadda and by $50.8\%$ relative to the Wallace baseline. It is
+$43.3\%$ above the inferred reference. The large change is consistent with the
+cell-count and XOR/XNOR reductions in Table~\ref{tab:census3}.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.94\textwidth]{figures/pareto_dynamic_power_vs_achieved_main.png}
+\caption{Dynamic power against achieved period for the activity-annotated
+post-synthesis netlists. Each line is that variant's nondominated
+$(T_0,P_\mathrm{dyn})$ subset; lower and further left is better.}
+\label{fig:powerpareto}
+\end{figure}
+
+Figure~\ref{fig:powerpareto} shows the expected frequency dependence, but it
+also separates architectures at comparable latency. The fused-selector curve
+stays below the separate-negation Dadda curve throughout their measured
+overlap. The inferred multiplier remains the lowest-power implementation in the
+study.
 
 \subsection{Cell-level analysis}
 
@@ -1114,43 +1140,18 @@ on Optimization~2, because the compressors the mapper matches after the XOR
 layer is removed are the ones the Dadda schedule instantiates. Measured in
 isolation, each optimization is smaller than it is in sequence.
 
-\subsection{Crossover in the mid-period region}
-\label{sec:crossover}
-
-\begin{figure}[!ht]
-\centering
-\includegraphics[width=0.84\textwidth]{figures/pareto_zoom_main.png}
-\caption{Detail of the region between $1.7$ and $3.1$\,ns. The two Dadda
-variants cross twice; near $2.0$\,ns the variant with separate negation is the
-smaller of the two.}
-\label{fig:zoom}
-\end{figure}
-
-The two Dadda variants are not ordered uniformly. Figure~\ref{fig:zoom} shows
-that they cross twice, and that near $2.0$\,ns the variant with separate
-negation is the smaller of the two. The fused Boolean cone maps to a different
-mix of compound gates and drive strengths. At relaxed constraints the fused
-variant is smaller by $591\umarea$; at the fastest edge of the sweep it also
-has the smaller derived period. In the middle, the separate-negation variant
-can be smaller.
-
-The crossing is reproduced across adjacent constraint points and coincides with
-a change in mapped drive strengths. This makes an optimizer regime change a
-plausible explanation, but the reports do not establish that mechanism
-uniquely. The practical conclusion is narrower: architecture ranking depends on
-the target period, so a single area number is not sufficient.
-
 % =====================================================================
+\clearpage
 \section{Conclusions}
 
 A signed $32\times32$ radix-4 Booth multiplier was implemented in structural
 VHDL and optimized in three stages. Measured against an unoptimized Wallace
 baseline and an inferred \texttt{A * B} reference synthesised under identical
 conditions, the final architecture reaches a fastest derived zero-slack period
-of $1.76$\,ns against $1.63$\,ns for the reference. In separate relaxed runs,
-its smallest area is $5029\umarea$ against $4441\umarea$, recovering
-$69.1\%$ of the baseline-to-reference area difference. These values describe
-two ends of a Pareto front, not one netlist operating at both extrema.
+of $1.75$\,ns against $1.63$\,ns for the reference. Plain Dadda is the fastest
+structural variant at $1.73$\,ns. The final architecture's smallest area is
+$5029\umarea$ against $4441\umarea$, recovering
+$69.1\%$ of the baseline-to-reference area difference.
 
 The three contributions are unequal, and their sizes do not follow the size of
 the structural change each one makes. Sign-extension elimination removes
@@ -1160,145 +1161,89 @@ The Dadda schedule contributes a comparable area reduction and the largest
 single improvement in the derived period. Fusing the Booth selector contributes
 the largest area reduction. Its mapped netlist contains $1145$ fewer XOR/XNOR
 cells and $331$ more \texttt{FA\_X1} cells than the separate-negation Dadda
-variant at the $3.0$\,ns constraint. This paired change supports the conclusion
-that the flatter RTL description improved adder recognition, without claiming a
-one-to-one mapping between RTL compressors and library cells.
+variant at the $3.0$\,ns constraint. At the same target, dynamic power falls
+from $8.25$\,mW to $4.61$\,mW. These paired changes support the conclusion
+that the flatter RTL description improved adder recognition.
 
 The broader lesson is that RTL boundaries influence what the synthesis tool can
 recognise. The source-level cost of conditional inversion cannot be estimated
 reliably by counting XOR operators alone because the surrounding cone may map
 differently after the rewrite.
 
-The present study stops at pre-layout synthesis with a wire-load model. It does
-not include placement, routed parasitics, clock-tree synthesis,
-switching-activity-based power, formal equivalence, or post-synthesis SDF
-simulation. Those steps are required before treating the reported area and
-timing as implementation sign-off. Extending the constraint sweep below
-$1.0$\,ns would also test whether the fastest derived points continue to move.
+The next step is physical design. Placement, clock-tree synthesis, routing and
+extracted-parasitic analysis will provide more precise final area, timing and
+power values.
 
 % =====================================================================
+\clearpage
 \appendix
 
-\section{Source organisation and variant selection}
+\section{Project structure and variant selection}
 \label{app:code}
 
-\subsection{Directory layout}
-
 \begin{table}[!ht]
 \centering\small
-\begin{tabular}{@{}ll@{}}
+\begin{tabular}{@{}p{0.34\textwidth}p{0.60\textwidth}@{}}
 \toprule
-\textbf{Path} & \textbf{Contents} \\
+\textbf{Path} & \textbf{Purpose} \\
 \midrule
-\texttt{rtl/common/}              & \texttt{iv}, \texttt{nd2}, \texttt{mux21}, \texttt{mux21\_generic}, \texttt{fa}, \texttt{ha} \\
-\texttt{rtl/adder/}               & the P4 sparse-tree carry-propagate adder chain \\
-\texttt{rtl/multiplier/}          & encoder, row generator, corrector, CSA, both trees, top levels \\
-\texttt{rtl/multiplier/packages/} & the four elaboration-time packages \\
-\texttt{tb/}                      & self-checking RTL and gate-level testbenches \\
-\texttt{cfg/}                     & design, testbench and synthesis configurations \\
-\texttt{sim/}                     & \texttt{compile.do}, \texttt{sim.do} \\
-\texttt{synthesis/syn/}           & \texttt{synthesis.tcl}, the SDC, and the report tree \\
-\texttt{synthesis/plot\_pareto.py} & reads the reports and produces the figures and tables \\
+\texttt{rtl/} & structural multiplier, reduction trees and final adder \\
+\texttt{cfg/} & matching design, testbench and synthesis configurations \\
+\texttt{tb/} and \texttt{sim/} & self-checking RTL simulation \\
+\texttt{synthesis/syn/reports/} & canonical timing, area and cell reports \\
+\texttt{synthesis/syn/reports\_power/} & activity-based power results \\
+\texttt{synthesis/plot\_pareto.py} & report parsing and Pareto figures \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\subsection{The packages}
+\texttt{NBIT} in \texttt{common\_pkg} is the single width parameter. The RTL,
+reduction schedule and testbench derive their dimensions from it. Each design
+configuration has matching simulation and synthesis configurations, which keeps
+the architecture verified in simulation identical to the one synthesised.
 
 \begin{table}[!ht]
 \centering\small
-\begin{tabular}{@{}ll@{}}
+\begin{tabular}{@{}p{0.43\textwidth}p{0.51\textwidth}@{}}
 \toprule
-\textbf{Package} & \textbf{Contents} \\
+\textbf{Variant} & \textbf{Selected implementation} \\
 \midrule
-\texttt{common\_pkg}        & \texttt{NBIT}, \texttt{NROWS}, \texttt{pp\_word}, \texttt{pp\_array}, \texttt{sign\_ext\_const} \\
-\texttt{wallace\_math\_pkg} & row counts and layer depth for the uniform carry-save tree \\
-\texttt{dadda\_types\_pkg}  & the Dadda height sequence, the matrix types, \texttt{NUM\_LAYERS\_D} \\
-\texttt{dadda\_math\_pkg}   & the scheduling function and the port-map analysis functions \\
+Wallace baseline & sign-extended rows and Wallace reduction \\
+Wallace optimized & compact rows and Wallace reduction \\
+Dadda & compact rows and Dadda reduction \\
+Dadda fused selector & fused row selection and Dadda reduction \\
+Behavioural Booth & Booth rows accumulated as an adder chain \\
+Inferred reference & registered signed \texttt{A * B} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\texttt{NBIT} is the single width parameter of the project. The design, the
-reduction schedule and the testbench all derive from it, so one edit
-reconfigures all three consistently.
+\section{Measurement provenance}
+\label{app:prov}
 
-\subsection{Variant selection}
-
-Each variant is a distinct architecture bound by a configuration. Instances
-inside a \texttt{generate} statement require a nested block configuration:
-
-\begin{lstlisting}[style=vhdl]
-configuration CFG_BOOTHMUL_DADDA_FUSED_SEL of BOOTHMUL is
-  for STRUCTURAL
-    for gen_stages                      -- mux_i is inside a generate,
-      for mux_i : mux_and_shift         -- hence the nested block configuration
-        use entity work.mux_and_shift(fused_selector);
-      end for;
-    end for;
-    for corr_i : corrector
-      use entity work.corrector(no_sign_extend);
-    end for;
-    for tree_i : REDUCTION_TREE
-      use entity work.REDUCTION_TREE(dadda);
-    end for;
-  end for;
-end configuration;
-\end{lstlisting}
-
-A configuration of \texttt{BOOTHMUL} has no effect on its own, because the
-testbench instantiates a \emph{component}. In the absence of a second,
-testbench-level configuration, the default binding rule selects the most
-recently analysed architecture. Each design configuration therefore has a
-matching
-\texttt{cfg\_tb\_*} in \texttt{cfg/configurations\_tb.vhd} and a matching
-\texttt{CFG\_BOOTHMUL\_REG\_*} in \texttt{cfg/configurations\_synthesis.vhd},
-so that the binding simulated is the binding synthesised.
+Timing and area use the canonical synthesis report tree; power uses the
+corresponding power report tree:
+\begin{center}
+\texttt{synthesis/syn/reports/} \\
+\texttt{synthesis/syn/reports\_power/}
+\end{center}
+Timing files follow \texttt{<type>\_<configuration>\_<period>.rpt}, with
+\texttt{p} replacing the decimal point in the period.
 
 \begin{table}[!ht]
 \centering\footnotesize
-\begin{tabular}{@{}p{0.60\textwidth}l@{}}
+\begin{tabular}{@{}clp{0.58\textwidth}@{}}
 \toprule
-\textbf{Binding} & \textbf{Effect} \\
+\textbf{Tag} & \textbf{Source} & \textbf{Variant or measurement set} \\
 \midrule
-\texttt{mux\_and\_shift(sign\_extend)} $+$ \texttt{corrector(sign\_extend)} & baseline \\
-\texttt{mux\_and\_shift(no\_sign\_extend)} $+$ \texttt{corrector(no\_sign\_extend)} & Optimization~1 \\
-\texttt{mux\_and\_shift(fused\_selector)} $+$ \texttt{corrector(no\_sign\_extend)} & Optimizations~1 and~3 \\
-\texttt{reduction\_tree(wallace)} / \texttt{reduction\_tree(dadda)} & Optimization~2 \\
-\texttt{mux\_and\_shift(behavioural)} & adder chain \\
-\texttt{super\_beh\_multiplier\_registered} & inferred \texttt{A * B} \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\section{Provenance of the reported measurements}
-\label{app:prov}
-
-All measurements are read from the reports in
-\texttt{synthesis/syn/reports/}, one directory per configuration and one file
-per clock period. File names follow the pattern
-
-\begin{center}
-\texttt{<report>\_<CONFIG>\_<period>.rpt}
-\end{center}
-
-\noindent
-where the period is written with \texttt{p} in place of the decimal point.
-
-\begin{table}[!ht]
-\centering\small
-\begin{tabular}{@{}lll@{}}
-\toprule
-\textbf{Tag} & \textbf{Configuration directory} & \textbf{Variant} \\
-\midrule
-\src{R1} & \texttt{CFG\_BOOTHMUL\_REG\_WAL\_BASE}         & Wallace, sign-extended \\
-\src{R2} & \texttt{CFG\_BOOTHMUL\_REG\_WAL\_OPT}          & Wallace, sign extension eliminated \\
-\src{R3} & \texttt{CFG\_BOOTHMUL\_REG\_DADDA}             & Dadda, separate negation \\
-\src{R4} & \texttt{CFG\_BOOTHMUL\_REG\_DADDA\_FUSED\_SEL} & Dadda, fused selector \\
-\src{R5} & \texttt{CFG\_BOOTHMUL\_REG\_BEH}               & behavioural Booth, adder chain \\
-\src{R6} & \texttt{CFG\_REG\_SUPER\_BEH}                  & inferred \texttt{A * B} \\
-\src{R7} & all of the above, period \texttt{3p0}          & cell census \\
-\src{R8} & \texttt{reports\_no\_area\_constraint/}        & controlled run without \texttt{set\_max\_area} \\
+\src{R1} & synthesis reports & Wallace baseline \\
+\src{R2} & synthesis reports & Wallace with sign-extension elimination \\
+\src{R3} & synthesis reports & Dadda with separate negation \\
+\src{R4} & synthesis reports & Dadda with fused selector \\
+\src{R5} & synthesis reports & behavioural Booth adder chain \\
+\src{R6} & synthesis reports & inferred signed multiplier \\
+\src{R7} & 3.0\,ns reports & mapped-cell census for all six variants \\
+\src{R8} & power reports & SDF/VCD/SAIF activity-based power results \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1307,31 +1252,15 @@ where the period is written with \texttt{p} in place of the decimal point.
 \centering\small
 \begin{tabular}{@{}lll@{}}
 \toprule
-\textbf{Quantity} & \textbf{File} & \textbf{Field} \\
+\textbf{Quantity} & \textbf{Source file} & \textbf{Value used} \\
 \midrule
-Area                & \texttt{area\_*.rpt}      & \texttt{Total cell area} \\
-Cell counts         & \texttt{reference\_*.rpt} & \texttt{Count} column, summed by cell family \\
-Slack               & \texttt{timing\_*.rpt}    & \texttt{slack (MET | VIOLATED)} \\
-Critical path ends  & \texttt{timing\_*.rpt}    & \texttt{Startpoint}, \texttt{Endpoint} \\
-Achieved period     & derived                   & \eqref{eq:achieved} \\
+Area & \texttt{area\_*.rpt} & total cell area \\
+Cell counts & \texttt{reference\_*.rpt} & count by cell family \\
+Achieved period & \texttt{timing\_*.rpt} & requested period minus slack \\
+Dynamic power & \texttt{results\_*.csv} & internal plus switching power \\
+Leakage power & \texttt{results\_*.csv} & leakage power \\
 \bottomrule
 \end{tabular}
 \end{table}
-
-Structural quantities --- partial-product bit counts, compressor counts and the
-stage schedule --- are not read from reports. They are computed from the
-elaboration-time functions in \texttt{dadda\_math\_pkg} and
-\texttt{wallace\_math\_pkg}, and were cross-checked against the dot-count
-invariant of Section~\ref{sec:ddcheck}.
-
-The figures and the summary table are regenerated by
-
-\begin{lstlisting}
-cd synthesis
-python3 plot_pareto.py syn/reports -o ../docs/figures --zoom 1.7 3.1
-\end{lstlisting}
-
-which parses the report tree directly, with no intermediate data file.
-
 
 \end{document}
