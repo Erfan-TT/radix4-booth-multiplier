@@ -1,0 +1,52 @@
+#
+# Version 1.1
+#
+
+
+set init_verilog {../synthesis/syn/netlist/CFG_BOOTHMUL_REG_DADDA_FUSED_SEL/boothmul_registered_CFG_BOOTHMUL_REG_DADDA_FUSED_SEL_3p0.v}
+set init_design_netlisttype {Verilog}
+set init_design_settop {1}
+
+# the topl level module
+set init_top_cell {boothmul_registered}
+
+set defHierChar {/}
+set delaycal_input_transition_delay {0.1ps}
+set fpIsMaxIoHeight 0
+
+
+set LEF_DIR /eda/dk/nangate45/lef
+set LEF_list [list ${LEF_DIR}/NangateOpenCellLibrary.lef]
+
+set init_lef_file "${LEF_list}"
+
+set LIB_DIR /eda/dk/nangate45/liberty
+set MyTimingLibNom ${LIB_DIR}/NangateOpenCellLibrary_typical_ecsm_nowlm.lib
+set MyTimingLibSlow ${LIB_DIR}/NangateOpenCellLibrary_slow_ecsm.lib
+set MyTimingLibFast ${LIB_DIR}/NangateOpenCellLibrary_fast_ecsm.lib
+
+set MycapTable $LEF_DIR/captables/NCSU_FreePDK_45nm.capTbl
+
+
+
+# floorplan related variables
+
+set fp_core_cntl {aspect}
+set fp_aspect_ration {1.0000}
+set extract_shrink_factor {1.0}
+set init_assign_buffer {0}
+set init_pwr_net {vdd}
+set init_gnd_net {gnd}
+
+# mmmc file with the constraints
+
+set init_mmmc_file {Default.view}
+set init_oa_search_lib {}
+set lsgOCPGainMult 1.000000
+
+
+# step 1
+
+init_design
+
+suspend
