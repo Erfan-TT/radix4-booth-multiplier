@@ -66,3 +66,10 @@ tcl_stacktrace.txt
 *.vrb
 *.fls
 *.fdb_latexmk
+
+
+# --- cadence artifacts 
+
+./physical_design/.cadence/
+*.cmd
+*.logv
