@@ -70,6 +70,13 @@ tcl_stacktrace.txt
 
 # --- cadence artifacts 
 
-./physical_design/.cadence/
+physical_design/.cadence/
+physical_design/dbs/
+physical_design/*.enc
+physical_design/*.enc.dat/
+physical_design/innovus.log*
+physical_design/innovus_temp_*
+physical_design/timingReports/
+physical_design/.metrics/
 *.cmd
 *.logv
