@@ -1,0 +1,170 @@
+#######################################################
+#                                                     
+#  Innovus Command Logging File                     
+#  Created on Thu Oct  8 19:34:03 2026                
+#                                                     
+#######################################################
+
+#@(#)CDS: Innovus v23.35-s106_1 (64bit) 07/16/2025 17:52 (Linux 3.10.0-693.el7.x86_64)
+#@(#)CDS: NanoRoute 23.35-s106_1 NR250707-2219/23_15-UB (database version 18.20.674_1) {superthreading v2.20}
+#@(#)CDS: AAE 23.15-s032 (64bit) 07/16/2025 (Linux 3.10.0-693.el7.x86_64)
+#@(#)CDS: CTE 23.15-s037_1 () Jul 16 2025 02:46:10 ( )
+#@(#)CDS: SYNTECH 23.15-s011_1 () Jun 23 2025 00:02:58 ( )
+#@(#)CDS: CPE v23.15-s089
+#@(#)CDS: IQuantus/TQuantus 23.1.1-s476 (64bit) Wed Jul 2 23:22:08 PDT 2025 (Linux 3.10.0-693.el7.x86_64)
+
+set_global _enable_mmmc_by_default_flow      $CTE::mmmc_default
+suppressMessage ENCEXT-2799
+set init_verilog ../synthesis/syn/netlist/CFG_BOOTHMUL_REG_DADDA_FUSED_SEL/boothmul_registered_CFG_BOOTHMUL_REG_DADDA_FUSED_SEL_3p0.v
+set init_design_netlisttype Verilog
+set init_design_settop 1
+set init_top_cell boothmul_registered
+set defHierChar /
+set delaycal_input_transition_delay 0.1ps
+set fpIsMaxIoHeight 0
+set init_lef_file /eda/dk/nangate45/lef/NangateOpenCellLibrary.lef
+set fp_core_cntl aspect
+set fp_aspect_ratio 1.0000
+set extract_shrink_factor 1.0
+set init_assign_buffer 0
+set init_pwr_net vdd
+set init_gnd_net gnd
+set init_mmmc_file Default.view
+set init_oa_search_lib {}
+init_design
+setMultiCpuUsage -localCpu 4
+setDesignMode -process 45
+globalNetConnect vdd -type pgpin -pin VDD -inst * -override
+globalNetConnect gnd -type pgpin -pin VSS -inst * -override
+checkDesign -netlist -physicalLibrary -timingLibrary -noHtml -outfile reports/00_checkDesign.rpt
+check_timing -verbose > reports/00_check_timing.rpt
+setDelayCalMode -siAware false
+timeDesign -prePlace -outDir reports/timing -prefix 00_prePlace
+floorPlan -coreMarginsBy die -site FreePDK45_38x28_10R_NP_162NW_34O -r 1.0 0.60 5.0 5.0 5.0 5.0
+setDesignMode -topRoutingLayer 6
+setPinAssignMode -pinEditInBatch true
+editPin -fixOverlap 1 -unit MICRON -spreadDirection clockwise -side Left -layer metal3 -spreadType center -spacing 2.56 -pin {{A[0]} {A[1]} {A[2]} {A[3]} {A[4]} {A[5]} {A[6]} {A[7]} {A[8]} {A[9]} {A[10]} {A[11]} {A[12]} {A[13]} {A[14]} {A[15]} {A[16]} {A[17]} {A[18]} {A[19]} {A[20]} {A[21]} {A[22]} {A[23]} {A[24]} {A[25]} {A[26]} {A[27]} {A[28]} {A[29]} {A[30]} {A[31]}}
+editPin -fixOverlap 1 -unit MICRON -spreadDirection clockwise -side Top -layer metal4 -spreadType center -spacing 2.57 -pin {{B[0]} {B[1]} {B[2]} {B[3]} {B[4]} {B[5]} {B[6]} {B[7]} {B[8]} {B[9]} {B[10]} {B[11]} {B[12]} {B[13]} {B[14]} {B[15]} {B[16]} {B[17]} {B[18]} {B[19]} {B[20]} {B[21]} {B[22]} {B[23]} {B[24]} {B[25]} {B[26]} {B[27]} {B[28]} {B[29]} {B[30]} {B[31]}}
+editPin -fixOverlap 1 -unit MICRON -spreadDirection clockwise -side Right -layer metal3 -spreadType center -spacing 1.28 -pin {{P[0]} {P[1]} {P[2]} {P[3]} {P[4]} {P[5]} {P[6]} {P[7]} {P[8]} {P[9]} {P[10]} {P[11]} {P[12]} {P[13]} {P[14]} {P[15]} {P[16]} {P[17]} {P[18]} {P[19]} {P[20]} {P[21]} {P[22]} {P[23]} {P[24]} {P[25]} {P[26]} {P[27]} {P[28]} {P[29]} {P[30]} {P[31]} {P[32]} {P[33]} {P[34]} {P[35]} {P[36]} {P[37]} {P[38]} {P[39]} {P[40]} {P[41]} {P[42]} {P[43]} {P[44]} {P[45]} {P[46]} {P[47]} {P[48]} {P[49]} {P[50]} {P[51]} {P[52]} {P[53]} {P[54]} {P[55]} {P[56]} {P[57]} {P[58]} {P[59]} {P[60]} {P[61]} {P[62]} {P[63]}}
+editPin -fixOverlap 1 -unit MICRON -spreadDirection clockwise -side Bottom -layer metal4 -spreadType center -spacing 5.0 -pin {CLK RST LD}
+editPin -snap TRACK -pin *
+setPinAssignMode -pinEditInBatch false
+legalizePin
+checkPinAssignment > reports/01_pins.rpt
+saveDesign dbs/01_floorplan.enc
+setAddRingMode -ring_target default -extend_over_row 0 -ignore_rows 0 -avoid_short 0 -skip_crossing_trunks none -stacked_via_top_layer metal10 -stacked_via_bottom_layer metal1 -via_using_exact_crossover_size 1 -orthogonal_only true -skip_via_on_pin { standardcell } -skip_via_on_wire_shape { noshape }
+addRing -nets {vdd gnd} -type core_rings -follow core -layer {top metal9 bottom metal9 left metal10 right metal10} -width 0.8 -spacing 0.8 -center 1 -threshold 0 -jog_distance 0 -snap_wire_center_to_grid None
+setAddStripeMode -stacked_via_top_layer metal10 -stacked_via_bottom_layer metal1 -orthogonal_only true -skip_via_on_pin { standardcell } -skip_via_on_wire_shape { noshape }
+addStripe -nets {gnd vdd} -layer metal10 -direction vertical -width 0.8 -spacing 0.8 -set_to_set_distance 20.0 -start_from left -start_offset 15.0 -padcore_ring_top_layer_limit metal10 -padcore_ring_bottom_layer_limit metal1 -block_ring_top_layer_limit metal10 -block_ring_bottom_layer_limit metal1 -snap_wire_center_to_grid None
+setSrouteMode -reset
+sroute -connect { blockPin padPin padRing corePin floatingStripe } -layerChangeRange { metal1(1) metal10(10) } -blockPinTarget { nearestTarget } -padPinPortConnect { allPort oneGeom } -padPinTarget { nearestTarget } -corePinTarget { firstAfterRowEnd } -floatingStripeTarget { blockring padring ring stripe ringpin blockpin followpin } -allowJogging 1 -crossoverViaLayerRange { metal1(1) metal10(10) } -nets { vdd gnd } -allowLayerChange 1 -blockPin useLef -targetViaLayerRange { metal1(1) metal10(10) }
+verify_drc -report reports/02_power_drc.rpt -limit 1000
+saveDesign dbs/02_power.enc
+setPlaceMode -reset
+setPlaceMode -timingDriven true -congEffort auto -placeIOPins false -prerouteAsObs {1 2 3 4 5 6 7 8}
+place_design
+setTieHiLoMode -cell {LOGIC1_X1 LOGIC0_X1} -maxFanout 8
+addTieHiLo -cell {LOGIC1_X1 LOGIC0_X1} -prefix TIE
+checkPlace reports/03_checkPlace.rpt
+report_area > reports/03_area.rpt
+verifyConnectivity -type special -noAntenna -error 1000 -warning 50 -report reports/03_pg_connectivity.rpt
+timeDesign -preCTS -outDir reports/timing -prefix 03_place
+timeDesign -preCTS -hold -outDir reports/timing -prefix 03_place
+saveDesign dbs/03_place.enc
+setOptMode -setupTargetSlack 0.02 -holdTargetSlack 0.02
+optDesign -preCTS -outDir reports/timing -prefix 04_preCTS_opt
+timeDesign -preCTS -outDir reports/timing -prefix 04_preCTS
+report_timing -max_paths 10 > reports/04_preCTS_setup_paths.rpt
+saveDesign dbs/04_preCTS_opt.enc
+win
+zoomBox -0.36200 3.17050 89.18400 83.33350
+zoomBox 38.57250 34.60550 62.97350 56.44950
+zoomBox 42.61950 37.87250 60.24950 53.65500
+zoomBox 40.76000 36.37150 61.50100 54.93900
+zoomBox -49.37250 -36.39900 122.17450 117.17200
+zoomBox -143.25700 -112.19750 185.37300 181.99650
+zoomBox -177.91800 -140.18150 208.70550 205.92900
+zoomBox -323.11000 -257.40350 306.44250 306.18050
+zoomBox -266.67050 -211.83650 268.44950 267.21000
+zoomBox -113.79550 -88.41200 165.54050 161.65350
+zoomBox -20.92300 -13.43000 103.02100 97.52650
+zoomBox -20.92300 -13.43000 103.02100 97.52650
+zoomBox -33.99600 -23.98450 111.82100 106.55300
+zoomBox -49.37550 -36.40150 122.17400 117.17200
+zoomBox -67.46900 -51.00950 134.35400 129.66500
+zoomBox -49.37550 -36.40150 122.17400 117.17200
+create_ccopt_clock_tree_spec
+get_ccopt_clock_trees *
+set_ccopt_property buffer_cells {CLKBUF_X1 CLKBUF_X2 CLKBUF_X3}
+set_ccopt_property use_inverters false
+set_ccopt_property target_max_trans 0.05
+set_ccopt_property target_skew 0.05
+clock_opt_design -cts
+all_constraint_modes -active
+set_interactive_constraint_modes [all_constraint_modes -active]
+set_propagated_clock [all_clocks]
+set_interactive_constraint_modes {}
+report_ccopt_clock_trees -file reports/05_clock_trees.rpt
+report_ccopt_skew_groups -file reports/05_skew_groups.rpt
+timeDesign -postCTS -outDir reports/timing -prefix 05_postCTS
+timeDesign -postCTS -hold -outDir reports/timing -prefix 05_postCTS
+saveDesign dbs/05_cts.enc
+optDesign -postCTS -outDir reports/timing -prefix 06_postCTS_opt
+optDesign -postCTS -hold -outDir reports/timing -prefix 06_postCTS_opt_hold
+timeDesign -postCTS -outDir reports/timing -prefix 06_postCTS
+timeDesign -postCTS -hold -outDir reports/timing -prefix 06_postCTS
+saveDesign dbs/06_postCTS_opt.enc
+setNanoRouteMode -routeWithTimingDriven true -routeWithSiDriven false -drouteFixAntenna true
+routeDesign
+verify_drc -report reports/07_route_drc.rpt -limit 1000
+verifyConnectivity -type all -noAntenna -error 1000 -warning 50 -report reports/07_route_connectivity.rpt
+setExtractRCMode -engine postRoute -effortLevel low
+timeDesign -postRoute -outDir reports/timing -prefix 07_route
+timeDesign -postRoute -hold -outDir reports/timing -prefix 07_route
+saveDesign dbs/07_route.enc
+setAnalysisMode -analysisType onChipVariation -cppr both
+optDesign -postRoute -outDir reports/timing -prefix 08_postRoute_opt
+optDesign -postRoute -hold -outDir reports/timing -prefix 08_postRoute_opt_hold
+timeDesign -postRoute -outDir reports/timing -prefix 08_postRoute
+timeDesign -postRoute -hold -outDir reports/timing -prefix 08_postRoute
+saveDesign dbs/08_postRoute_opt.enc
+zoomIn
+selectWire 5.1300 67.9550 97.6600 68.1250 1 gnd
+zoomIn
+zoomIn
+fit
+fit
+zoomIn
+deselectAll
+selectVia 39.7350 55.0200 39.8750 55.1600 3 n4204
+fit
+zoomBox -11.56650 -5.12400 114.35650 107.60400
+addFiller -cell {FILLCELL_X32 FILLCELL_X16 FILLCELL_X8 FILLCELL_X4 FILLCELL_X2 FILLCELL_X1} -prefix FILLER
+ecoRoute -target
+checkPlace reports/09_checkPlace.rpt
+verify_drc -report reports/09_drc.rpt -limit 1000
+verifyConnectivity -type all -geomConnect -error 1000 -warning 50 -report reports/09_connectivity.rpt
+saveDesign dbs/09_filler.enc
+setExtractRCMode -engine postRoute -effortLevel low
+extractRC
+rcOut -spef outputs/boothmul_registered.spef
+timeDesign -postRoute -timingDebugReport -pathReports -drvReports -slackReports -numPaths 50 -outDir reports/timing -prefix 10_final
+timeDesign -postRoute -hold -timingDebugReport -pathReports -slackReports -numPaths 50 -outDir reports/timing -prefix 10_final
+report_timing -max_paths 10 > reports/10_setup_paths.rpt
+report_timing -early -max_paths 10 > reports/10_hold_paths.rpt
+report_power > reports/10_power.rpt
+report_area > reports/10_area.rpt
+reportGateCount -level 5 -limit 100 -outfile reports/10_gateCount.rpt
+summaryReport -noHtml -outfile reports/10_summary.rpt
+saveDesign dbs/10_final.enc
+saveDesign boothmul_registered.enc
+saveNetlist outputs/boothmul_registered_routed.v
+write_sdf -recompute_delay_calc outputs/boothmul_registered_routed.sdf
+set defOutLefVia 1
+set defOutLefNDR 1
+defOut -netlist -routing -allLayers outputs/boothmul_registered.def
+dumpToGIF outputs/boothmul_registered_layout.gif
+set_analysis_view -setup {default worst} -hold {default best}
+timeDesign -postRoute -expandedViews -outDir reports/timing -prefix 11_corners
+timeDesign -postRoute -hold -expandedViews -outDir reports/timing -prefix 11_corners
+set_analysis_view -setup {default} -hold {default}

@@ -71,6 +71,8 @@ tcl_stacktrace.txt
 # --- cadence artifacts 
 
 physical_design/.cadence/
+physical_design/.metrics
+physical_design/.timing_file_*
 physical_design/dbs/
 physical_design/*.enc
 physical_design/*.enc.dat/

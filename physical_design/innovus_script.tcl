@@ -279,7 +279,7 @@ safe "set_ccopt_property use_inverters false"
 set_ccopt_property target_max_trans $CTS_MAX_TRANS
 set_ccopt_property target_skew      $CTS_SKEW
 
-ccopt_design
+clock_opt_design -cts
 
 ##  from now on the clock is propagated: real tree delays, no more ideal
 ##  latency/transition from the SDC (ccopt_design already does this, it is
