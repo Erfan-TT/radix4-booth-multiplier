@@ -2,8 +2,20 @@
 ##  Place and route every synthesized netlist, one Innovus run per netlist,
 ##  at the period the netlist achieved in synthesis.
 
-configs="CFG_BOOTHMUL_REG_WAL_BASE CFG_BOOTHMUL_REG_WAL_OPT CFG_BOOTHMUL_REG_DADDA
-         CFG_BOOTHMUL_REG_DADDA_FUSED_SEL CFG_BOOTHMUL_REG_BEH CFG_REG_SUPER_BEH"
+# configs="CFG_BOOTHMUL_REG_WAL_BASE CFG_BOOTHMUL_REG_WAL_OPT CFG_BOOTHMUL_REG_DADDA
+#          CFG_BOOTHMUL_REG_DADDA_FUSED_SEL CFG_BOOTHMUL_REG_BEH CFG_REG_SUPER_BEH"
+
+# configs="CFG_BOOTHMUL_REG_WAL_BASE"
+
+# configs="CFG_BOOTHMUL_REG_WAL_OPT"
+
+# configs="CFG_BOOTHMUL_REG_DADDA"
+
+# configs="CFG_BOOTHMUL_REG_DADDA_FUSED_SEL"
+
+# configs="CFG_BOOTHMUL_REG_BEH"
+
+configs="CFG_REG_SUPER_BEH"
 
 csv_dir=../synthesis/syn/reports/achieved_clk
 

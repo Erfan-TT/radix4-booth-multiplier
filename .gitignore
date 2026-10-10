@@ -87,5 +87,14 @@ physical_design/runs/*/outputs/*.spef
 physical_design/**/*.vcd
 physical_design/sim/work_pl/
 physical_design/.cadence/
+physical_design/innovus_temp_*/
+physical_design/.metrics
+physical_design/*.log
+physical_design/*.gz
+physical_design/*.enc
+physical_design/*.log*
+physical_design/dbs/
+physical_design/boothmul_registered.enc.dat/
 *.cmd
 *.logv
+

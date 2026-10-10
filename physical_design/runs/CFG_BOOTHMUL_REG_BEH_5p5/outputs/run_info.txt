@@ -1,0 +1,3 @@
+cfg CFG_BOOTHMUL_REG_BEH
+period 5.5
+clock 5.4922

@@ -1,0 +1,3 @@
+cfg CFG_REG_SUPER_BEH
+period 2.5
+clock 2.4995
