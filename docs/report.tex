@@ -965,7 +965,7 @@ Clock              & \texttt{create\_clock -period \$clockPeriod}, swept \\
 Clock uncertainty  & $0.05$\,ns; transition $0.05$\,ns; latency $0.05$\,ns \\
 Input delay        & $0.25$\,ns, absolute \\
 Output delay       & $0.15$\,ns, absolute \\
-Driving cell       & \texttt{BUF\_X4}; output load $0.05$\,pF \\
+Driving cell       & \texttt{BUF\_X4}; output load $0.05$\,fF (library unit) \\
 Max transition     & $0.20$\,ns \\
 Area constraint    & \texttt{set\_max\_area 0} \\
 Synthesis sweep    & $21$ common periods from $1.0$ to $6.0$\,ns, $6$ configurations \\
@@ -1142,6 +1142,102 @@ isolation, each optimization is smaller than it is in sequence.
 
 % =====================================================================
 \clearpage
+\section{Physical design}
+\label{sec:pd}
+
+The fused-selector netlist synthesised at $3.0$\,ns was placed and routed in
+Cadence Innovus to measure how much of the synthesis estimate survives real
+wires and a real clock tree. The flow is scripted step by step in
+\texttt{physical\_design/innovus\_script.tcl}.
+
+\subsection{Flow and settings}
+
+\begin{table}[!ht]
+\centering\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+Tool               & Cadence Innovus 23.35, Nangate 45\,nm LEF and ECSM libraries \\
+Constraints        & synthesis SDC values; clock and reset no longer ideal \\
+Floorplan          & aspect ratio $1.0$, utilisation $0.60$, $5\,\mu$m core-to-die margin \\
+IO pins            & $A$ left, $B$ top, $P$ right, \texttt{CLK}/\texttt{RST}/\texttt{LD} bottom \\
+Power grid         & metal9/metal10 core ring, metal10 stripes every $20\,\mu$m, metal1 rails \\
+Signal routing     & metal1--metal6 \\
+Clock tree         & \texttt{CLKBUF\_X1}--\texttt{X3}; targets: skew $0.05$\,ns, transition $0.05$\,ns \\
+Optimisation       & pre-CTS, post-CTS and post-route, setup then hold \\
+Analysis view      & typical library, $25\,^{\circ}$C, cap-table extraction \\
+\bottomrule
+\end{tabular}
+\caption{Place-and-route environment.}
+\label{tab:pd-env}
+\end{table}
+
+Filler cells are inserted only after the last optimisation. Inserting them
+before post-CTS optimisation fills the rows completely and prevents the
+optimiser from adding or resizing cells.
+
+\subsection{Results at the 3.0\,ns target}
+
+\begin{table}[!ht]
+\centering\small
+\begin{tabular}{@{}lrr@{}}
+\toprule
+\textbf{Quantity} & \textbf{Synthesis} & \textbf{Post-route} \\
+\midrule
+Setup slack at $3.0$\,ns           & $0.017$\,ns   & $0.782$\,ns \\
+Derived period $T_0$               & $2.983$\,ns   & $2.218$\,ns \\
+Hold slack                         & --            & $0.050$\,ns \\
+Standard-cell area                 & $5125\umarea$ & $5130\umarea$ \\
+Cells                              & $2819$        & $2816$ \\
+Core / die area                    & --            & $8550 / 10534\umarea$ \\
+Signal wire length                 & --            & $43.2$\,mm \\
+Clock tree                         & ideal         & $3$ buffers, skew $7$\,ps, latency $68$--$75$\,ps \\
+DRC, connectivity, antenna         & --            & $0$, $0$, $0$ violations \\
+\bottomrule
+\end{tabular}
+\caption{Fused-selector netlist synthesised at $3.0$\,ns, before and after
+place and route. $T_0$ uses Equation~\ref{eq:achieved} in both columns.\src{R9}}
+\label{tab:pd}
+\end{table}
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.62\textwidth]{figures/layout_dadda_fused_3p0.png}
+\caption{Routed layout of the fused-selector multiplier ($102.6\times102.6\,\mu$m
+die). Pins are placed along the data flow; the yellow vertical pairs are the
+metal10 power stripes.}
+\label{fig:layout}
+\end{figure}
+
+The layout closes with no setup, hold, design-rule or connectivity violation.
+Optimisation changed the netlist only marginally: the cell area grew by
+$0.09\%$, from clock buffers, two tie cells and a few buffers on high-fanout
+nets.
+
+The timing result is the main finding. The critical path is the same in both
+tools, from bit 1 of the $B$ register to bit 59 of the product register, but
+its arrival time falls from $2.95$\,ns in synthesis to $2.21$\,ns after
+routing. The routed netlist could therefore run at about $2.22$\,ns, $26\%$
+faster than synthesis predicted. With zero wire load the same netlist has
+$1.025$\,ns of slack, so the real wires cost about $0.24$\,ns. The
+\texttt{5K\_hvratio\_1\_4} wire-load model charged about $1.0$\,ns for the same
+wires. Synthesis periods in Section~\ref{sec:results} are therefore
+pessimistic in absolute terms. The comparison between variants remains valid
+only if this pessimism is similar for all of them; the physical-design sweep
+of the other variants is intended to check this.
+
+Corner analysis shows the limit of a typical-corner sign-off. With the slow
+library at $125\,^{\circ}$C, setup fails by $4.56$\,ns, and with the fast
+library at $0\,^{\circ}$C, $32$ paths miss hold by at most $3$\,ps. Both views
+were reported but not optimised.
+
+Innovus reports $4.18$\,mW at the default switching activity of $0.2$. This
+is not comparable with the $4.73$\,mW total (dynamic plus leakage) of Table~\ref{tab:power3}, which uses the
+activity of the $500$-vector simulation. A matched comparison needs the
+post-layout simulation of the routed netlist with its SDF, followed by power
+analysis with that activity.
+
+% =====================================================================
+\clearpage
 \section{Conclusions}
 
 A signed $32\times32$ radix-4 Booth multiplier was implemented in structural
@@ -1170,9 +1266,12 @@ recognise. The source-level cost of conditional inversion cannot be estimated
 reliably by counting XOR operators alone because the surrounding cone may map
 differently after the rewrite.
 
-The next step is physical design. Placement, clock-tree synthesis, routing and
-extracted-parasitic analysis will provide more precise final area, timing and
-power values.
+Placement and routing of the fused-selector netlist confirm its area and
+close timing with a large margin: the routed netlist reaches $T_0=2.22$\,ns
+against $2.98$\,ns estimated in synthesis, because the wire-load model
+overestimated interconnect delay. The remaining steps are the
+physical-design sweep of the other variants, post-layout simulation with the
+routed SDF, and power analysis with the resulting activity.
 
 % =====================================================================
 \clearpage
@@ -1193,6 +1292,7 @@ power values.
 \texttt{synthesis/syn/reports/} & canonical timing, area and cell reports \\
 \texttt{synthesis/syn/reports\_power/} & activity-based power results \\
 \texttt{synthesis/plot\_pareto.py} & report parsing and Pareto figures \\
+\texttt{physical\_design/} & Innovus flow, reports and routed outputs \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1244,6 +1344,7 @@ Timing files follow \texttt{<type>\_<configuration>\_<period>.rpt}, with
 \src{R6} & synthesis reports & inferred signed multiplier \\
 \src{R7} & 3.0\,ns reports & mapped-cell census for all six variants \\
 \src{R8} & power reports & SDF/VCD/SAIF activity-based power results \\
+\src{R9} & \texttt{physical\_design/reports/} & post-route timing, area, clock tree and verification \\
 \bottomrule
 \end{tabular}
 \end{table}

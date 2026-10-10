@@ -391,18 +391,46 @@ only the non-dominated points from the sweep.
 \end{frame}
 
 % =============================================================================
-\begin{frame}{Physical design}
+\begin{frame}{Physical design: fused selector at 3.0 ns}
 
-\vfill
-\begin{center}
-\Large
-The next step is placement, clock-tree synthesis and routing.\\[12pt]
+\begin{columns}[T]
+\begin{column}{0.44\textwidth}
+\centering
+\includegraphics[width=\textwidth,height=0.72\textheight,keepaspectratio]{figures/layout_dadda_fused_3p0.png}
 
-\large
-Timing and power can then be measured again with extracted parasitics to obtain
-more precise final implementation results.
-\end{center}
-\vfill
+\scriptsize
+Innovus, $102.6\times102.6\,\mu$m die, $60\%$ utilisation
+\end{column}
+
+\begin{column}{0.53\textwidth}
+\scriptsize
+\begin{tabular}{@{}lrr@{}}
+\toprule
+ & synthesis & post-route \\
+\midrule
+derived period $T_0$ & 2.983\,ns & \textbf{2.218\,ns} \\
+setup slack at 3.0\,ns & 0.017\,ns & 0.782\,ns \\
+cell area & 5125\umarea & 5130\umarea \\
+clock skew & ideal & 7\,ps \\
+DRC / opens / antenna & -- & 0 / 0 / 0 \\
+\bottomrule
+\end{tabular}
+
+\vspace{8pt}
+\small
+The layout closes with no setup, hold or design-rule violation and only
+$0.09\%$ extra cell area.
+
+\vspace{6pt}
+The same critical path arrives \textbf{0.74\,ns earlier} after routing: the
+synthesis wire-load model overestimated the interconnect delay.
+
+\vspace{6pt}
+\scriptsize
+Next: the same flow for the other variants, post-layout simulation with the
+routed SDF, and power from that activity.
+\end{column}
+\end{columns}
 
 \end{frame}
 

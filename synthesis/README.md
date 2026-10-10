@@ -112,7 +112,17 @@ The script computes each Pareto front independently:
 Both objectives are minimized. Dominated netlists are omitted from the plotted
 curves.
 
-## Next step
+## Physical design
 
-Complete physical design and rerun timing and power with the routed netlist and
-extracted parasitics to obtain more precise implementation values.
+The netlists in `syn/netlist/` are the input of the Innovus flow in
+`../physical_design/`. Each one is placed and routed at its achieved period
+from `syn/reports/achieved_clk/`, with constraints made from
+`syn/boothmul_registered.sdc`. Its post-layout results are written in the
+format of `syn/reports_power/`, so `plot_pareto.py --pd-results` draws the
+post-layout fronts. See `../physical_design/README.md`.
+
+The first routed point, fused selector at 3.0 ns, shows that the
+`5K_hvratio_1_4` wire-load model used here is pessimistic. The routed netlist
+reaches `T0 = 2.218 ns`, against 2.983 ns estimated by synthesis. The absolute
+periods of this sweep should therefore be read as conservative estimates.
+See the Physical design section of the main README.

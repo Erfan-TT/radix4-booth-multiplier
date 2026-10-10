@@ -68,17 +68,24 @@ tcl_stacktrace.txt
 *.fdb_latexmk
 
 
-# --- cadence artifacts 
-
+# --- cadence artifacts
+# every Innovus run lives in physical_design/runs/<cfg>_<tag>/: keep its
+# reports/ and the small outputs, not the databases, logs, DEF/SPEF (several
+# MB per run) or the simulation VCD
+physical_design/runs/*/dbs/
+physical_design/runs/*/*.enc
+physical_design/runs/*/*.enc.dat/
+physical_design/runs/*/innovus*
+physical_design/runs/*/*.log
+physical_design/runs/*/*.antenna.lef
+physical_design/runs/*/timingReports/
+physical_design/runs/*/.cadence/
+physical_design/runs/*/.metrics/
+physical_design/runs/*/.timing_file_*
+physical_design/runs/*/outputs/*.def
+physical_design/runs/*/outputs/*.spef
+physical_design/**/*.vcd
+physical_design/sim/work_pl/
 physical_design/.cadence/
-physical_design/.metrics
-physical_design/.timing_file_*
-physical_design/dbs/
-physical_design/*.enc
-physical_design/*.enc.dat/
-physical_design/innovus.log*
-physical_design/innovus_temp_*
-physical_design/timingReports/
-physical_design/.metrics/
 *.cmd
 *.logv

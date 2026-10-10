@@ -1,12 +1,7 @@
 # Version:1.0 MMMC View Definition File
 # Do Not Remove Above Line
-##
-##  MMMC = Multi Mode Multi Corner. Every analysis view is
-##      constraint mode (the SDC)  +  delay corner (library set + RC corner)
-##
-##  The variables MycapTable and MyTimingLib* come from boothmul.globals.
 
-##  RC corners: same cap table, different temperature, in celcius for the updated library
+##  RC corners: same cap table, temperature in Celsius as in the libraries
 create_rc_corner -name standard -cap_table $MycapTable -T {25} -preRoute_res {1.0} -preRoute_cap {1.0} -preRoute_clkres {0.0} -preRoute_clkcap {0.0} -postRoute_res {1.0} -postRoute_cap {1.0} -postRoute_xcap {1.0} -postRoute_clkres {0.0} -postRoute_clkcap {0.0}
 create_rc_corner -name high -cap_table $MycapTable -T {125} -preRoute_res {1.0} -preRoute_cap {1.0} -preRoute_clkres {0.0} -preRoute_clkcap {0.0} -postRoute_res {1.0} -postRoute_cap {1.0} -postRoute_xcap {1.0} -postRoute_clkres {0.0} -postRoute_clkcap {0.0}
 create_rc_corner -name low -cap_table $MycapTable -T {0} -preRoute_res {1.0} -preRoute_cap {1.0} -preRoute_clkres {0.0} -preRoute_clkcap {0.0} -postRoute_res {1.0} -postRoute_cap {1.0} -postRoute_xcap {1.0} -postRoute_clkres {0.0} -postRoute_clkcap {0.0}
@@ -16,11 +11,8 @@ create_library_set -name libsTYP -timing $MyTimingLibNom
 create_library_set -name libsWC -timing $MyTimingLibSlow
 create_library_set -name libsBC -timing $MyTimingLibFast
 
-##  constraints. This is the SDC written for place and route (see the
-##  comments inside it). The SDC written by DC (netlist/CFG_*/..._3p0.sdc)
-##  also works, but it carries DC only commands (wire load model,
-##  set_ideal_network, set_max_area) that Innovus ignores or warns about.
-create_constraint_mode -name coherent-synthesis -sdc_files {boothmul_registered_pd.sdc}
+##  constraints: the SDC of the run, written by innovus_script.tcl
+create_constraint_mode -name coherent-synthesis -sdc_files {outputs/boothmul_registered.sdc}
 
 create_delay_corner -name std-typ -library_set {libsTYP} -rc_corner {standard}
 create_delay_corner -name ht-wc -library_set {libsWC} -rc_corner {high}

@@ -68,6 +68,9 @@ STYLE = {
 ORDER = list(STYLE.keys())
 INK, MUTED, GRID, AXIS = "#0b0b0b", "#898781", "#e1e0d9", "#c3c2b7"
 
+# which data the plots show, changed by --pd-results
+STAGE = "post-synthesis"
+
 
 def style_for(cfg):
     return STYLE.get(cfg, (cfg, "#888780", "-"))
@@ -127,6 +130,39 @@ def read_reports(reports_dir):
 
     if not data:
         sys.exit(f"no readable reports under {reports_dir}")
+    return data
+
+
+def read_pd_results(results_dir):
+    """Post-layout points from physical_design/results/<cfg>/results_<cfg>.csv.
+
+    Same columns as the power CSVs; the achieved period is the post-route one
+    (layout clock - post-route slack) and the area is the routed cell area.
+    """
+    data = {}
+    results_dir = Path(results_dir)
+    if not results_dir.is_dir():
+        sys.exit(f"no such directory: {results_dir}")
+    for cfg_dir in sorted(p for p in results_dir.iterdir() if p.is_dir()):
+        csv_file = cfg_dir / f"results_{cfg_dir.name}.csv"
+        if not csv_file.exists():
+            continue
+        points = []
+        with open(csv_file, newline="") as f:
+            for row in csv.DictReader(f):
+                try:
+                    points.append({
+                        "period":   float(row["period_ns"]),
+                        "slack":    float(row["slack_ns"]),
+                        "achieved": float(row["achieved_ns"]),
+                        "area":     float(row["area_um2"]),
+                    })
+                except (KeyError, ValueError):
+                    continue
+        if points:
+            data[cfg_dir.name] = sorted(points, key=lambda r: r["achieved"])
+    if not data:
+        sys.exit(f"no post-layout results under {results_dir}")
     return data
 
 
@@ -222,7 +258,7 @@ def plot_full(data, out_png):
     draw(ax, data)
     setup_axes(ax, "achieved clock period  (constraint - slack)  [ns]",
                "total cell area [um2]",
-               "Area vs achieved clock period",
+               f"Area vs achieved clock period ({STAGE})",
                "Pareto front over the whole sweep; label = fastest point of each curve")
     ax.margins(y=0.10)
     ax.legend(frameon=False, fontsize=9, loc="upper right")
@@ -267,8 +303,9 @@ def plot_zoom(data, out_png, lo, hi, only=None):
     ax.margins(y=0.14)
     setup_axes(ax, "achieved clock period  (constraint - slack)  [ns]",
                "total cell area [um2]",
-               f"Zoom: {lo}-{hi} ns",
-               "plain Dadda is smaller near 2.0 ns, fused wins at relaxed timing")
+               f"Zoom: {lo}-{hi} ns ({STAGE})",
+               "plain Dadda is smaller near 2.0 ns, fused wins at relaxed timing"
+               if STAGE == "post-synthesis" else None)
     ax.legend(frameon=False, fontsize=9, loc="upper right")
     fig.tight_layout()
     fig.savefig(out_png, dpi=160)
@@ -294,8 +331,8 @@ def plot_power(data, power_dir, out_png):
                     marker="o", markersize=4.5, linewidth=2,
                     color=colour, linestyle=dash, label=label)
     setup_axes(ax, "achieved clock period [ns]", "dynamic power [mW]",
-               "Dynamic power vs achieved clock period",
-               "Pareto front from activity-annotated post-synthesis netlists")
+               f"Dynamic power vs achieved clock period ({STAGE})",
+               f"Pareto front from activity-annotated {STAGE} netlists")
     ax.margins(y=0.10)
     ax.legend(frameon=False, fontsize=9, loc="upper right")
     fig.tight_layout()
@@ -360,16 +397,28 @@ def main():
     ap.add_argument("--zoom-only", nargs="*", default=["DADDA", "SUPER_BEH"],
                     help="substrings of the configs to draw in the zoom "
                          "(default: the two Dadda variants + the DesignWare reference)")
+    ap.add_argument("--pd-results", default=None,
+                    help="plot the post-layout results instead "
+                         "(physical_design/results, written by collect_pd_results.py)")
     args = ap.parse_args()
 
-    data = read_reports(args.reports)
-    power_dir = (Path(args.power_reports) if args.power_reports else
-                 Path(args.reports).parent / "reports_power")
+    global STAGE
+    if args.pd_results:
+        STAGE = "post-layout"
+        source = args.pd_results
+        data = read_pd_results(source)
+        power_dir = Path(source)
+        tag = "postlayout"
+    else:
+        source = args.reports
+        data = read_reports(source)
+        power_dir = (Path(args.power_reports) if args.power_reports else
+                     Path(args.reports).parent / "reports_power")
+        tag = Path(args.reports).name.replace("reports_", "").replace("reports", "main")
     outdir = Path(args.outdir)
     outdir.mkdir(parents=True, exist_ok=True)
-    tag = Path(args.reports).name.replace("reports_", "").replace("reports", "main")
 
-    print(f"read {len(data)} configurations from {args.reports}")
+    print(f"read {len(data)} configurations from {source}")
     for cfg, pts in data.items():
         met = sum(1 for p in pts if p["slack"] >= 0)
         print(f"  {cfg:<36} {len(pts):>3} runs, {met:>3} met as constrained, "

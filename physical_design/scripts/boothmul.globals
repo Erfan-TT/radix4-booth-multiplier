@@ -1,22 +1,12 @@
 #
 # Version 1.1
 #
-##  Design import settings for Innovus, Nangate 45nm (FreePDK45).
-##
-##  This file only sets variables, it does not run anything. It is read by
-##  innovus_script.tcl (source boothmul.globals ; init_design), but it is
-##  also the same kind of file that lab6 loads from the GUI with
-##  File -> Import Design -> Load.
-##
-##  All paths are relative to the physical_design directory: start Innovus
-##  from there.
-##
-##  To place and route another point of the sweep, change init_verilog here
-##  AND the clock period in boothmul_registered_pd.sdc, so the two agree.
+##  Design import settings (Nangate 45nm), read by innovus_script.tcl.
+##  Paths are relative to the run directory physical_design/runs/<name>/.
 
-
-##  netlist written by Design Compiler (synthesis/syn/synthesis.tcl)
-set init_verilog {../synthesis/syn/netlist/CFG_BOOTHMUL_REG_DADDA_FUSED_SEL/boothmul_registered_CFG_BOOTHMUL_REG_DADDA_FUSED_SEL_3p0.v}
+##  netlist written by Design Compiler, chosen by PD_CFG and PD_PERIOD
+set PD_TAG [string map {. p} $PD_PERIOD]
+set init_verilog "../../../synthesis/syn/netlist/$PD_CFG/boothmul_registered_${PD_CFG}_${PD_TAG}.v"
 set init_design_netlisttype {Verilog}
 set init_design_settop {1}
 
@@ -58,6 +48,6 @@ set init_pwr_net {vdd}
 set init_gnd_net {gnd}
 
 ##  MMMC file: libraries, RC corners, constraints and analysis views
-set init_mmmc_file {Default.view}
+set init_mmmc_file {../../scripts/Default.view}
 set init_oa_search_lib {}
 set lsgOCPGainMult 1.000000

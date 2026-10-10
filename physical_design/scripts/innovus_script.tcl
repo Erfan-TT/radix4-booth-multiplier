@@ -1,10 +1,15 @@
-##  Physical design of boothmul_registered, Nangate 45nm, Innovus (v23)
+##  Place and route of boothmul_registered, Nangate 45nm, Innovus v23.
+##  Runs inside a directory runs/<name>/, see physical_design/README.md.
 
-##      setinnovus
-##      innovus -files innovus_script.tcl
-
-##  Every step saves the design in dbs folder
-##  restoreDesign dbs/<step>.enc.dat boothmul_registered
+##  the netlist and the clock: given by run_pd.sh, otherwise the defaults
+##  below are used (interactive run, with a suspend after every step)
+set PD_CFG    CFG_BOOTHMUL_REG_DADDA_FUSED_SEL
+set PD_PERIOD 3.0
+set PD_CLOCK  3.0
+set PD_BATCH  0
+foreach var {PD_CFG PD_PERIOD PD_CLOCK PD_BATCH} {
+    if {[info exists env($var)]} { set $var $env($var) }
+}
 
 ##  inital settings based on micro lab
 
@@ -61,7 +66,9 @@ proc safe {cmd} {
     }
 }
 
+##  in batch only the final design is saved (about 90 MB each)
 proc save_step {name} {
+    if {$::PD_BATCH && $name ne "10_final"} { return }
     saveDesign $::DB_DIR/$name.enc
     puts "**SCRIPT-NOTE: design saved as $::DB_DIR/$name.enc"
 }
@@ -81,7 +88,29 @@ proc bus_pins {name width} {
 ##############################################################################
 banner "STEP 0 - import design: netlist + LEF + MMMC (libraries, SDC)"
 
-source boothmul.globals
+puts "**SCRIPT-NOTE: $PD_CFG, netlist of $PD_PERIOD ns, clock $PD_CLOCK ns"
+
+##  the SDC of this run is the synthesis SDC with the clock of this run.
+##  The DC-only lines are removed: CLK and RST must not stay ideal here
+##  (CTS builds the clock tree, RST gets buffers), set_max_area is for DC.
+set fh [open ../../../synthesis/syn/boothmul_registered.sdc r]
+set sdc [read $fh]
+close $fh
+set sdc [string map [list {$clockPeriod} $PD_CLOCK] $sdc]
+regsub -all -line {^(set_ideal_network|set_dont_touch_network|set_max_area).*$} $sdc "" sdc
+
+set fh [open $OUT_DIR/$DESIGN.sdc w]
+puts $fh $sdc
+close $fh
+
+##  read later by the simulation and by collect_pd_results.py
+set fh [open $OUT_DIR/run_info.txt w]
+puts $fh "cfg $PD_CFG"
+puts $fh "period $PD_PERIOD"
+puts $fh "clock $PD_CLOCK"
+close $fh
+
+source ../../scripts/boothmul.globals
 init_design
 
 setMultiCpuUsage -localCpu 4
@@ -108,7 +137,7 @@ setDelayCalMode -siAware false
 timeDesign -prePlace -outDir $TIM_DIR -prefix 00_prePlace
 
 banner "STEP 0 done. Look at: reports/00_*.rpt, reports/timing/00_prePlace*.  "
-suspend
+if {!$PD_BATCH} { suspend }
 
 
 ##############################################################################
@@ -155,7 +184,7 @@ safe "checkPinAssignment > $RPT_DIR/01_pins.rpt"
 
 save_step 01_floorplan
 banner "STEP 1 done. Measure die/core with the ruler (k), zoom on the pins.  "
-suspend
+if {!$PD_BATCH} { suspend }
 
 
 ##############################################################################
@@ -206,7 +235,7 @@ safe "verify_drc -report $RPT_DIR/02_power_drc.rpt -limit 1000"
 
 save_step 02_power
 banner "STEP 2 done. Click ring/stripe/rail, check layers and vias. reports/02_power_drc.rpt.  "
-suspend
+if {!$PD_BATCH} { suspend }
 
 
 ##############################################################################
@@ -243,7 +272,7 @@ timeDesign -preCTS -hold  -outDir $TIM_DIR -prefix 03_place
 
 save_step 03_place
 banner "STEP 3 done. Hide wires (layer panel), the cells, Design Browser / amoeba view. Comparing 03_place with 00_prePlace.  "
-suspend
+if {!$PD_BATCH} { suspend }
 
 
 ##############################################################################
@@ -263,7 +292,7 @@ safe "report_timing -max_paths 10 > $RPT_DIR/04_preCTS_setup_paths.rpt"
 
 save_step 04_preCTS_opt
 banner "STEP 4 done. Compare WNS/TNS/DRV with step 3 (reports/timing/03_* vs 04_*)"
-suspend
+if {!$PD_BATCH} { suspend }
 
 
 ##############################################################################
@@ -282,8 +311,8 @@ set_ccopt_property target_skew      $CTS_SKEW
 clock_opt_design -cts
 
 ##  from now on the clock is propagated: real tree delays, no more ideal
-##  latency/transition from the SDC (ccopt_design already does this, it is
-##  repeated to make it visible)
+##  latency/transition from the SDC (clock_opt_design already does this, it
+##  is repeated to make it visible)
 set_interactive_constraint_modes [all_constraint_modes -active]
 set_propagated_clock [all_clocks]
 set_interactive_constraint_modes {}
@@ -296,7 +325,7 @@ timeDesign -postCTS -hold  -outDir $TIM_DIR -prefix 05_postCTS
 
 save_step 05_cts
 banner "STEP 5 done. Clock -> Display -> Clock Tree, reports/05_skew_groups.rpt (skew, latency)"
-suspend
+if {!$PD_BATCH} { suspend }
 
 
 ##############################################################################
@@ -314,7 +343,7 @@ timeDesign -postCTS -hold  -outDir $TIM_DIR -prefix 06_postCTS
 
 save_step 06_postCTS_opt
 banner "STEP 6 done. Setup and hold should both be met now"
-suspend
+if {!$PD_BATCH} { suspend }
 
 
 ##############################################################################
@@ -339,7 +368,7 @@ timeDesign -postRoute -hold  -outDir $TIM_DIR -prefix 07_route
 
 save_step 07_route
 banner "STEP 7 done. Wires per layer in the log, white X = DRC (Tools -> Violation Browser).  "
-suspend
+if {!$PD_BATCH} { suspend }
 
 
 ##############################################################################
@@ -363,7 +392,7 @@ timeDesign -postRoute -hold  -outDir $TIM_DIR -prefix 08_postRoute
 
 save_step 08_postRoute_opt
 banner "STEP 8 done. No setup, hold or DRV violation should be left"
-suspend
+if {!$PD_BATCH} { suspend }
 
 
 ##############################################################################
@@ -387,7 +416,7 @@ safe "verifyProcessAntenna"
 
 save_step 09_filler
 banner "STEP 9 done. checkPlace density is 100% now. DRC and connectivity reports must be clean"
-suspend
+if {!$PD_BATCH} { suspend }
 
 
 ##############################################################################
@@ -407,15 +436,16 @@ safe "report_timing -max_paths 10 > $RPT_DIR/10_setup_paths.rpt"
 safe "report_timing -early -max_paths 10 > $RPT_DIR/10_hold_paths.rpt"
 
 ##  power: default switching activity (not the SAIF of the synthesis power
-##  flow, see teaching.md before comparing the numbers)
+##  flow, so not comparable with it). power_postlayout.tcl redoes it with the
+##  activity of the post-layout simulation.
 safe "report_power > $RPT_DIR/10_power.rpt"
 
 safe "report_area > $RPT_DIR/10_area.rpt"
 safe "reportGateCount -level 5 -limit 100 -outfile $RPT_DIR/10_gateCount.rpt"
 safe "summaryReport -noHtml -outfile $RPT_DIR/10_summary.rpt"
 
+##  always saved: power_postlayout.tcl restores it
 save_step 10_final
-saveDesign $DESIGN.enc
 
 ##  outputs
 ##  netlist with the clock tree, buffers and tie cells added by Innovus
@@ -430,8 +460,8 @@ safe "defOut -netlist -routing -allLayers $OUT_DIR/${DESIGN}.def"
 ##  layout picture
 safe "dumpToGIF $OUT_DIR/${DESIGN}_layout.gif"
 
-banner "STEP 10 done. Results in reports/ and outputs/, design in $DESIGN.enc. resume for the corner check"
-suspend
+banner "STEP 10 done. Results in reports/ and outputs/, design in $DB_DIR/10_final.enc. resume for the corner check"
+if {!$PD_BATCH} { suspend }
 
 
 ##############################################################################
@@ -440,7 +470,7 @@ suspend
 banner "STEP 11 - setup at typical+worst, hold at typical+best"
 
 ##  the flow optimized only the typical view. Here setup is also checked
-##  with the slow library at 400K and hold with the fast library at 240K.
+##  with the slow library at 125 C and hold with the fast library at 0 C.
 ##  This only reports, it does not change the layout.
 safe "set_analysis_view -setup {default worst} -hold {default best}"
 safe "timeDesign -postRoute       -expandedViews -outDir $TIM_DIR -prefix 11_corners"
@@ -448,3 +478,5 @@ safe "timeDesign -postRoute -hold -expandedViews -outDir $TIM_DIR -prefix 11_cor
 safe "set_analysis_view -setup {default} -hold {default}"
 
 banner "FLOW COMPLETE. reports/timing/11_corners* has one line per view."
+
+if {$PD_BATCH} { exit }

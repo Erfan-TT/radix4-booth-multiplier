@@ -180,10 +180,51 @@ against signed multiplication:
 
 The reported 32-bit runs passed this simulation campaign.
 
-## Next step
+## Physical design
 
-Complete physical design, then repeat timing and power analysis with the routed
-netlist and extracted parasitics for more precise final implementation results.
+The fused-selector netlist synthesized at 3.0 ns was placed and routed in
+Cadence Innovus 23.35. The scripted flow covers floorplan, power grid,
+placement, clock-tree synthesis, routing, optimization, fillers and sign-off
+checks. The method and commands are described in
+[physical_design/README.md](physical_design/README.md).
+
+<p align="center">
+  <img src="docs/figures/layout_dadda_fused_3p0.png" alt="Routed layout" width="100%">
+</p>
+
+| Quantity | Synthesis | Post-route |
+| :-- | --: | --: |
+| Setup slack at 3.0 ns | 0.017 ns | 0.782 ns |
+| Derived period `T0` | 2.983 ns | **2.218 ns** |
+| Hold slack | - | 0.050 ns |
+| Standard-cell area | 5125 um^2 | 5130 um^2 |
+| Die (60% utilization) | - | 102.6 x 102.6 um |
+| Clock tree | ideal | 3 buffers, 7 ps skew |
+| DRC / opens / antenna | - | 0 / 0 / 0 |
+
+The layout closes cleanly. Optimization adds only 0.09% cell area.
+
+The critical path is the same in both tools, from bit 1 of `B` to bit 59 of
+`P`. It arrives at 2.95 ns in synthesis but at 2.21 ns after routing. The
+`5K_hvratio_1_4` wire-load model charged about 1.0 ns for interconnect that
+really costs about 0.24 ns. The synthesis periods above are therefore
+pessimistic in absolute terms. The physical-design sweep checks whether the
+ranking of the variants holds.
+
+At the corners, setup at the slow corner (125 C) fails by 4.56 ns. Hold at
+the fast corner (0 C) misses by at most 3 ps on 32 paths. The flow optimizes
+the typical corner only, as the synthesis does.
+
+The 4.18 mW that Innovus reports uses a default activity of 0.2. It is not
+comparable with the SAIF-based synthesis power until the post-layout
+simulation provides real activity.
+
+### Next step: post-layout Pareto curves
+
+Every synthesized netlist is placed and routed at the period it achieved in
+synthesis. It is then simulated with its routed SDF at its post-route
+achieved period, and its power is computed from that activity. This gives the
+same area-latency and power-latency fronts as above, measured after layout.
 
 ## Repository layout
 
@@ -212,6 +253,13 @@ synthesis/
   syn/reports/            canonical area and timing reports
   syn/reports_power/      canonical power reports and CSVs
   plot_pareto.py          area and dynamic-power Pareto plotting
+physical_design/
+  run_pd.sh               place and route of every netlist (Innovus)
+  sim/sim_postlayout.do   post-layout simulation with the routed SDF
+  run_power.sh            power from the simulation activity
+  collect_pd_results.py   post-layout CSVs for plot_pareto.py
+  scripts/                Innovus flow, import settings, MMMC, power
+  runs/<cfg>_<period>/    one directory per routed netlist
 docs/
   report.tex/.pdf         detailed design report
   presentation.tex/.pdf   recruiter-facing presentation
@@ -252,25 +300,26 @@ quality of results, reference-cell usage, and clock-gating information.
 The achieved-period extraction, gate-level SDF activity simulation, and power
 analysis are documented in [synthesis/README.md](synthesis/README.md).
 
+### Physical design
+
+```bash
+cd physical_design
+./run_pd.sh
+cd sim && vsim -c -do sim_postlayout.do && cd ..
+./run_power.sh
+python3 collect_pd_results.py
+```
+
+See [physical_design/README.md](physical_design/README.md).
+
 ### Regenerate plots
 
 ```bash
 cd synthesis
 python3 plot_pareto.py syn/reports --power-reports syn/reports_power \
   -o ../docs/figures --zoom 1.7 3.1
+python3 plot_pareto.py --pd-results ../physical_design/results -o ../docs/figures
 ```
 
-### Build the documentation
-
-```bash
-cd docs
-pdflatex schematic.tex
-pdflatex report.tex
-pdflatex report.tex
-pdflatex presentation.tex
-pdflatex presentation.tex
-```
-
-The report contains the derivations, implementation details, and result
-provenance. The presentation keeps the main design decisions and measured
-results.
+The second command draws the same fronts from the post-layout results
+(`*_postlayout.png`).
