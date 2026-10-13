@@ -1,0 +1,279 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3500" height="2430" viewBox="0 0 3500 2430" font-family="Helvetica">
+<rect width="3500" height="2430" fill="#FFFFFF"/>
+<rect x="18.4" y="18.4" width="3463.2" height="2393.2" fill="none" stroke="#101418" stroke-width="1.2"/>
+<rect x="80" y="1780" width="578.262" height="239.846" fill="#FFFFFF" stroke="#101418" stroke-width="1"/>
+<path d="M80,1853.37 L658.262,1853.37" stroke="#101418" stroke-width="1.2" fill="none"/>
+<path d="M110.948,1880.45 L242.477,1880.45" stroke="#101418" stroke-width="2.02568" fill="none"/>
+<path d="M110.948,1934.61 L242.477,1934.61" stroke="#B54708" stroke-width="2.02568" fill="none"/>
+<path d="M110.948,1988.77 L242.477,1988.77" stroke="#667085" stroke-width="2.02568" fill="none"/>
+<path d="M387.2,658 L387.2,632" fill="none" stroke="#667085" stroke-width="1.3926565544645246" stroke-linejoin="miter"/>
+<path d="M387.2,632 L391.251,642.128 L383.149,642.128 Z" fill="#667085" stroke="none"/>
+<path d="M460,658 L460,632" fill="none" stroke="#667085" stroke-width="1.3926565544645246" stroke-linejoin="miter"/>
+<path d="M460,632 L464.051,642.128 L455.949,642.128 Z" fill="#667085" stroke="none"/>
+<path d="M532.8,658 L532.8,632" fill="none" stroke="#667085" stroke-width="1.3926565544645246" stroke-linejoin="miter"/>
+<path d="M532.8,632 L536.851,642.128 L528.749,642.128 Z" fill="#667085" stroke="none"/>
+<path d="M856,185 L830,185" fill="none" stroke="#667085" stroke-width="1.3926565544645246" stroke-linejoin="miter"/>
+<path d="M830,185 L840.128,180.949 L840.128,189.051 Z" fill="#667085" stroke="none"/>
+<path d="M856,230 L830,230" fill="none" stroke="#667085" stroke-width="1.3926565544645246" stroke-linejoin="miter"/>
+<path d="M830,230 L840.128,225.949 L840.128,234.051 Z" fill="#667085" stroke="none"/>
+<path d="M856,275 L830,275" fill="none" stroke="#667085" stroke-width="1.3926565544645246" stroke-linejoin="miter"/>
+<path d="M830,275 L840.128,270.949 L840.128,279.051 Z" fill="#667085" stroke="none"/>
+<path d="M3032.8,1366.4 L3032.8,1340.4" fill="none" stroke="#667085" stroke-width="1.3926565544645246" stroke-linejoin="miter"/>
+<path d="M3032.8,1340.4 L3036.85,1350.53 L3028.75,1350.53 Z" fill="#667085" stroke="none"/>
+<path d="M3100,1366.4 L3100,1340.4" fill="none" stroke="#667085" stroke-width="1.3926565544645246" stroke-linejoin="miter"/>
+<path d="M3100,1340.4 L3104.05,1350.53 L3095.95,1350.53 Z" fill="#667085" stroke="none"/>
+<path d="M3167.2,1366.4 L3167.2,1340.4" fill="none" stroke="#667085" stroke-width="1.3926565544645246" stroke-linejoin="miter"/>
+<path d="M3167.2,1340.4 L3171.25,1350.53 L3163.15,1350.53 Z" fill="#667085" stroke="none"/>
+<path d="M700,73 L700,140" fill="none" stroke="#101418" stroke-width="2.5321028262991354" stroke-linejoin="miter"/>
+<path d="M700,140 L695.949,129.872 L704.051,129.872 Z" fill="#101418" stroke="none"/>
+<path d="M700,320 L700,390" fill="none" stroke="#101418" stroke-width="2.5321028262991354" stroke-linejoin="miter"/>
+<path d="M700,390 L695.949,379.872 L704.051,379.872 Z" fill="#101418" stroke="none"/>
+<path d="M700,470 L700,640 L760,640" fill="none" stroke="#101418" stroke-width="2.5321028262991354" stroke-linejoin="miter"/>
+<path d="M760,640 L749.872,644.051 L749.872,635.949 Z" fill="#101418" stroke="none"/>
+<path d="M700,640 L700,1000 L760,1000" fill="none" stroke="#101418" stroke-width="2.5321028262991354" stroke-linejoin="miter"/>
+<path d="M760,1000 L749.872,1004.05 L749.872,995.949 Z" fill="#101418" stroke="none"/>
+<path d="M700,640 L700,1540 L760,1540" fill="none" stroke="#101418" stroke-width="2.5321028262991354" stroke-linejoin="miter"/>
+<path d="M760,1540 L749.872,1544.05 L749.872,1535.95 Z" fill="#101418" stroke="none"/>
+<path d="M270,520 L330,520" fill="none" stroke="#101418" stroke-width="2.5321028262991354" stroke-linejoin="miter"/>
+<path d="M330,520 L319.872,524.051 L319.872,515.949 Z" fill="#101418" stroke="none"/>
+<path d="M590,520 L691.138,520 A8.862359892046975,8.862359892046975 0 0 1 708.862,520 L1350,520 L1350,560 L1480,560" fill="none" stroke="#101418" stroke-width="2.5321028262991354" stroke-linejoin="miter"/>
+<path d="M1480,560 L1469.87,564.051 L1469.87,555.949 Z" fill="#101418" stroke="none"/>
+<path d="M1350,560 L1350,920 L1480,920" fill="none" stroke="#101418" stroke-width="2.5321028262991354" stroke-linejoin="miter"/>
+<path d="M1480,920 L1469.87,924.051 L1469.87,915.949 Z" fill="#101418" stroke="none"/>
+<path d="M1350,560 L1350,1460 L1480,1460" fill="none" stroke="#101418" stroke-width="2.5321028262991354" stroke-linejoin="miter"/>
+<path d="M1480,1460 L1469.87,1464.05 L1469.87,1455.95 Z" fill="#101418" stroke="none"/>
+<path d="M1140,640 L1341.14,640 A8.862359892046975,8.862359892046975 0 0 1 1358.86,640 L1480,640" fill="none" stroke="#B54708" stroke-width="2.5321028262991354" stroke-linejoin="miter"/>
+<path d="M1480,640 L1469.87,644.051 L1469.87,635.949 Z" fill="#B54708" stroke="none"/>
+<path d="M1270,640 L1270,1832.8 L1480,1832.8" fill="none" stroke="#B54708" stroke-width="2.5321028262991354" stroke-linejoin="miter"/>
+<path d="M1480,1832.8 L1469.87,1836.85 L1469.87,1828.75 Z" fill="#B54708" stroke="none"/>
+<path d="M1820,600 L1900,600" fill="none" stroke="#101418" stroke-width="2.5321028262991354" stroke-linejoin="miter"/>
+<path d="M1900,600 L1889.87,604.051 L1889.87,595.949 Z" fill="#101418" stroke="none"/>
+<path d="M1140,1000 L1261.14,1000 A8.862359892046975,8.862359892046975 0 0 1 1278.86,1000 L1341.14,1000 A8.862359892046975,8.862359892046975 0 0 1 1358.86,1000 L1480,1000" fill="none" stroke="#B54708" stroke-width="2.5321028262991354" stroke-linejoin="miter"/>
+<path d="M1480,1000 L1469.87,1004.05 L1469.87,995.949 Z" fill="#B54708" stroke="none"/>
+<path d="M1230,1000 L1230,1900 L1480,1900" fill="none" stroke="#B54708" stroke-width="2.5321028262991354" stroke-linejoin="miter"/>
+<path d="M1480,1900 L1469.87,1904.05 L1469.87,1895.95 Z" fill="#B54708" stroke="none"/>
+<path d="M1820,960 L1900,960" fill="none" stroke="#101418" stroke-width="2.5321028262991354" stroke-linejoin="miter"/>
+<path d="M1900,960 L1889.87,964.051 L1889.87,955.949 Z" fill="#101418" stroke="none"/>
+<path d="M1140,1540 L1221.14,1540 A8.862359892046975,8.862359892046975 0 0 1 1238.86,1540 L1261.14,1540 A8.862359892046975,8.862359892046975 0 0 1 1278.86,1540 L1480,1540" fill="none" stroke="#B54708" stroke-width="2.5321028262991354" stroke-linejoin="miter"/>
+<path d="M1480,1540 L1469.87,1544.05 L1469.87,1535.95 Z" fill="#B54708" stroke="none"/>
+<path d="M1190,1540 L1190,1967.2 L1480,1967.2" fill="none" stroke="#B54708" stroke-width="2.5321028262991354" stroke-linejoin="miter"/>
+<path d="M1480,1967.2 L1469.87,1971.25 L1469.87,1963.15 Z" fill="#B54708" stroke="none"/>
+<path d="M1820,1500 L1900,1500" fill="none" stroke="#101418" stroke-width="2.5321028262991354" stroke-linejoin="miter"/>
+<path d="M1900,1500 L1889.87,1504.05 L1889.87,1495.95 Z" fill="#101418" stroke="none"/>
+<path d="M2080,600 L2190,600" fill="none" stroke="#101418" stroke-width="2.5321028262991354" stroke-linejoin="miter"/>
+<path d="M2190,600 L2179.87,604.051 L2179.87,595.949 Z" fill="#101418" stroke="none"/>
+<path d="M2080,960 L2190,960" fill="none" stroke="#101418" stroke-width="2.5321028262991354" stroke-linejoin="miter"/>
+<path d="M2190,960 L2179.87,964.051 L2179.87,955.949 Z" fill="#101418" stroke="none"/>
+<path d="M2080,1500 L2190,1500" fill="none" stroke="#101418" stroke-width="2.5321028262991354" stroke-linejoin="miter"/>
+<path d="M2190,1500 L2179.87,1504.05 L2179.87,1495.95 Z" fill="#101418" stroke="none"/>
+<path d="M1820,1900 L2190,1900" fill="none" stroke="#101418" stroke-width="2.5321028262991354" stroke-linejoin="miter"/>
+<path d="M2190,1900 L2179.87,1904.05 L2179.87,1895.95 Z" fill="#101418" stroke="none"/>
+<path d="M2530,1140.4 L2640,1140.4" fill="none" stroke="#101418" stroke-width="2.5321028262991354" stroke-linejoin="miter"/>
+<path d="M2640,1140.4 L2629.87,1144.45 L2629.87,1136.35 Z" fill="#101418" stroke="none"/>
+<path d="M2530,1302.4 L2640,1302.4" fill="none" stroke="#101418" stroke-width="2.5321028262991354" stroke-linejoin="miter"/>
+<path d="M2640,1302.4 L2629.87,1306.45 L2629.87,1298.35 Z" fill="#101418" stroke="none"/>
+<path d="M2880,1221.4 L2980,1221.4" fill="none" stroke="#101418" stroke-width="2.5321028262991354" stroke-linejoin="miter"/>
+<path d="M2980,1221.4 L2969.87,1225.45 L2969.87,1217.35 Z" fill="#101418" stroke="none"/>
+<path d="M3220,1221.4 L3230,1221.4" fill="none" stroke="#101418" stroke-width="2.5321028262991354" stroke-linejoin="miter"/>
+<path d="M3230,1221.4 L3219.87,1225.45 L3219.87,1217.35 Z" fill="#101418" stroke="none"/>
+<path d="M693.67,100.853 L706.33,90.7247" stroke="#101418" stroke-width="1.51926"/>
+<text x="708.862" y="89.4587" font-size="18.5688" font-family="Courier New" text-anchor="start" fill="#101418">32</text>
+<path d="M693.67,347.853 L706.33,337.725" stroke="#101418" stroke-width="1.51926"/>
+<text x="708.862" y="336.459" font-size="18.5688" font-family="Courier New" text-anchor="start" fill="#101418">32</text>
+<circle cx="700" cy="640" r="4.811" fill="#101418"/>
+<circle cx="700" cy="640" r="4.811" fill="#101418"/>
+<path d="M693.67,497.853 L706.33,487.725" stroke="#101418" stroke-width="1.51926"/>
+<text x="708.862" y="486.459" font-size="18.5688" font-family="Courier New" text-anchor="start" fill="#101418">33</text>
+<path d="M287.725,526.33 L297.853,513.67" stroke="#101418" stroke-width="1.51926"/>
+<text x="300.385" y="511.138" font-size="18.5688" font-family="Courier New" text-anchor="start" fill="#101418">32</text>
+<circle cx="1350" cy="560" r="4.811" fill="#101418"/>
+<circle cx="1350" cy="560" r="4.811" fill="#101418"/>
+<path d="M607.725,526.33 L617.853,513.67" stroke="#101418" stroke-width="1.51926"/>
+<text x="620.385" y="511.138" font-size="18.5688" font-family="Courier New" text-anchor="start" fill="#101418">32</text>
+<circle cx="1270" cy="640" r="4.811" fill="#B54708"/>
+<path d="M1157.72,646.33 L1167.85,633.67" stroke="#B54708" stroke-width="1.51926"/>
+<text x="1170.39" y="631.138" font-size="18.5688" font-family="Courier New" text-anchor="start" fill="#B54708">3</text>
+<path d="M1837.72,606.33 L1847.85,593.67" stroke="#101418" stroke-width="1.51926"/>
+<text x="1850.39" y="591.138" font-size="18.5688" font-family="Courier New" text-anchor="start" fill="#101418">64</text>
+<circle cx="1230" cy="1000" r="4.811" fill="#B54708"/>
+<path d="M1157.72,1006.33 L1167.85,993.67" stroke="#B54708" stroke-width="1.51926"/>
+<text x="1170.39" y="991.138" font-size="18.5688" font-family="Courier New" text-anchor="start" fill="#B54708">3</text>
+<path d="M1837.72,966.33 L1847.85,953.67" stroke="#101418" stroke-width="1.51926"/>
+<text x="1850.39" y="951.138" font-size="18.5688" font-family="Courier New" text-anchor="start" fill="#101418">64</text>
+<circle cx="1190" cy="1540" r="4.811" fill="#B54708"/>
+<path d="M1157.72,1546.33 L1167.85,1533.67" stroke="#B54708" stroke-width="1.51926"/>
+<text x="1170.39" y="1531.14" font-size="18.5688" font-family="Courier New" text-anchor="start" fill="#B54708">3</text>
+<path d="M1837.72,1506.33 L1847.85,1493.67" stroke="#101418" stroke-width="1.51926"/>
+<text x="1850.39" y="1491.14" font-size="18.5688" font-family="Courier New" text-anchor="start" fill="#101418">64</text>
+<path d="M2097.72,606.33 L2107.85,593.67" stroke="#101418" stroke-width="1.51926"/>
+<text x="2110.39" y="591.138" font-size="18.5688" font-family="Courier New" text-anchor="start" fill="#101418">64</text>
+<path d="M2097.72,966.33 L2107.85,953.67" stroke="#101418" stroke-width="1.51926"/>
+<text x="2110.39" y="951.138" font-size="18.5688" font-family="Courier New" text-anchor="start" fill="#101418">64</text>
+<path d="M2097.72,1506.33 L2107.85,1493.67" stroke="#101418" stroke-width="1.51926"/>
+<text x="2110.39" y="1491.14" font-size="18.5688" font-family="Courier New" text-anchor="start" fill="#101418">64</text>
+<path d="M1837.72,1906.33 L1847.85,1893.67" stroke="#101418" stroke-width="1.51926"/>
+<text x="1850.39" y="1891.14" font-size="18.5688" font-family="Courier New" text-anchor="start" fill="#101418">64</text>
+<path d="M2547.72,1146.73 L2557.85,1134.07" stroke="#101418" stroke-width="1.51926"/>
+<text x="2560.39" y="1131.54" font-size="18.5688" font-family="Courier New" text-anchor="start" fill="#101418">64</text>
+<path d="M2547.72,1308.73 L2557.85,1296.07" stroke="#101418" stroke-width="1.51926"/>
+<text x="2560.39" y="1293.54" font-size="18.5688" font-family="Courier New" text-anchor="start" fill="#101418">64</text>
+<path d="M2897.72,1227.73 L2907.85,1215.07" stroke="#101418" stroke-width="1.51926"/>
+<text x="2910.39" y="1212.54" font-size="18.5688" font-family="Courier New" text-anchor="start" fill="#101418">64</text>
+<path d="M3219.94,1227.73 L3230.06,1215.07" stroke="#101418" stroke-width="1.51926"/>
+<text x="3232.6" y="1212.54" font-size="18.5688" font-family="Courier New" text-anchor="start" fill="#101418">64</text>
+<text x="970" y="514" font-size="21.6635" font-family="Courier New" text-anchor="middle" fill="#101418">A_i</text>
+<text x="1405.2" y="634" font-size="21.6635" font-family="Courier New" text-anchor="middle" fill="#B54708">sel(0)</text>
+<text x="1375" y="1826.8" font-size="21.6635" font-family="Courier New" text-anchor="middle" fill="#B54708">sel(0)(2)</text>
+<text x="1405.2" y="994" font-size="21.6635" font-family="Courier New" text-anchor="middle" fill="#B54708">sel(1)</text>
+<text x="1355" y="1894" font-size="21.6635" font-family="Courier New" text-anchor="middle" fill="#B54708">sel(1)(2)</text>
+<text x="1357.6" y="1534" font-size="21.6635" font-family="Courier New" text-anchor="middle" fill="#B54708">sel(N/2-1)</text>
+<text x="1335" y="1961.2" font-size="21.6635" font-family="Courier New" text-anchor="middle" fill="#B54708">sel(N/2-1)(2)</text>
+<text x="2005" y="1894" font-size="21.6635" font-family="Courier New" text-anchor="middle" fill="#101418">pp(N/2)</text>
+<text x="2615.8" y="1134.4" font-size="21.6635" font-family="Courier New" text-anchor="middle" fill="#101418">C</text>
+<text x="2615.8" y="1296.4" font-size="21.6635" font-family="Courier New" text-anchor="middle" fill="#101418">S</text>
+<rect x="760" y="560" width="380" height="160" fill="#FFFFFF" stroke="#101418" stroke-width="1.8990771197243514"/>
+<text x="950" y="639.257" font-size="30.9479" font-family="Helvetica" text-anchor="middle" fill="#101418" font-weight="600">booth_encoder</text>
+<text x="950" y="663.025" font-size="18.5688" font-family="Helvetica" text-anchor="middle" fill="#101418">row 0:  B(1:0) &amp; &#x27;0&#x27;</text>
+<text x="768" y="646.839" font-size="20.1162" font-family="Courier New" text-anchor="start" fill="#344054">B_IN</text>
+<text x="1132" y="646.839" font-size="20.1162" font-family="Courier New" text-anchor="end" fill="#B54708">SEL</text>
+<rect x="1480" y="500" width="340" height="200" fill="#FFFFFF" stroke="#101418" stroke-width="1.8990771197243514"/>
+<text x="1650" y="599.257" font-size="30.9479" font-family="Helvetica" text-anchor="middle" fill="#101418" font-weight="600">mux_and_shift</text>
+<text x="1650" y="623.025" font-size="18.5688" font-family="Helvetica" text-anchor="middle" fill="#101418">row 0</text>
+<text x="1488" y="566.839" font-size="20.1162" font-family="Courier New" text-anchor="start" fill="#344054">A</text>
+<text x="1488" y="646.839" font-size="20.1162" font-family="Courier New" text-anchor="start" fill="#B54708">sel</text>
+<text x="1812" y="606.839" font-size="20.1162" font-family="Courier New" text-anchor="end" fill="#344054">pp</text>
+<rect x="1900" y="560" width="180" height="80" fill="#FFFFFF" stroke="#101418" stroke-width="1.8990771197243514"/>
+<text x="1990" y="611.141" font-size="30.9479" font-family="Helvetica" text-anchor="middle" fill="#101418" font-weight="600">&lt;&lt; 0</text>
+<rect x="760" y="920" width="380" height="160" fill="#FFFFFF" stroke="#101418" stroke-width="1.8990771197243514"/>
+<text x="950" y="999.257" font-size="30.9479" font-family="Helvetica" text-anchor="middle" fill="#101418" font-weight="600">booth_encoder</text>
+<text x="950" y="1023.03" font-size="18.5688" font-family="Helvetica" text-anchor="middle" fill="#101418">row 1:  B(3:1)</text>
+<text x="768" y="1006.84" font-size="20.1162" font-family="Courier New" text-anchor="start" fill="#344054">B_IN</text>
+<text x="1132" y="1006.84" font-size="20.1162" font-family="Courier New" text-anchor="end" fill="#B54708">SEL</text>
+<rect x="1480" y="860" width="340" height="200" fill="#FFFFFF" stroke="#101418" stroke-width="1.8990771197243514"/>
+<text x="1650" y="959.257" font-size="30.9479" font-family="Helvetica" text-anchor="middle" fill="#101418" font-weight="600">mux_and_shift</text>
+<text x="1650" y="983.025" font-size="18.5688" font-family="Helvetica" text-anchor="middle" fill="#101418">row 1</text>
+<text x="1488" y="926.839" font-size="20.1162" font-family="Courier New" text-anchor="start" fill="#344054">A</text>
+<text x="1488" y="1006.84" font-size="20.1162" font-family="Courier New" text-anchor="start" fill="#B54708">sel</text>
+<text x="1812" y="966.839" font-size="20.1162" font-family="Courier New" text-anchor="end" fill="#344054">pp</text>
+<rect x="1900" y="920" width="180" height="80" fill="#FFFFFF" stroke="#101418" stroke-width="1.8990771197243514"/>
+<text x="1990" y="971.141" font-size="30.9479" font-family="Helvetica" text-anchor="middle" fill="#101418" font-weight="600">&lt;&lt; 2</text>
+<rect x="760" y="1460" width="380" height="160" fill="#FFFFFF" stroke="#101418" stroke-width="1.8990771197243514"/>
+<text x="950" y="1539.26" font-size="30.9479" font-family="Helvetica" text-anchor="middle" fill="#101418" font-weight="600">booth_encoder</text>
+<text x="950" y="1563.03" font-size="18.5688" font-family="Helvetica" text-anchor="middle" fill="#101418">row N/2-1:  B(N-1:N-3)</text>
+<text x="768" y="1546.84" font-size="20.1162" font-family="Courier New" text-anchor="start" fill="#344054">B_IN</text>
+<text x="1132" y="1546.84" font-size="20.1162" font-family="Courier New" text-anchor="end" fill="#B54708">SEL</text>
+<rect x="1480" y="1400" width="340" height="200" fill="#FFFFFF" stroke="#101418" stroke-width="1.8990771197243514"/>
+<text x="1650" y="1499.26" font-size="30.9479" font-family="Helvetica" text-anchor="middle" fill="#101418" font-weight="600">mux_and_shift</text>
+<text x="1650" y="1523.03" font-size="18.5688" font-family="Helvetica" text-anchor="middle" fill="#101418">row N/2-1</text>
+<text x="1488" y="1466.84" font-size="20.1162" font-family="Courier New" text-anchor="start" fill="#344054">A</text>
+<text x="1488" y="1546.84" font-size="20.1162" font-family="Courier New" text-anchor="start" fill="#B54708">sel</text>
+<text x="1812" y="1506.84" font-size="20.1162" font-family="Courier New" text-anchor="end" fill="#344054">pp</text>
+<rect x="1900" y="1460" width="180" height="80" fill="#FFFFFF" stroke="#101418" stroke-width="1.8990771197243514"/>
+<text x="1990" y="1511.14" font-size="30.9479" font-family="Helvetica" text-anchor="middle" fill="#101418" font-weight="600">&lt;&lt; N-2</text>
+<rect x="1480" y="1780" width="340" height="240" fill="#FFFFFF" stroke="#101418" stroke-width="1.8990771197243514"/>
+<text x="1650" y="1887.37" font-size="30.9479" font-family="Helvetica" text-anchor="middle" fill="#101418" font-weight="600">corrector</text>
+<text x="1650" y="1911.14" font-size="18.5688" font-family="Helvetica" text-anchor="middle" fill="#101418">Booth +1 bits</text>
+<text x="1650" y="1934.91" font-size="18.5688" font-family="Helvetica" text-anchor="middle" fill="#101418">+ bias constant</text>
+<text x="1488" y="1839.64" font-size="20.1162" font-family="Courier New" text-anchor="start" fill="#B54708">neg(0)</text>
+<text x="1488" y="1906.84" font-size="20.1162" font-family="Courier New" text-anchor="start" fill="#B54708">neg(1)</text>
+<text x="1488" y="1974.04" font-size="20.1162" font-family="Courier New" text-anchor="start" fill="#B54708">neg(N/2-1)</text>
+<text x="1812" y="1906.84" font-size="20.1162" font-family="Courier New" text-anchor="end" fill="#344054">pp(N/2)</text>
+<rect x="2190" y="460" width="340" height="1620" fill="#FFFFFF" stroke="#101418" stroke-width="1.8990771197243514"/>
+<text x="2360" y="1257.37" font-size="30.9479" font-family="Helvetica" text-anchor="middle" fill="#101418" font-weight="600">reduction_tree</text>
+<text x="2360" y="1281.14" font-size="18.5688" font-family="Helvetica" text-anchor="middle" fill="#101418">wallace | dadda</text>
+<text x="2360" y="1304.91" font-size="18.5688" font-family="Helvetica" text-anchor="middle" fill="#101418">N/2+1 rows -&gt; 2</text>
+<text x="2522" y="1147.24" font-size="20.1162" font-family="Courier New" text-anchor="end" fill="#344054">C</text>
+<text x="2522" y="1309.24" font-size="20.1162" font-family="Courier New" text-anchor="end" fill="#344054">S</text>
+<text x="2198" y="606.839" font-size="20.1162" font-family="Courier New" text-anchor="start" fill="#344054">PP(0)</text>
+<text x="2198" y="966.839" font-size="20.1162" font-family="Courier New" text-anchor="start" fill="#344054">PP(1)</text>
+<text x="2198" y="1506.84" font-size="20.1162" font-family="Courier New" text-anchor="start" fill="#344054">PP(N/2-1)</text>
+<text x="2198" y="1906.84" font-size="20.1162" font-family="Courier New" text-anchor="start" fill="#344054">PP(N/2)</text>
+<rect x="2640" y="1071.4" width="240" height="300" fill="#FFFFFF" stroke="#101418" stroke-width="1.8990771197243514"/>
+<text x="2760" y="1208.77" font-size="30.9479" font-family="Helvetica" text-anchor="middle" fill="#101418" font-weight="600">P4_adder</text>
+<text x="2760" y="1232.54" font-size="18.5688" font-family="Helvetica" text-anchor="middle" fill="#101418">sparse-tree CPA</text>
+<text x="2760" y="1256.31" font-size="18.5688" font-family="Helvetica" text-anchor="middle" fill="#101418">Cin = 0</text>
+<text x="2648" y="1147.24" font-size="20.1162" font-family="Courier New" text-anchor="start" fill="#344054">A</text>
+<text x="2648" y="1309.24" font-size="20.1162" font-family="Courier New" text-anchor="start" fill="#344054">B</text>
+<text x="2872" y="1228.24" font-size="20.1162" font-family="Courier New" text-anchor="end" fill="#344054">S</text>
+<rect x="2980" y="1170.4" width="240" height="170" fill="#F2F4F7" stroke="#101418" stroke-width="1.8990771197243514"/>
+<path d="M2980,1329.4 L2991,1334.9 L2980,1340.4 Z" fill="none" stroke="#101418" stroke-width="1.2"/>
+<text x="3100" y="1254.66" font-size="30.9479" font-family="Helvetica" text-anchor="middle" fill="#101418" font-weight="600">reg_N</text>
+<text x="3100" y="1278.43" font-size="18.5688" font-family="Helvetica" text-anchor="middle" fill="#101418">P register</text>
+<text x="2988" y="1228.24" font-size="20.1162" font-family="Courier New" text-anchor="start" fill="#344054">X</text>
+<text x="3212" y="1228.24" font-size="20.1162" font-family="Courier New" text-anchor="end" fill="#344054">Y</text>
+<g transform="rotate(-90 3039.64 1330.4)">
+<text x="3039.64" y="1330.4" font-size="20.1162" font-family="Courier New" text-anchor="start" fill="#667085">CLK</text>
+</g>
+<g transform="rotate(-90 3106.84 1330.4)">
+<text x="3106.84" y="1330.4" font-size="20.1162" font-family="Courier New" text-anchor="start" fill="#667085">RST</text>
+</g>
+<g transform="rotate(-90 3174.04 1330.4)">
+<text x="3174.04" y="1330.4" font-size="20.1162" font-family="Courier New" text-anchor="start" fill="#667085">LD</text>
+</g>
+<rect x="570" y="140" width="260" height="180" fill="#F2F4F7" stroke="#101418" stroke-width="1.8990771197243514"/>
+<path d="M570,309 L581,314.5 L570,320 Z" fill="none" stroke="#101418" stroke-width="1.2"/>
+<text x="700" y="229.257" font-size="30.9479" font-family="Helvetica" text-anchor="middle" fill="#101418" font-weight="600">reg_N</text>
+<text x="700" y="253.025" font-size="18.5688" font-family="Helvetica" text-anchor="middle" fill="#101418">B register</text>
+<text x="693.945" y="162.484" font-size="20.1162" font-family="Courier New" text-anchor="start" fill="#344054">X</text>
+<text x="693.945" y="312" font-size="20.1162" font-family="Courier New" text-anchor="start" fill="#344054">Y</text>
+<text x="822" y="191.839" font-size="20.1162" font-family="Courier New" text-anchor="end" fill="#667085">CLK</text>
+<text x="822" y="236.839" font-size="20.1162" font-family="Courier New" text-anchor="end" fill="#667085">RST</text>
+<text x="822" y="281.839" font-size="20.1162" font-family="Courier New" text-anchor="end" fill="#667085">LD</text>
+<rect x="590" y="390" width="220" height="80" fill="#FFFFFF" stroke="#101418" stroke-width="1.8990771197243514"/>
+<text x="700" y="441.141" font-size="30.9479" font-family="Helvetica" text-anchor="middle" fill="#101418" font-weight="600">B &amp; &#x27;0&#x27;</text>
+<rect x="330" y="472" width="260" height="160" fill="#F2F4F7" stroke="#101418" stroke-width="1.8990771197243514"/>
+<path d="M330,621 L341,626.5 L330,632 Z" fill="none" stroke="#101418" stroke-width="1.2"/>
+<text x="460" y="551.257" font-size="30.9479" font-family="Helvetica" text-anchor="middle" fill="#101418" font-weight="600">reg_N</text>
+<text x="460" y="575.025" font-size="18.5688" font-family="Helvetica" text-anchor="middle" fill="#101418">A register</text>
+<text x="338" y="526.839" font-size="20.1162" font-family="Courier New" text-anchor="start" fill="#344054">X</text>
+<text x="582" y="526.839" font-size="20.1162" font-family="Courier New" text-anchor="end" fill="#344054">Y</text>
+<g transform="rotate(-90 394.039 622)">
+<text x="394.039" y="622" font-size="20.1162" font-family="Courier New" text-anchor="start" fill="#667085">CLK</text>
+</g>
+<g transform="rotate(-90 466.839 622)">
+<text x="466.839" y="622" font-size="20.1162" font-family="Courier New" text-anchor="start" fill="#667085">RST</text>
+</g>
+<g transform="rotate(-90 539.639 622)">
+<text x="539.639" y="622" font-size="20.1162" font-family="Courier New" text-anchor="start" fill="#667085">LD</text>
+</g>
+<rect x="361.931" y="658" width="50.5379" height="29.71" fill="#FFFFFF" stroke="#667085" stroke-width="1.1"/>
+<text x="387.2" y="679.54" font-size="18.5688" font-family="Courier New" text-anchor="middle" fill="#667085">CLK</text>
+<rect x="434.731" y="658" width="50.5379" height="29.71" fill="#FFFFFF" stroke="#667085" stroke-width="1.1"/>
+<text x="460" y="679.54" font-size="18.5688" font-family="Courier New" text-anchor="middle" fill="#667085">RST</text>
+<rect x="511.8" y="658" width="42" height="29.71" fill="#FFFFFF" stroke="#667085" stroke-width="1.1"/>
+<text x="532.8" y="679.54" font-size="18.5688" font-family="Courier New" text-anchor="middle" fill="#667085">LD</text>
+<rect x="856" y="170.145" width="50.5379" height="29.71" fill="#FFFFFF" stroke="#667085" stroke-width="1.1"/>
+<text x="881.269" y="191.685" font-size="18.5688" font-family="Courier New" text-anchor="middle" fill="#667085">CLK</text>
+<rect x="856" y="215.145" width="50.5379" height="29.71" fill="#FFFFFF" stroke="#667085" stroke-width="1.1"/>
+<text x="881.269" y="236.685" font-size="18.5688" font-family="Courier New" text-anchor="middle" fill="#667085">RST</text>
+<rect x="856" y="260.145" width="42" height="29.71" fill="#FFFFFF" stroke="#667085" stroke-width="1.1"/>
+<text x="877" y="281.685" font-size="18.5688" font-family="Courier New" text-anchor="middle" fill="#667085">LD</text>
+<rect x="3007.53" y="1366.4" width="50.5379" height="29.71" fill="#FFFFFF" stroke="#667085" stroke-width="1.1"/>
+<text x="3032.8" y="1387.94" font-size="18.5688" font-family="Courier New" text-anchor="middle" fill="#667085">CLK</text>
+<rect x="3074.73" y="1366.4" width="50.5379" height="29.71" fill="#FFFFFF" stroke="#667085" stroke-width="1.1"/>
+<text x="3100" y="1387.94" font-size="18.5688" font-family="Courier New" text-anchor="middle" fill="#667085">RST</text>
+<rect x="3146.2" y="1366.4" width="42" height="29.71" fill="#FFFFFF" stroke="#667085" stroke-width="1.1"/>
+<text x="3167.2" y="1387.94" font-size="18.5688" font-family="Courier New" text-anchor="middle" fill="#667085">LD</text>
+<path d="M600,30 L800,30 L800,61.82 L700,73 L600,61.82 Z" fill="#FFFFFF" stroke="#101418" stroke-width="1.77247"/>
+<text x="700" y="55.683" font-size="24.7583" font-family="Courier New" text-anchor="middle" fill="#101418" font-weight="600">B</text>
+<path d="M40,498.5 L210.2,498.5 L270,520 L210.2,541.5 L40,541.5 Z" fill="#FFFFFF" stroke="#101418" stroke-width="1.77247"/>
+<text x="136.6" y="528.913" font-size="24.7583" font-family="Courier New" text-anchor="middle" fill="#101418" font-weight="600">A</text>
+<path d="M3230,1221.4 L3289.8,1199.9 L3460,1199.9 L3460,1242.9 L3289.8,1242.9 Z" fill="#FFFFFF" stroke="#101418" stroke-width="1.77247"/>
+<text x="3363.4" y="1230.31" font-size="24.7583" font-family="Courier New" text-anchor="middle" fill="#101418" font-weight="600">P</text>
+<rect x="2429.37" y="2278.05" width="1052.23" height="133.552" fill="#F9FAFB" stroke="#101418" stroke-width="1.2"/>
+<rect x="2429.37" y="2278.05" width="149.74" height="133.552" fill="#F9FAFB" stroke="#101418" stroke-width="1.2"/>
+<text x="2504.24" y="2358.99" font-size="40.4704" font-family="Helvetica" text-anchor="middle" fill="#101418" font-weight="600">01</text>
+<text x="2607.44" y="2328.64" font-size="26.3057" font-family="Helvetica" text-anchor="start" fill="#101418" font-weight="600">boothmul_registered — datapath</text>
+<text x="2607.44" y="2367.08" font-size="19.2234" font-family="Courier New" text-anchor="start" fill="#475467">rtl/multiplier/boothmul.vhd : STRUCTURAL   (N = 32)</text>
+<text x="3457.32" y="2395.41" font-size="16.1881" font-family="Helvetica" text-anchor="end" fill="#98A2B3">Radix-4 Booth multiplier  ·  RTL schematics</text>
+<text x="950" y="1250" font-size="47.6598" font-family="Helvetica" text-anchor="middle" fill="#101418">⋮</text>
+<text x="1650" y="1250" font-size="47.6598" font-family="Helvetica" text-anchor="middle" fill="#101418">⋮</text>
+<text x="1990" y="1250" font-size="47.6598" font-family="Helvetica" text-anchor="middle" fill="#101418">⋮</text>
+<text x="80" y="2130" font-size="21.6635" font-family="Helvetica" text-anchor="start" fill="#475467">one row per Booth digit: i = 0 … N/2-1  (16 rows at N = 32)</text>
+<text x="80" y="2162.5" font-size="21.6635" font-family="Helvetica" text-anchor="start" fill="#475467">row i is shifted left by 2i before the tree;  the corrector adds the</text>
+<text x="80" y="2194.99" font-size="21.6635" font-family="Helvetica" text-anchor="start" fill="#475467">Booth +1 of every negative row and the sign-extension bias constant</text>
+<text x="110.948" y="1832.22" font-size="32.8822" font-family="Helvetica" text-anchor="start" fill="#101418" font-weight="600">KEY</text>
+<text x="269.556" y="1890.12" font-size="23.2109" font-family="Helvetica" text-anchor="start" fill="#101418">data (bus width on the slash)</text>
+<text x="269.556" y="1944.28" font-size="23.2109" font-family="Helvetica" text-anchor="start" fill="#101418">Booth select sel(2:0)</text>
+<text x="269.556" y="1998.44" font-size="23.2109" font-family="Helvetica" text-anchor="start" fill="#101418">CLK, RST, LD by name tag</text>
+</svg>

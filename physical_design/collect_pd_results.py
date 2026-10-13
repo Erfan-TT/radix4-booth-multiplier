@@ -3,9 +3,11 @@
 
 The CSVs have the same columns as synthesis/syn/reports_power, so
 synthesis/plot_pareto.py --pd-results results draws the post-layout fronts.
+The extra column achieved_slow_ns is the period at the slow corner.
 """
 
 import csv
+import gzip
 import re
 from pathlib import Path
 
@@ -14,7 +16,11 @@ RESULTS = Path(__file__).resolve().parent / "results"
 
 
 def read(path):
-    return path.read_text(errors="replace") if path.exists() else ""
+    if not path.exists():
+        return ""
+    if path.suffix == ".gz":
+        return gzip.open(path, "rt", errors="replace").read()
+    return path.read_text(errors="replace")
 
 
 def number(pattern, text):
@@ -33,6 +39,11 @@ for run in sorted(RUNS.iterdir()):
     wns = min(float(s) for s in slk[1].split()[2].split("/") if s != "*")
     clock = float(info["clock"])
 
+    # setup slack of the slow corner (step 11, view "worst")
+    wns_slow = number(r"[|]worst\s+[|]\s*(-?[0-9.]+)",
+                      read(run / "reports/timing/11_corners.summary.gz"))
+    slow = round(clock - wns_slow, 4) if wns_slow is not None else ""
+
     area = number(r"boothmul_registered\s+\d+\s+([0-9.]+)", read(run / "reports/10_area.rpt"))
 
     # power only if the post-layout simulation had no error
@@ -46,20 +57,20 @@ for run in sorted(RUNS.iterdir()):
         dynamic = (internal + switching) * 1e-3
 
     rows.setdefault(info["cfg"], []).append(
-        [float(info["period"]), wns, round(clock - wns, 4), area, dynamic, leakage])
+        [float(info["period"]), wns, round(clock - wns, 4), area, dynamic, leakage, slow])
 
-print(f"{'run':<44}{'T0 routed':>10}{'area':>9}{'dyn mW':>9}")
+print(f"{'configuration':<36}{'runs':>5}{'fastest typ':>13}{'fastest slow':>14}{'min area':>10}")
 for cfg, points in rows.items():
     points.sort()
     (RESULTS / cfg).mkdir(parents=True, exist_ok=True)
     with open(RESULTS / cfg / f"results_{cfg}.csv", "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(["period_ns", "slack_ns", "achieved_ns", "area_um2",
-                         "dynamic_power_W", "leakage_power_W"])
+                         "dynamic_power_W", "leakage_power_W", "achieved_slow_ns"])
         writer.writerows(points)
-    for period, wns, achieved, area, dynamic, leakage in points:
-        name = f"{cfg}_{str(period).replace('.', 'p')}"
-        dyn = f"{dynamic * 1e3:.2f}" if dynamic != "" else "-"
-        print(f"{name:<44}{achieved:>10.3f}{area:>9.0f}{dyn:>9}")
+    fastest = min(p[2] for p in points)
+    slowest = min(p[6] for p in points if p[6] != "")
+    print(f"{cfg:<36}{len(points):>5}{fastest:>13.3f}{slowest:>14.3f}"
+          f"{min(p[3] for p in points):>10.0f}")
 
 print(f"\nwritten {RESULTS}")

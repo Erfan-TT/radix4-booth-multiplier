@@ -182,13 +182,17 @@ def read_power(cfg, power_dir):
             try:
                 dynamic = float(row["dynamic_power_W"])
                 leakage = float(row["leakage_power_W"])
+                achieved = float(row["achieved_ns"])
                 out.append({
                     "period": float(row["period_ns"]),
-                    "achieved": float(row["achieved_ns"]),
+                    "achieved": achieved,
                     "area": float(row["area_um2"]),
                     "dynamic": dynamic,
                     "leakage": leakage,
                     "total": dynamic + leakage,
+                    # one multiplication per cycle: energy = power x period,
+                    # W x ns = nJ, x1e3 = pJ
+                    "energy": (dynamic + leakage) * achieved * 1e3,
                 })
             except (KeyError, ValueError):
                 continue
@@ -313,28 +317,72 @@ def plot_zoom(data, out_png, lo, hi, only=None):
     print("saved", out_png)
 
 
-def plot_power(data, power_dir, out_png):
+#   dynamic: the datasheet view, the power of each netlist when it runs at its
+#            own achieved period (its maximum frequency)
+#   energy:  the comparison view, power x period per multiplication, which
+#            does not depend on the clock
+POWER_PLOTS = {
+    "dynamic": (1e3, "dynamic power [mW]",
+                "Dynamic power vs achieved clock period",
+                "each netlist clocked at its own achieved period"),
+    "energy":  (1.0, "energy per multiplication [pJ]",
+                "Energy per multiplication vs achieved clock period",
+                "total power x period; independent of the clock"),
+}
+
+
+def plot_power(data, power_dir, out_png, objective="dynamic"):
     have = {cfg: read_power(cfg, power_dir) for cfg in data}
     if not any(have.values()):
         print("no power CSVs found -- skipping the power plot")
         return
+    scale, ylabel, title, subtitle = POWER_PLOTS[objective]
     fig, ax = plt.subplots(figsize=(9.5, 5.6))
     for cfg in ordered(data):
         points = have.get(cfg) or []
         if not points:
             continue
         label, colour, dash = style_for(cfg)
-        front = pareto_front(points, objective="dynamic")
-        if front:
-            ax.plot([p["achieved"] for p in front],
-                    [p["dynamic"] * 1e3 for p in front],
-                    marker="o", markersize=4.5, linewidth=2,
+        # power: Pareto front. Energy is almost flat in the period, so every
+        # netlist is drawn, ordered by achieved period (read_power sorts them)
+        shown = points if objective == "energy" else pareto_front(points, objective)
+        if shown:
+            ax.plot([p["achieved"] for p in shown],
+                    [p[objective] * scale for p in shown],
+                    marker="o", markersize=4.5, linewidth=1.6,
                     color=colour, linestyle=dash, label=label)
-    setup_axes(ax, "achieved clock period [ns]", "dynamic power [mW]",
-               f"Dynamic power vs achieved clock period ({STAGE})",
-               f"Pareto front from activity-annotated {STAGE} netlists")
+    kind = "every netlist, ordered by period" if objective == "energy" \
+        else "Pareto fronts"
+    setup_axes(ax, "achieved clock period [ns]", ylabel,
+               f"{title} ({STAGE})", f"{kind}; {subtitle}")
+    ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:g}"))
     ax.margins(y=0.10)
     ax.legend(frameon=False, fontsize=9, loc="upper right")
+    fig.tight_layout()
+    fig.savefig(out_png, dpi=160)
+    plt.close(fig)
+    print("saved", out_png)
+
+
+def plot_overlay(syn, pd, out_png, cfgs):
+    """Area fronts of a few variants before (dashed) and after layout (solid)."""
+    fig, ax = plt.subplots(figsize=(9.5, 5.6))
+    for cfg in cfgs:
+        if cfg not in syn or cfg not in pd:
+            continue
+        label, colour, _ = style_for(cfg)
+        for data, dash, alpha, stage in ((syn, "--", 0.55, "synthesis"),
+                                         (pd, "-", 1.0, "post-layout")):
+            front = pareto_front(data[cfg])
+            ax.plot([p["achieved"] for p in front], [p["area"] for p in front],
+                    marker="o", markersize=4, linewidth=1.8, linestyle=dash,
+                    alpha=alpha, color=colour, label=f"{label}, {stage}")
+    setup_axes(ax, "achieved clock period  (constraint - slack)  [ns]",
+               "total cell area [um2]",
+               "Area fronts before and after layout",
+               "dashed: synthesis with wire-load model; solid: routed")
+    ax.margins(y=0.10)
+    ax.legend(frameon=False, fontsize=8.5, loc="upper right")
     fig.tight_layout()
     fig.savefig(out_png, dpi=160)
     plt.close(fig)
@@ -429,7 +477,14 @@ def main():
     plot_full(data, outdir / f"pareto_area_vs_achieved_{tag}.png")
     plot_zoom(data, outdir / f"pareto_zoom_{tag}.png", *args.zoom, only=args.zoom_only)
     plot_power(data, power_dir,
-               outdir / f"pareto_dynamic_power_vs_achieved_{tag}.png")
+               outdir / f"pareto_dynamic_power_vs_achieved_{tag}.png", "dynamic")
+    plot_power(data, power_dir,
+               outdir / f"pareto_energy_vs_achieved_{tag}.png", "energy")
+    if args.pd_results:
+        plot_overlay(read_reports(args.reports), data,
+                     outdir / "pareto_area_synthesis_vs_postlayout.png",
+                     ["CFG_BOOTHMUL_REG_WAL_BASE", "CFG_BOOTHMUL_REG_DADDA_FUSED_SEL",
+                      "CFG_REG_SUPER_BEH"])
 
 
 if __name__ == "__main__":

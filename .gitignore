@@ -58,6 +58,7 @@ tcl_stacktrace.txt
 
 # ---- LaTeX build artifacts (the .tex and .pdf are both kept) ----
 *.aux
+*.log
 *.out
 *.toc
 *.nav
@@ -68,31 +69,33 @@ tcl_stacktrace.txt
 
 
 # --- cadence artifacts
-# every Innovus run lives in physical_design/runs/<cfg>_<tag>/: keep its
-# reports/ and the small outputs, not the databases, logs, DEF/SPEF (several
-# MB per run) or the simulation VCD
+# every Innovus run lives in physical_design/runs/<cfg>_<period>/: keep its
+# reports/ and the small outputs, not the databases, internal snapshots,
+# DEF/SPEF (several MB per run) or the simulation VCD
 physical_design/runs/*/dbs/
-physical_design/runs/*/*.enc
-physical_design/runs/*/*.enc.dat/
 physical_design/runs/*/innovus*
-physical_design/runs/*/*.antenna.lef
+physical_design/runs/*/reports/timing/um*/
 physical_design/runs/*/timingReports/
 physical_design/runs/*/.cadence/
-physical_design/runs/*/.metrics/
+physical_design/runs/*/.metrics*
 physical_design/runs/*/.timing_file_*
+physical_design/runs/*/*.antenna.lef
+physical_design/runs/*/power.rpt
+physical_design/runs/*/voltus_power_missing_netnames.rpt
 physical_design/runs/*/outputs/*.def
 physical_design/runs/*/outputs/*.spef
 physical_design/**/*.vcd
 physical_design/sim/work_pl/
+# anything Innovus writes when started outside a run directory
+physical_design/reports/
 physical_design/.cadence/
-physical_design/innovus_temp_*/
-physical_design/.metrics
-physical_design/*.log
-physical_design/*.gz
-physical_design/*.enc
-physical_design/*.log*
+physical_design/.metrics*
 physical_design/dbs/
-physical_design/boothmul_registered.enc.dat/
+physical_design/innovus*
+physical_design/*.enc*
 *.cmd
 *.logv
 
+# schematic generator scratch output
+docs/schematics/tools/_iter/
+__pycache__/

@@ -57,41 +57,40 @@
 \newcommand{\src}[1]{\,{\footnotesize\color{accent}[#1]}}
 
 \title{\textbf{A Radix-4 Booth Multiplier in Structural VHDL}\\[4pt]
-       \large Architecture, optimization and synthesis at 32 bits in Nangate 45\,nm}
+       \large Architecture, optimization, synthesis and layout at 32 bits in Nangate 45\,nm}
 \author{Erfan Taheri}
-\date{Nangate 45\,nm Open Cell Library \quad$\cdot$\quad Synopsys Design Compiler \quad$\cdot$\quad ModelSim}
+\date{Nangate 45\,nm Open Cell Library \quad$\cdot$\quad Synopsys Design Compiler \quad$\cdot$\quad Cadence Innovus \quad$\cdot$\quad ModelSim}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
 \noindent
-This report presents the design and optimization of a signed radix-4
-Booth multiplier described in structural VHDL, together with the synthesis
-results obtained for the $32\times32$-bit instance using Synopsys Design
-Compiler and the Nangate 45\,nm library. Three reduction strategies are
-implemented behind a single entity interface: a behavioural summation of the
-partial products, a Wallace carry-save adder tree, and a Dadda tree. Three
-architectural optimizations are then applied in sequence: elimination of the
-partial-product sign extension in favour of a constant correction vector,
-replacement of the Wallace tree by a generic Dadda schedule computed at
-elaboration time, and fusion of the Booth selection and negation logic into one
-Boolean function per partial-product bit. Each optimization is derived analytically,
-implemented as an alternative VHDL architecture, verified in simulation and
-measured over a sweep of clock constraints. A multiplier inferred by the
-synthesis tool from a plain \texttt{A * B} statement is synthesised under
-identical conditions and used as a technology-mapped reference.
+This report describes how a signed $32\times32$ radix-4 Booth multiplier,
+written in structural VHDL, is refined step by step towards the multiplier
+that Synopsys Design Compiler builds from a plain \texttt{A * B} statement.
+The comparison covers latency, area and power, in the Nangate 45\,nm library.
+The refinement starts from a behavioural Booth multiplier, whose partial
+products are summed by a chain of additions. A Wallace carry-save tree is
+then introduced for latency. Three optimizations follow: elimination of the
+partial-product sign extension in favour of a constant correction, a Dadda
+reduction schedule generated at elaboration time, and fusion of the Booth
+selection and negation logic into one Boolean function per partial-product
+bit. Each step is derived analytically, implemented as an alternative VHDL
+architecture, verified in simulation, synthesised over a sweep of clock
+constraints, and finally placed and routed. The inferred \texttt{A * B}
+multiplier goes through the same flow and is the reference.
 
-Across the sweep, the final architecture reaches \textbf{1.75\,ns}\src{R4},
-while the inferred reference reaches \textbf{1.63\,ns}\src{R6}. Their smallest
-netlists are \textbf{5029\umarea}\src{R4} and
-\textbf{4441\umarea}\src{R6}, respectively. Relative to the unoptimized
-Wallace baseline, the three optimizations recover
-\textbf{69\%} of the relaxed-area difference to the reference. At a common
-$3.0$\,ns synthesis target, post-synthesis activity analysis gives the final
-architecture $4.61$\,mW of dynamic power, $44.1\%$ below the separate-negation
-Dadda variant\src{R8}. Tags such as \src{R4} identify the configuration report
-set; Appendix~\ref{app:prov} gives the key.
+In synthesis, the final architecture reaches \textbf{1.75\,ns}\src{R4} and
+\textbf{5029\umarea}\src{R4}, against \textbf{1.63\,ns} and
+\textbf{4441\umarea} for the reference\src{R6}. It recovers \textbf{69\%} of
+the area difference between the Wallace tree and the reference, and at a
+common $3.0$\,ns target it uses $44\%$ less dynamic power than the plain
+Dadda version\src{R8}. After place and route of all $120$ netlists of the
+power sweep, the final architecture reaches \textbf{1.51\,ns} against
+\textbf{1.49\,ns} for the reference, and its energy per multiplication is
+within $10\%$ of the reference\src{R10}. Tags such as \src{R4} identify the
+report set; Appendix~\ref{app:prov} gives the key.
 \end{abstract}
 
 \tableofcontents
@@ -100,20 +99,63 @@ set; Appendix~\ref{app:prov} gives the key.
 % =====================================================================
 \section{Introduction}
 
-The objective is to quantify how three structural choices change a hand-built
-signed multiplier under one controlled synthesis flow. A multiplier inferred
-from a plain \texttt{A * B} statement provides a practical reference generated
-by the same tool and library, making the remaining area and timing differences
-measurable within this experiment.
+The objective is to close the gap between a hand-built multiplier and the one
+the synthesis tool generates on its own. Given \texttt{P <= A * B}, Design
+Compiler builds a multiplier from its DesignWare library. This report asks how
+close a structural VHDL design can come to it in latency, area and power, and
+which design steps matter. The reference is synthesised, placed and routed
+with the same scripts, constraints and library as every other version.
 
-The design is a radix-4 Booth multiplier written in structural VHDL, generic in
-the operand width $N$ and instantiated at $N=32$, signed, with the product taken
-modulo $2^{2N}$. Three architectural optimizations are applied in sequence:
-elimination of the partial-product sign extension, a Dadda reduction schedule in
-place of a Wallace tree, and fusion of the Booth selection and negation steps.
-Each is derived analytically, implemented as an alternative VHDL architecture,
-verified against a reference model, and measured over a sweep of clock
-constraints.
+The design is a radix-4 Booth multiplier, generic in the operand width $N$ and
+instantiated at $N=32$, signed, with the product taken modulo $2^{2N}$. It is
+refined in five steps, each one an alternative VHDL architecture:
+
+\begin{enumerate}\itemsep2pt
+\setcounter{enumi}{-1}
+\item \textbf{Behavioural Booth} (Section~\ref{sec:step1}). The partial
+      products are summed by a chain of additions. This is the starting point.
+\item \textbf{Wallace tree} (Section~\ref{sec:step1}). A carry-save tree
+      compresses the rows to two before one carry-propagate adder. This step
+      targets latency.
+\item \textbf{Sign-extension elimination} (Section~\ref{sec:opt1}). The
+      replicated sign bits become constants, cancelled by one correction term.
+\item \textbf{Dadda tree} (Section~\ref{sec:opt2}). A column-wise schedule
+      that reduces as late as possible replaces the row-wise Wallace tree.
+\item \textbf{Fused selector} (Section~\ref{sec:opt3}). Booth selection and
+      negation become one Boolean function per bit, removing the XOR layer.
+\end{enumerate}
+
+Table~\ref{tab:path} summarises the path. The Wallace tree buys latency in
+synthesis at a high cost in area and energy. The three optimizations then
+recover area and energy while keeping, and after layout improving, the
+latency.
+
+\begin{table}[!ht]
+\centering\small
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+ & \multicolumn{2}{c}{\textbf{latency (ns)}} & \multicolumn{2}{c}{\textbf{min.\ area ($\mu$m$^2$)}} & \multicolumn{2}{c}{\textbf{energy/op (pJ)}} \\
+\textbf{Version} & synth. & layout & synth. & layout & synth. & layout \\
+\midrule
+0. Behavioural Booth            & 2.00 & 1.74 & 6210 & 6244 & 18.1 & 14.9 \\
+1. Wallace tree                 & 1.86 & 1.76 & 6346 & 6377 & 28.6 & 27.0 \\
+2. $+$ sign-extension elim.     & 1.87 & 1.76 & 5975 & 6001 & 26.2 & 25.7 \\
+3. $+$ Dadda tree               & 1.73 & 1.64 & 5620 & 5663 & 25.1 & 22.6 \\
+\textbf{4. $+$ fused selector}  & \textbf{1.75} & \textbf{1.51} & \textbf{5029} & \textbf{5055} & \textbf{14.1} & \textbf{11.7} \\
+\midrule
+Reference \texttt{A * B}        & 1.63 & 1.49 & 4441 & 4459 & 10.0 & 10.6 \\
+\bottomrule
+\end{tabular}
+\caption{The refinement path. Latency is the fastest achieved clock period over
+the sweep. Energy per multiplication is measured on the netlist synthesised at
+$3.0$\,ns. Details in Sections~\ref{sec:results} and~\ref{sec:pd}.}
+\label{tab:path}
+\end{table}
+
+The final version is $19\%$ smaller, $13\%$ faster and $21\%$ more
+energy-efficient than the behavioural starting point. After layout it is
+within $1\%$ of the reference's latency, $13\%$ of its area and $10\%$ of its
+energy.
 
 Three constraints govern the implementation throughout:
 
@@ -134,10 +176,12 @@ Three constraints govern the implementation throughout:
 
 Section~\ref{sec:arch} describes the architecture and establishes the
 modular-arithmetic framework on which the first optimization depends.
+Section~\ref{sec:step1} covers the starting point and the Wallace tree, and
 Sections~\ref{sec:opt1}--\ref{sec:opt3} derive, implement and measure the three
 optimizations. Section~\ref{sec:verif} describes the verification strategy,
-Section~\ref{sec:method} the synthesis methodology, and
-Section~\ref{sec:results} the measured results. Source organisation and the
+Section~\ref{sec:method} the synthesis methodology,
+Section~\ref{sec:results} the measured results, and Section~\ref{sec:pd} the
+physical design of every netlist. Source organisation and the
 configuration mechanism are documented in Appendix~\ref{app:code}.
 
 % =====================================================================
@@ -151,11 +195,13 @@ $2N$-bit product.
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=\textwidth]{schematic.pdf}
-\caption{Top level of the structural multiplier. The partial-product rows are
-drawn generically: there are $N/2$ of them plus the corrector row. Only
-\texttt{reduction\_tree} differs between the Wallace and Dadda variants, and
-only \texttt{mux\_and\_shift} differs between the sign-extension variants.}
+\includegraphics[width=\textwidth]{schematics/01_datapath.pdf}
+\caption{Datapath of \texttt{boothmul\_registered}. Three of the $N/2$ rows are
+drawn; each row's encoder output selects its partial product, and bit 2 of
+every select also feeds the corrector row. Between the steps,
+\texttt{reduction\_tree} changes from Wallace to Dadda, \texttt{mux\_and\_shift}
+and \texttt{corrector} change together for sign-extension elimination, and
+\texttt{mux\_and\_shift} alone changes for the fused selector.}
 \label{fig:schem}
 \end{figure}
 
@@ -249,7 +295,47 @@ the derivation in Section~\ref{sec:opt1} valid, and it is the reason a constant
 may be added to the array to cancel a bias without any range analysis.
 
 % =====================================================================
-\section{Optimization 1: elimination of the partial-product sign extension}
+\section{Steps 0 and 1: from an adder chain to a Wallace tree}
+\label{sec:step1}
+
+The behavioural version (Step~0) uses the same Booth encoders and row
+generators, but sums the $N/2+1$ rows with a chain of signed additions written
+in VHDL, and leaves the construction of the adders to the synthesis tool. The
+Wallace version (Step~1) replaces the chain with an explicit carry-save tree.
+Each stage compresses groups of three rows into two with full adders, row by
+row, until two rows remain for one carry-propagate adder. The depth of the
+tree grows with the logarithm of the number of rows, while a chain grows with
+the number of rows.
+
+\begin{table}[!ht]
+\centering\small
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+ & \multicolumn{2}{c}{\textbf{Step 0: adder chain}} & \multicolumn{2}{c}{\textbf{Step 1: Wallace tree}} \\
+ & synth. & layout & synth. & layout \\
+\midrule
+Fastest $T_0$ (ns)                 & 2.00 & 1.74 & \textbf{1.86} & 1.76 \\
+Area of the fastest netlist ($\mu$m$^2$) & 7986 & -- & 10022 & -- \\
+Minimum area ($\mu$m$^2$)          & 6210 & 6244 & 6346 & 6377 \\
+Energy per multiplication (pJ)     & 18.1 & 14.9 & 28.6 & 27.0 \\
+\bottomrule
+\end{tabular}
+\caption{The starting point and the Wallace tree\src{R1}\src{R5}\src{R10}.
+Energy is measured on the netlists synthesised at $3.0$\,ns.}
+\label{tab:step1}
+\end{table}
+
+Table~\ref{tab:step1} shows the trade the Wallace tree makes. In synthesis it
+delivers the intended latency gain, $7\%$, but its explicit rows of full
+adders cost area, $25\%$ more at the fastest point, and $58\%$ more energy per
+multiplication. After layout even the latency gain disappears: the tree's
+wiring costs $0.65$\,ns against $0.16$\,ns for the chain
+(Section~\ref{sec:pd}). The next three steps keep the tree, because its
+structure is what makes the Dadda schedule and the fused selector possible,
+and remove its cost.
+
+% =====================================================================
+\section{Step 2: elimination of the partial-product sign extension}
 \label{sec:opt1}
 
 \subsection{Row format and the cost of explicit sign extension}
@@ -378,7 +464,7 @@ at weight $2^{2i}$. This increment row occupies only the even positions of the
 lower half of the array.
 
 The correction constant $C$ occupies only the upper half. The two therefore
-share one row without collision, and the entire cost of Optimization~1 is
+share one row without collision, and the entire cost of Step~2 is
 confined to the upper half of a row the design already had. The
 \texttt{corrector} entity builds it:
 
@@ -437,10 +523,10 @@ The removed bits are constant-valued sign replications, and constant propagation
 in \texttt{compile\_ultra} eliminates most of the associated logic independently
 of the optimization. The contribution that constant propagation cannot make is
 the reduction in structural column height, which determines the size of the
-reduction network; that is what Optimization~2 exploits.
+reduction network; that is what Step~3 exploits.
 
 % =====================================================================
-\section{Optimization 2: a generic Dadda reduction schedule}
+\section{Step 3: a generic Dadda reduction schedule}
 \label{sec:opt2}
 
 This section replaces the row-wise Wallace tree with a Dadda schedule computed
@@ -516,7 +602,7 @@ later declarations in the header can use the constant.
 
 In the Dadda scheduler, a half adder is needed only when a column is exactly one
 dot above its target. For $N=32$ the generated schedule uses $45$ half adders.
-The Wallace baseline does not explicitly instantiate half adders; its
+The Wallace tree does not explicitly instantiate half adders; its
 full-width carry-save adders instead leave synthesis to simplify positions with
 constant inputs. Table~\ref{tab:generic} therefore compares instantiated RTL
 compressors rather than claiming a one-to-one post-mapping cell count.
@@ -786,12 +872,12 @@ single improvement in delay among the three optimizations. The cell count at a
 $3.0$\,ns constraint falls from $4455$ to $3936$\src{R7}.
 
 % =====================================================================
-\section{Optimization 3: fusion of the Booth selector}
+\section{Step 4: fusion of the Booth selector}
 \label{sec:opt3}
 
 \subsection{Cost of the separate negation stage}
 
-After Optimization~2 the design is $1180\umarea$ larger than the
+After Step~3 the design is $1180\umarea$ larger than the
 inferred reference. A cell census of the two netlists at a $3.0$\,ns
 constraint\src{R7} localises the difference.
 
@@ -805,7 +891,7 @@ Structural, Dadda            & 1230 & 117 & 505 & 3936 \\
 Inferred \texttt{A * B}      &  559 & 268 & 311 & 3035 \\
 \bottomrule
 \end{tabular}
-\caption{Cell census at a $3.0$\,ns constraint\src{R7}, before Optimization~3.}
+\caption{Cell census at a $3.0$\,ns constraint\src{R7}, before Step~4.}
 \end{table}
 
 The structural design contains $671$ more exclusive-or cells than the inferred
@@ -873,6 +959,21 @@ sum-of-products function per bit. The source no longer places an explicit XOR
 stage between the selector and the reduction tree, giving Design Compiler the
 opportunity to use the Nangate library's compound AOI/OAI cells and to share
 complemented forms of $A$ across rows.
+
+Figure~\ref{fig:mas} shows the difference at gate level for one bit. On the
+left, the separate-negation row passes every bit through a 2:1 mux, an AND
+that forces the zero digit and an XOR driven by \texttt{sel(2)}. On the right,
+four decoder gates per row turn the select into the four mutually exclusive
+controls of Equation~\eqref{eq:fused}, and each bit is one AND-OR, with the
+negation folded into an inverted data input.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=\textwidth]{schematics/02_mux_and_shift.pdf}
+\caption{One bit $i$ of \texttt{mux\_and\_shift}: \texttt{no\_sign\_extend}
+(Steps~2--3, left) against \texttt{fused\_selector} (Step~4, right).}
+\label{fig:mas}
+\end{figure}
 
 \begin{table}[!ht]
 \centering\small
@@ -1041,29 +1142,30 @@ rather than by reusing the area front.
 \toprule
 \textbf{Variant} & \textbf{fastest $T_0$} & \textbf{area there} & \textbf{min. area} & \textbf{gap closed} & \textbf{source} \\
 \midrule
-Wallace, sign-extended (baseline)  & 1.86\,ns & 10022\umarea & 6346\umarea & n/a     & \src{R1} \\
-\quad $+$ sign-extension elimination & 1.87\,ns & 9234\umarea & 5975\umarea & 19.5\% & \src{R2} \\
-\quad $+$ Dadda reduction            & \textbf{1.73\,ns} & 9086\umarea & 5620\umarea & 38.1\% & \src{R3} \\
-\quad \textbf{$+$ fused selector}    & 1.75\,ns & \textbf{7988\umarea} & \textbf{5029\umarea} & \textbf{69.1\%} & \src{R4} \\
+0. Behavioural Booth (adder chain)   & 2.00\,ns & 7986\umarea & 6210\umarea &  7.1\% & \src{R5} \\
+1. Wallace tree                      & 1.86\,ns & 10022\umarea & 6346\umarea & n/a     & \src{R1} \\
+2. $+$ sign-extension elimination    & 1.87\,ns & 9234\umarea & 5975\umarea & 19.5\% & \src{R2} \\
+3. $+$ Dadda tree                    & \textbf{1.73\,ns} & 9086\umarea & 5620\umarea & 38.1\% & \src{R3} \\
+\textbf{4. $+$ fused selector}       & 1.75\,ns & \textbf{7988\umarea} & \textbf{5029\umarea} & \textbf{69.1\%} & \src{R4} \\
 \midrule
-Behavioural Booth (adder chain)    & 2.00\,ns & 7986\umarea & 6210\umarea &  7.1\% & \src{R5} \\
-Inferred \texttt{A * B}            & 1.63\,ns & 5337\umarea & 4441\umarea & reference & \src{R6} \\
+Inferred \texttt{A * B}              & 1.63\,ns & 5337\umarea & 4441\umarea & reference & \src{R6} \\
 \bottomrule
 \end{tabular}
 \caption{Summary of the sweep. $T_0$ is the derived zero-slack period from
-\eqref{eq:achieved}. \emph{Gap closed} uses the minimum-area column.}
+\eqref{eq:achieved}. \emph{Gap closed} uses the minimum-area column and is
+measured from the Wallace tree.}
 \label{tab:summary}
 \end{table}
 
 Table~\ref{tab:summary} summarises the measured area and timing results. The
 three optimizations together recover $69.1\%$ of the area difference between the
-structural baseline and the inferred reference. The fused design reduces the
+Wallace tree and the inferred reference. The fused design reduces the
 delay difference from $0.23$\,ns to $0.12$\,ns, while plain Dadda reaches the
 fastest structural point at $1.73$\,ns.
 
 The behavioural Booth variant, which replaces the reduction tree with a chain of
 signed additions, has the slowest derived period in the sweep at
-$2.00$\,ns\src{R5}. It is nevertheless smaller than the Wallace baseline at
+$2.00$\,ns\src{R5}. It is nevertheless smaller than the Wallace tree at
 relaxed timing, showing how extensively the synthesis tool can restructure an
 adder chain. Its timing result also shows that inference does not compensate
 fully for a serial high-level description.
@@ -1091,11 +1193,12 @@ point.
 \toprule
 \textbf{Variant at the $3.0$\,ns target} & \textbf{achieved period} & \textbf{dynamic} & \textbf{leakage} \\
 \midrule
-Wallace, sign-extended             & 3.000\,ns & 9.38\,mW & 0.148\,mW \\
-$+$ sign-extension elimination     & 3.000\,ns & 8.58\,mW & 0.138\,mW \\
-$+$ Dadda reduction                & 2.993\,ns & 8.25\,mW & 0.129\,mW \\
-\textbf{$+$ fused selector}        & \textbf{2.983\,ns} & \textbf{4.61\,mW} & \textbf{0.119\,mW} \\
-Behavioural Booth                  & 2.998\,ns & 5.87\,mW & 0.158\,mW \\
+0. Behavioural Booth               & 2.998\,ns & 5.87\,mW & 0.158\,mW \\
+1. Wallace tree                    & 3.000\,ns & 9.38\,mW & 0.148\,mW \\
+2. $+$ sign-extension elimination  & 3.000\,ns & 8.58\,mW & 0.138\,mW \\
+3. $+$ Dadda tree                  & 2.993\,ns & 8.25\,mW & 0.129\,mW \\
+\textbf{4. $+$ fused selector}     & \textbf{2.983\,ns} & \textbf{4.61\,mW} & \textbf{0.119\,mW} \\
+\midrule
 Inferred \texttt{A * B}            & 2.998\,ns & 3.22\,mW & 0.103\,mW \\
 \bottomrule
 \end{tabular}
@@ -1105,7 +1208,7 @@ differences in achieved period reflect each mapped netlist's timing slack.}
 \end{table}
 
 At this point the fused selector reduces dynamic power by $44.1\%$ relative to
-separate-negation Dadda and by $50.8\%$ relative to the Wallace baseline. It is
+separate-negation Dadda and by $50.8\%$ relative to the Wallace tree. It is
 $43.3\%$ above the inferred reference. The large change is consistent with the
 cell-count and XOR/XNOR reductions in Table~\ref{tab:census3}.
 
@@ -1118,25 +1221,30 @@ $(T_0,P_\mathrm{dyn})$ subset; lower and further left is better.}
 \label{fig:powerpareto}
 \end{figure}
 
-Figure~\ref{fig:powerpareto} shows the expected frequency dependence, but it
-also separates architectures at comparable latency. The fused-selector curve
-stays below the separate-negation Dadda curve throughout their measured
-overlap. The inferred multiplier remains the lowest-power implementation in the
-study.
+Figure~\ref{fig:powerpareto} is the datasheet view: the power of each netlist
+when it is clocked at its own achieved period. Most of its downward slope is
+that frequency. One multiplication completes per cycle, so the energy per
+operation $E = P\,T_0$ is almost independent of the clock: for the fused
+selector it stays at $14.1$--$14.2$\,pJ between $T_0=3.0$ and $4.7$\,ns while
+power falls by $36\%$. Comparisons across different clocks therefore use
+energy, as in Section~\ref{sec:pd}. At comparable latency, the fused-selector
+curve stays below the separate-negation Dadda curve throughout their measured
+overlap, and the inferred multiplier remains the lowest-power implementation
+in the study.
 
 \subsection{Cell-level analysis}
 
 Table~\ref{tab:census3} gives the cell census at a fixed $3.0$\,ns constraint.
 Two properties of the sequence follow from it.
 
-The area reduction from Optimization~1 ($5.8\%$) is much smaller than its
+The area reduction from Step~2 ($5.8\%$) is much smaller than its
 reduction in partial-product bits ($29.9\%$), because constant propagation
 removes most of the logic associated with sign replication independently of the
 optimization. Its contribution is the reduction in structural column height,
-which is realised by Optimization~2.
+which is realised by Step~3.
 
-The three optimizations are not independent. The gain of Optimization~3 depends
-on Optimization~2, because the compressors the mapper matches after the XOR
+The three optimizations are not independent. The gain of Step~4 depends
+on Step~3, because the compressors the mapper matches after the XOR
 layer is removed are the ones the Dadda schedule instantiates. Measured in
 isolation, each optimization is smaller than it is in sequence.
 
@@ -1145,19 +1253,29 @@ isolation, each optimization is smaller than it is in sequence.
 \section{Physical design}
 \label{sec:pd}
 
-The fused-selector netlist synthesised at $3.0$\,ns was placed and routed in
-Cadence Innovus to measure how much of the synthesis estimate survives real
-wires and a real clock tree. The flow is scripted step by step in
-\texttt{physical\_design/innovus\_script.tcl}.
+The $120$ netlists of the power sweep were placed and routed in Cadence
+Innovus, simulated with their routed delays and re-measured, so that the
+Pareto fronts of Section~\ref{sec:results} could be redrawn after layout. The
+flow is scripted in \texttt{physical\_design/}.
 
-\subsection{Flow and settings}
+\subsection{Method}
+
+Each netlist is placed and routed with its synthesis $T_0$ as clock period.
+For a netlist that met its constraint this is the requested period. For a
+netlist that missed it, asking for the requested period would make the tool
+rebuild the netlist instead of measuring it. The constraints are the synthesis
+SDC with that period, without the ideal and \texttt{dont\_touch} networks on
+\texttt{CLK} and \texttt{RST}. After routing, $T_0$ is recomputed with
+Equation~\ref{eq:achieved}. The routed netlist is then simulated with its SDF
+at that period, with timing checks enabled, and the resulting VCD gives the
+power. Activity and clock rate are therefore matched as in
+Section~\ref{sec:power-method}.
 
 \begin{table}[!ht]
 \centering\small
 \begin{tabular}{@{}ll@{}}
 \toprule
 Tool               & Cadence Innovus 23.35, Nangate 45\,nm LEF and ECSM libraries \\
-Constraints        & synthesis SDC values; clock and reset no longer ideal \\
 Floorplan          & aspect ratio $1.0$, utilisation $0.60$, $5\,\mu$m core-to-die margin \\
 IO pins            & $A$ left, $B$ top, $P$ right, \texttt{CLK}/\texttt{RST}/\texttt{LD} bottom \\
 Power grid         & metal9/metal10 core ring, metal10 stripes every $20\,\mu$m, metal1 rails \\
@@ -1165,17 +1283,28 @@ Signal routing     & metal1--metal6 \\
 Clock tree         & \texttt{CLKBUF\_X1}--\texttt{X3}; targets: skew $0.05$\,ns, transition $0.05$\,ns \\
 Optimisation       & pre-CTS, post-CTS and post-route, setup then hold \\
 Analysis view      & typical library, $25\,^{\circ}$C, cap-table extraction \\
+Power              & routed netlist, $500$-vector VCD at the post-route $T_0$ \\
 \bottomrule
 \end{tabular}
 \caption{Place-and-route environment.}
 \label{tab:pd-env}
 \end{table}
 
-Filler cells are inserted only after the last optimisation. Inserting them
-before post-CTS optimisation fills the rows completely and prevents the
-optimiser from adding or resizing cells.
+All $120$ layouts meet setup and hold, with no design-rule, connectivity or
+antenna violation. All $120$ post-layout simulations finish without errors, and
+every power report annotates $100\%$ of the nets from the VCD\src{R9}.
 
-\subsection{Results at the 3.0\,ns target}
+\subsection{One netlist in detail}
+
+Table~\ref{tab:pd} follows the fused-selector netlist synthesised at
+$3.0$\,ns. The critical path is the same in both tools, from bit 1 of the $B$
+register to bit 59 of the product register. Its arrival time, however, falls
+from $2.95$\,ns in synthesis to $2.21$\,ns after routing. Optimisation changes
+the cell area by only $0.09\%$, adding the clock buffers, two tie cells and a
+few buffers on high-fanout nets. Corner analysis shows the limit of a
+typical-corner flow: setup fails by $4.56$\,ns with the slow library at
+$125\,^{\circ}$C, and hold misses by at most $3$\,ps with the fast library at
+$0\,^{\circ}$C.
 
 \begin{table}[!ht]
 \centering\small
@@ -1187,67 +1316,181 @@ Setup slack at $3.0$\,ns           & $0.017$\,ns   & $0.782$\,ns \\
 Derived period $T_0$               & $2.983$\,ns   & $2.218$\,ns \\
 Hold slack                         & --            & $0.050$\,ns \\
 Standard-cell area                 & $5125\umarea$ & $5130\umarea$ \\
-Cells                              & $2819$        & $2816$ \\
 Core / die area                    & --            & $8550 / 10534\umarea$ \\
 Signal wire length                 & --            & $43.2$\,mm \\
-Clock tree                         & ideal         & $3$ buffers, skew $7$\,ps, latency $68$--$75$\,ps \\
-DRC, connectivity, antenna         & --            & $0$, $0$, $0$ violations \\
+Clock tree                         & ideal         & $3$ buffers, skew $7$\,ps \\
 \bottomrule
 \end{tabular}
 \caption{Fused-selector netlist synthesised at $3.0$\,ns, before and after
-place and route. $T_0$ uses Equation~\ref{eq:achieved} in both columns.\src{R9}}
+place and route\src{R9}.}
 \label{tab:pd}
 \end{table}
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=0.62\textwidth]{figures/layout_dadda_fused_3p0.png}
+\includegraphics[width=0.5\textwidth]{figures/layout_dadda_fused_3p0.png}
 \caption{Routed layout of the fused-selector multiplier ($102.6\times102.6\,\mu$m
-die). Pins are placed along the data flow; the yellow vertical pairs are the
-metal10 power stripes.}
+die). The yellow vertical pairs are the metal10 power stripes.}
 \label{fig:layout}
 \end{figure}
 
-The layout closes with no setup, hold, design-rule or connectivity violation.
-Optimisation changed the netlist only marginally: the cell area grew by
-$0.09\%$, from clock buffers, two tie cells and a few buffers on high-fanout
-nets.
+\subsection{Post-layout results}
 
-The timing result is the main finding. The critical path is the same in both
-tools, from bit 1 of the $B$ register to bit 59 of the product register, but
-its arrival time falls from $2.95$\,ns in synthesis to $2.21$\,ns after
-routing. The routed netlist could therefore run at about $2.22$\,ns, $26\%$
-faster than synthesis predicted. With zero wire load the same netlist has
-$1.025$\,ns of slack, so the real wires cost about $0.24$\,ns. The
-\texttt{5K\_hvratio\_1\_4} wire-load model charged about $1.0$\,ns for the same
-wires. Synthesis periods in Section~\ref{sec:results} are therefore
-pessimistic in absolute terms. The comparison between variants remains valid
-only if this pessimism is similar for all of them; the physical-design sweep
-of the other variants is intended to check this.
+\begin{table}[!ht]
+\centering\footnotesize
+\begin{tabular}{@{}lrrrrrrr@{}}
+\toprule
+ & \multicolumn{3}{c}{\textbf{fastest $T_0$ (ns)}} & \multicolumn{2}{c}{\textbf{min.\ area ($\mu$m$^2$)}} & \multicolumn{2}{c}{\textbf{energy/op (pJ)}} \\
+\textbf{Variant} & synth. & routed & slow & synth. & routed & synth. & routed \\
+\midrule
+0. Behavioural Booth             & 2.00 & 1.74 & 6.11 & 6210 & 6244 & 18.1 & 14.9 \\
+1. Wallace tree                  & 1.86 & 1.76 & 5.91 & 6346 & 6377 & 28.6 & 27.0 \\
+2. $+$ sign-extension elim.      & 1.87 & 1.76 & 5.94 & 5975 & 6001 & 26.2 & 25.7 \\
+3. $+$ Dadda tree                & 1.78 & 1.64 & 5.70 & 5620 & 5663 & 25.1 & 22.6 \\
+\textbf{4. $+$ fused selector}   & 1.76 & \textbf{1.51} & \textbf{5.28} & 5029 & \textbf{5055} & 14.1 & \textbf{11.7} \\
+\midrule
+Inferred \texttt{A * B}          & 1.63 & 1.49 & 5.20 & 4441 & 4459 & 10.0 & 10.6 \\
+\bottomrule
+\end{tabular}
+\caption{Synthesis and post-layout results over the same $120$ netlists, so the
+Dadda points below $1.0$\,ns are excluded. Routed timing is at the typical
+corner; \emph{slow} is the same layouts timed with the slow library at
+$125\,^{\circ}$C. Energy per operation is total power times $T_0$ for the
+netlist synthesised at $3.0$\,ns\src{R10}.}
+\label{tab:pd-sweep}
+\end{table}
 
-Corner analysis shows the limit of a typical-corner sign-off. With the slow
-library at $125\,^{\circ}$C, setup fails by $4.56$\,ns, and with the fast
-library at $0\,^{\circ}$C, $32$ paths miss hold by at most $3$\,ps. Both views
-were reported but not optimised.
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.94\textwidth]{figures/pareto_area_vs_achieved_postlayout.png}
+\caption{Post-layout area against post-route $T_0$, Pareto front per variant.}
+\label{fig:pareto-pd}
+\end{figure}
 
-Innovus reports $4.18$\,mW at the default switching activity of $0.2$. This
-is not comparable with the $4.73$\,mW total (dynamic plus leakage) of Table~\ref{tab:power3}, which uses the
-activity of the $500$-vector simulation. A matched comparison needs the
-post-layout simulation of the routed netlist with its SDF, followed by power
-analysis with that activity.
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.94\textwidth]{figures/pareto_area_synthesis_vs_postlayout.png}
+\caption{Area fronts of three variants before (dashed) and after layout
+(solid). Every front moves left; the fused selector moves the most.}
+\label{fig:overlay}
+\end{figure}
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.94\textwidth]{figures/pareto_energy_vs_achieved_postlayout.png}
+\caption{Post-layout energy per multiplication of every routed netlist,
+ordered by achieved period. The small jumps between neighbouring points come
+from the different cell sizing of each netlist. Each architecture occupies a
+narrow band, independent of its clock.}
+\label{fig:energy-pd}
+\end{figure}
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.94\textwidth]{figures/pareto_dynamic_power_vs_achieved_postlayout.png}
+\caption{Post-layout dynamic power against post-route $T_0$, each netlist
+clocked at its own achieved period (datasheet view).}
+\label{fig:power-pd}
+\end{figure}
+
+Table~\ref{tab:pd-sweep} and Figures~\ref{fig:pareto-pd}--\ref{fig:power-pd}
+lead to four observations.
+
+\begin{itemize}\itemsep2pt
+\item \textbf{Area is preserved.} Routed areas stay within a few percent of
+      synthesis, and the area ranking is unchanged. The fused selector
+      recovers $68.9\%$ of the Wallace-to-reference area difference, against
+      $69.1\%$ in synthesis.
+\item \textbf{Every netlist is faster, by different amounts.} Tight netlists
+      gain $0.1$--$0.2$\,ns and relaxed ones up to $1.7$\,ns. The fused
+      selector gains the most: its fastest point moves to $1.51$\,ns,
+      $0.02$\,ns from the reference instead of $0.13$\,ns.
+\item \textbf{The energy gap to the reference narrows.} At the $3.0$\,ns
+      netlist, the fused selector uses $10\%$ more energy per operation than
+      \texttt{A * B}, against $42\%$ in synthesis, and $57\%$ less than the
+      Wallace tree.
+\item \textbf{Energy is a property of the architecture.} Across the whole
+      sweep each variant stays in a narrow band
+      (Figure~\ref{fig:energy-pd}): $9.5$--$11$\,pJ for \texttt{A * B},
+      $12$--$16$\,pJ for the fused selector (up to $18.5$\,pJ at its two
+      fastest points) and $26$--$29$\,pJ for the Wallace tree. The clock rate changes the power, but not this ranking.
+\end{itemize}
+
+The dynamic-power values of Figure~\ref{fig:power-pd} are higher than in
+synthesis because each netlist now runs at a shorter period. They remain the
+right figures for a datasheet, which states the power at the maximum
+frequency. The energy values are the ones to compare.
+
+\subsection{Wire-load model against real wires}
+
+Table~\ref{tab:wire} explains the uneven gains. For each netlist synthesised
+at $3.0$\,ns it compares three slacks at the same clock: synthesis with the
+wire-load model, Innovus with zero wire load, and the routed design. The
+wire-load model charged every variant about $1.0$\,ns. After routing and
+optimisation, the real wires cost between $0.16$ and $0.67$\,ns, depending on
+the architecture. The model is therefore pessimistic and also blind to
+architecture: it hid the advantage of the compact fused and behavioural
+structures, whose wiring is local, over the Wallace trees.
+
+\begin{table}[!ht]
+\centering\small
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+ & \multicolumn{2}{c}{\textbf{slack}} & \multicolumn{2}{c}{\textbf{wire cost}} \\
+\textbf{Variant (3.0\,ns netlist)} & zero-wire & routed & model & real \\
+\midrule
+0. Behavioural Booth             & 0.85 & 0.69 & 0.85 & 0.16 \\
+1. Wallace tree                  & 0.99 & 0.34 & 0.99 & 0.65 \\
+2. $+$ sign-extension elim.      & 0.99 & 0.32 & 0.99 & 0.67 \\
+3. $+$ Dadda tree                & 1.01 & 0.54 & 1.01 & 0.47 \\
+\textbf{4. $+$ fused selector}   & 1.03 & 0.78 & 1.01 & \textbf{0.24} \\
+\midrule
+Inferred \texttt{A * B}          & 1.00 & 0.49 & 1.00 & 0.51 \\
+\bottomrule
+\end{tabular}
+\caption{Delay attributed to interconnect, in ns. Model cost is the
+zero-wire slack minus the synthesis slack; real cost is the zero-wire slack
+minus the routed slack\src{R9}.}
+\label{tab:wire}
+\end{table}
+
+\subsection{Limitations}
+
+The flow is lighter than an industrial sign-off in four respects.
+
+\begin{itemize}\itemsep2pt
+\item \textbf{Typical corner.} Optimisation and the reported speeds use the
+      typical library. Industrial sign-off checks setup at the slow corner
+      and hold at the fast corner. At the slow corner every layout is about
+      $3.5\times$ slower (Table~\ref{tab:pd-sweep}), with the same ranking.
+\item \textbf{Synthesis--layout correlation.} The netlists were sized with a
+      wire-load model, not by physical-aware synthesis (for example DC
+      Topographical or Genus iSpatial). Tight netlists are therefore larger
+      than real wires require.
+\item \textbf{Loose layout clock.} Each layout used its synthesis $T_0$, which
+      turned out to leave slack, and Innovus stops optimising once timing is
+      met. The routed $T_0$ is therefore achievable, but it is not a pushed
+      minimum.
+\item \textbf{Workload and sign-off depth.} Power comes from one
+      deterministic $500$-vector sequence. There is no crosstalk or IR-drop
+      analysis, and extraction uses the capacitance table.
+\end{itemize}
 
 % =====================================================================
 \clearpage
 \section{Conclusions}
 
-A signed $32\times32$ radix-4 Booth multiplier was implemented in structural
-VHDL and optimized in three stages. Measured against an unoptimized Wallace
-baseline and an inferred \texttt{A * B} reference synthesised under identical
-conditions, the final architecture reaches a fastest derived zero-slack period
-of $1.75$\,ns against $1.63$\,ns for the reference. Plain Dadda is the fastest
-structural variant at $1.73$\,ns. The final architecture's smallest area is
-$5029\umarea$ against $4441\umarea$, recovering
-$69.1\%$ of the baseline-to-reference area difference.
+A signed $32\times32$ radix-4 Booth multiplier was refined in structural VHDL
+from a behavioural starting point towards the multiplier that Design Compiler
+infers from \texttt{A * B}. The Wallace tree bought latency in synthesis
+($2.00$ to $1.86$\,ns) at a high cost: more area and $58\%$ more energy per
+multiplication, and after layout its latency advantage disappears. The three
+optimizations that follow recover that cost. In synthesis the final
+architecture reaches $1.75$\,ns and $5029\umarea$, against $1.63$\,ns and
+$4441\umarea$ for the reference, and recovers $69.1\%$ of the
+Wallace-to-reference area difference. Plain Dadda is the fastest structural
+version in synthesis at $1.73$\,ns. The final version is better than the
+behavioural start in all three metrics.
 
 The three contributions are unequal, and their sizes do not follow the size of
 the structural change each one makes. Sign-extension elimination removes
@@ -1266,12 +1509,14 @@ recognise. The source-level cost of conditional inversion cannot be estimated
 reliably by counting XOR operators alone because the surrounding cone may map
 differently after the rewrite.
 
-Placement and routing of the fused-selector netlist confirm its area and
-close timing with a large margin: the routed netlist reaches $T_0=2.22$\,ns
-against $2.98$\,ns estimated in synthesis, because the wire-load model
-overestimated interconnect delay. The remaining steps are the
-physical-design sweep of the other variants, post-layout simulation with the
-routed SDF, and power analysis with the resulting activity.
+Placement and routing of all $120$ netlists preserve the area results and
+strengthen the timing ones. The synthesis wire-load model charged every
+variant about $1.0$\,ns of interconnect delay, while the real wires cost
+between $0.16$ and $0.67$\,ns depending on the architecture. The compact
+fused selector benefits most: after layout it reaches $1.51$\,ns against
+$1.49$\,ns for the inferred reference, and its energy per operation at the
+$3.0$\,ns netlist is within $10\%$ of the reference. Architecture comparisons
+made with a wire-load model should therefore be confirmed after layout.
 
 % =====================================================================
 \clearpage
@@ -1308,11 +1553,11 @@ the architecture verified in simulation identical to the one synthesised.
 \toprule
 \textbf{Variant} & \textbf{Selected implementation} \\
 \midrule
-Wallace baseline & sign-extended rows and Wallace reduction \\
-Wallace optimized & compact rows and Wallace reduction \\
-Dadda & compact rows and Dadda reduction \\
-Dadda fused selector & fused row selection and Dadda reduction \\
-Behavioural Booth & Booth rows accumulated as an adder chain \\
+0. Behavioural Booth & Booth rows accumulated as an adder chain \\
+1. Wallace tree & sign-extended rows and Wallace reduction \\
+2. $+$ sign-extension elimination & compact rows and Wallace reduction \\
+3. $+$ Dadda tree & compact rows and Dadda reduction \\
+4. $+$ fused selector & fused row selection and Dadda reduction \\
 Inferred reference & registered signed \texttt{A * B} \\
 \bottomrule
 \end{tabular}
@@ -1336,7 +1581,7 @@ Timing files follow \texttt{<type>\_<configuration>\_<period>.rpt}, with
 \toprule
 \textbf{Tag} & \textbf{Source} & \textbf{Variant or measurement set} \\
 \midrule
-\src{R1} & synthesis reports & Wallace baseline \\
+\src{R1} & synthesis reports & Wallace tree \\
 \src{R2} & synthesis reports & Wallace with sign-extension elimination \\
 \src{R3} & synthesis reports & Dadda with separate negation \\
 \src{R4} & synthesis reports & Dadda with fused selector \\
@@ -1344,7 +1589,8 @@ Timing files follow \texttt{<type>\_<configuration>\_<period>.rpt}, with
 \src{R6} & synthesis reports & inferred signed multiplier \\
 \src{R7} & 3.0\,ns reports & mapped-cell census for all six variants \\
 \src{R8} & power reports & SDF/VCD/SAIF activity-based power results \\
-\src{R9} & \texttt{physical\_design/reports/} & post-route timing, area, clock tree and verification \\
+\src{R9} & \texttt{physical\_design/runs/} & post-route reports of each netlist \\
+\src{R10} & \texttt{physical\_design/results/} & post-layout $T_0$, area and VCD-based power \\
 \bottomrule
 \end{tabular}
 \end{table}
