@@ -10,10 +10,14 @@ vlib work_pl
 vlog -work work_pl $cell_models
 vcom -work work_pl ../../synthesis/sim/tb_boothmul_registered.vhd
 
-foreach run [lsort [glob -type d ../runs/*]] {
+## selecting only this run
+## set runs {"../runs/CFG_BOOTHMUL_REG_DADDA_FUSED_SEL_3p0"}
+## foreach run $runs {
+
+foreach run [lsort [glob -type d ../runs/*]]{
 
     set sdf $run/outputs/${BlockName}_routed.sdf
-
+    echo " the sdf is $sdf"
     ##  not routed yet, or already simulated
     if {![file exists $sdf] || [file exists $run/reports/12_sim.txt]} {
         continue

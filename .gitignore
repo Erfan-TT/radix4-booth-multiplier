@@ -58,7 +58,6 @@ tcl_stacktrace.txt
 
 # ---- LaTeX build artifacts (the .tex and .pdf are both kept) ----
 *.aux
-*.log
 *.out
 *.toc
 *.nav
@@ -76,7 +75,6 @@ physical_design/runs/*/dbs/
 physical_design/runs/*/*.enc
 physical_design/runs/*/*.enc.dat/
 physical_design/runs/*/innovus*
-physical_design/runs/*/*.log
 physical_design/runs/*/*.antenna.lef
 physical_design/runs/*/timingReports/
 physical_design/runs/*/.cadence/

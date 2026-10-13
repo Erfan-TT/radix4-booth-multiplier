@@ -1,0 +1,336 @@
+
+Cadence Innovus(TM) Implementation System.
+Copyright 2024 Cadence Design Systems, Inc. All rights reserved worldwide.
+
+Version:	v23.35-s106_1, built Wed Jul 16 17:52:06 PDT 2025
+Options:	-nowin -files ../../scripts/power_postlayout.tcl 
+Date:		Sun Oct 11 02:00:54 2026
+Host:		microsys.openstack.polito (x86_64 w/Linux 5.14.0-611.55.1.el9_7.x86_64) (1core*32cpus*Intel Xeon Processor (Skylake, IBRS) 16384KB)
+OS:		Rocky Linux 9.7 (Blue Onyx)
+
+License:
+		[02:00:55.280420] Configured Lic search path (23.02-s006): :5280@led-x3850-3.polito.it::5280@led-x3850-3.polito.it
+
+		invs	Innovus Implementation System	23.1	checkout succeeded
+		8 CPU jobs allowed with the current license(s). Use setMultiCpuUsage to set your required CPU count.
+Create and set the environment variable TMPDIR to /home/dlx26.14/erfan/radix4-booth-multiplier/physical_design/runs/CFG_REG_SUPER_BEH_4p0/innovus_temp_2518764_4876f2f9-751f-4e4e-95d6-2cbbd382b707_microsys.openstack.polito_dlx26.14_Is4CIV.
+
+Change the soft stacksize limit to 0.2%RAM (256 mbytes). Set global soft_stack_size_limit to change the value.
+Info: Process UID = 2518764 / 4876f2f9-751f-4e4e-95d6-2cbbd382b707 / S9BSRro6Nd
+source /eda/cadence/2025-26/RHELx86/DDIEXPORT_23.35.000/INNOVUS231/tools.lnx86/../etc/synth/attr_def/plus_attr_defs.tcl
+source /eda/cadence/2025-26/RHELx86/DDIEXPORT_23.35.000/INNOVUS231/tools.lnx86/../etc/synth/attr_def/plus_msg_defs.tcl
+
+**INFO:  MMMC transition support version v31-84 
+
+Sourcing file "../../scripts/power_postlayout.tcl" ...
+innovus 1> source ../../scripts/power_postlayout.tcl
+#% Begin load design ... (date=10/11 02:01:23, mem=1844.1M)
+Set Default Input Pin Transition as 0.1 ps.
+Loading design 'boothmul_registered' saved by 'Innovus' '23.35-s106_1' on 'Sat Oct 10 22:25:16 2026'.
+% Begin Load MMMC data ... (date=10/11 02:01:25, mem=1847.6M)
+% End Load MMMC data ... (date=10/11 02:01:25, total cpu=0:00:00.0, real=0:00:00.0, peak res=1848.8M, current mem=1848.8M)
+
+Loading LEF file /home/dlx26.14/erfan/radix4-booth-multiplier/physical_design/runs/CFG_REG_SUPER_BEH_4p0/dbs/10_final.enc.dat/libs/lef/NangateOpenCellLibrary.lef ...
+Set DBUPerIGU to M2 pitch 380.
+
+##  Check design process and node:  
+##  Both design process and tech node are not set.
+
+Loading view definition file from /home/dlx26.14/erfan/radix4-booth-multiplier/physical_design/runs/CFG_REG_SUPER_BEH_4p0/dbs/10_final.enc.dat/viewDefinition.tcl
+Reading libsTYP timing library '/eda/dk/nangate45/liberty/NangateOpenCellLibrary_typical_ecsm_nowlm.lib' ...
+**ERROR: (TECHLIB-1346):	The attribute 'index_1' defined in group 'ecsm_waveform' on line 393863 is not monotonically increasing for values '0.000041' to '0.000037'. This may lead to undesirable analysis results. The attribute will be ignored. (File /eda/dk/nangate45/liberty/NangateOpenCellLibrary_typical_ecsm_nowlm.lib)
+**ERROR: (TECHLIB-1256):	The ecsm_waveform group 1 is being ignored due to errors in this group. This group will be excluded for any further library checks. Refer to the previous messages issued for ecsm_waveform group 1 to find the details of the issues in this group. (File /eda/dk/nangate45/liberty/NangateOpenCellLibrary_typical_ecsm_nowlm.lib, Line 393862)
+**ERROR: (TECHLIB-420):	Number of ecsm_waveforms in the 'rise_transition' table on pin ZN of cell OAI222_X2 does not match the number of transition table axis points specified in the template 'Timing_7_7'. Ignoring waveform data. (File /eda/dk/nangate45/liberty/NangateOpenCellLibrary_typical_ecsm_nowlm.lib, Line 393848)
+**ERROR: (TECHLIB-1346):	The attribute 'index_1' defined in group 'ecsm_waveform' on line 395723 is not monotonically increasing for values '0.000041' to '0.000037'. This may lead to undesirable analysis results. The attribute will be ignored. (File /eda/dk/nangate45/liberty/NangateOpenCellLibrary_typical_ecsm_nowlm.lib)
+**ERROR: (TECHLIB-1256):	The ecsm_waveform group 1 is being ignored due to errors in this group. This group will be excluded for any further library checks. Refer to the previous messages issued for ecsm_waveform group 1 to find the details of the issues in this group. (File /eda/dk/nangate45/liberty/NangateOpenCellLibrary_typical_ecsm_nowlm.lib, Line 395722)
+**ERROR: (TECHLIB-420):	Number of ecsm_waveforms in the 'rise_transition' table on pin ZN of cell OAI222_X2 does not match the number of transition table axis points specified in the template 'Timing_7_7'. Ignoring waveform data. (File /eda/dk/nangate45/liberty/NangateOpenCellLibrary_typical_ecsm_nowlm.lib, Line 395708)
+Read 134 cells in library 'NangateOpenCellLibrary' 
+*** End library_loading (cpu=0.02min, real=0.02min, mem=118.0M, fe_cpu=0.52min, fe_real=0.53min, fe_mem=1859.4M) ***
+% Begin Load netlist data ... (date=10/11 02:01:26, mem=1868.3M)
+*** Begin netlist parsing (mem=1859.4M) ***
+Created 134 new cells from 1 timing libraries.
+Reading netlist ...
+Backslashed names will retain backslash and a trailing blank character.
+Reading verilogBinary netlist '/home/dlx26.14/erfan/radix4-booth-multiplier/physical_design/runs/CFG_REG_SUPER_BEH_4p0/dbs/10_final.enc.dat/vbin/boothmul_registered.v.bin'
+
+*** Memory Usage v#1 (Current mem = 1859.379M, initial mem = 848.406M) ***
+*** End netlist parsing (cpu=0:00:00.0, real=0:00:00.0, mem=1859.4M) ***
+% End Load netlist data ... (date=10/11 02:01:26, total cpu=0:00:00.1, real=0:00:00.0, peak res=1876.4M, current mem=1876.4M)
+Set top cell to boothmul_registered.
+Hooked 134 DB cells to tlib cells.
+Starting recursive module instantiation check.
+No recursion found.
+Building hierarchical netlist for Cell boothmul_registered ...
+***** UseNewTieNetMode *****.
+*** Netlist is unique.
+** info: there are 135 modules.
+** info: there are 2925 stdCell insts.
+** info: there are 2925 stdCell insts with at least one signal pin.
+
+*** Memory Usage v#1 (Current mem = 1883.379M, initial mem = 848.406M) ***
+*info: set bottom ioPad orient R0
+Start create_tracks
+Generated pitch 1.68 in metal10 is different from 1.6 defined in technology file in preferred direction.
+Generated pitch 0.84 in metal8 is different from 0.8 defined in technology file in preferred direction.
+Generated pitch 0.84 in metal7 is different from 0.8 defined in technology file in preferred direction.
+##  Process: 45            (User Set)               
+##     Node: (not set)                           
+
+##  Check design process and node:  
+##  Design tech node is not set.
+
+Applying the recommended capacitance filtering threshold values for 45nm process node: total_c_th=0, relative_c_th=1 and coupling_c_th=0.1.
+	These values will be used by all post-route extraction engines, including TQuantus, IQuantus and Quantus QRC extraction.
+	Capacitance filtering mode(-capFilterMode option of the setExtractRCMode) is 'relAndCoup' for all engines.
+	The accuracy mode for postRoute effortLevel low extraction will be set to 'high'.
+	Default value for EffortLevel(-effortLevel option of the setExtractRCMode) in postRoute extraction mode will be 'medium' if Quantus QRC technology file is specified else 'low'.
+**WARN: (IMPOPT-3602):	The specified path group name tdgp_reg2reg_default is not defined.
+Type 'man IMPOPT-3602' for more detail.
+Effort level <high> specified for tdgp_reg2reg_default path_group
+Slack adjustment of -0 applied on tdgp_reg2reg_default path_group
+**WARN: (IMPTCM-77):	Option "-drouteStartIteration" for command setNanoRouteMode is obsolete and will be removed in a future release. The obsolete option still works in this release but to avoid this warning and to ensure compatibility with future releases, remove the obsolete option from your script.
+addRing command will ignore shorts while creating rings.
+addRing command will disallow rings to go over rows.
+addRing command will consider rows while creating rings.
+The ring targets are set to core/block ring wires.
+*Info: initialize multi-corner CTS.
+Total number of combinational cells: 93
+Total number of sequential cells: 29
+Total number of tristate cells: 6
+Total number of level shifter cells: 0
+Total number of power gating cells: 0
+Total number of isolation cells: 0
+Total number of power switch cells: 0
+Total number of pulse generator cells: 0
+Total number of always on buffers: 0
+Total number of retention cells: 0
+Total number of physical cells: 6
+List of usable buffers: CLKBUF_X1 BUF_X1 CLKBUF_X2 BUF_X2 CLKBUF_X3 BUF_X4 BUF_X8 BUF_X16 BUF_X32
+Total number of usable buffers: 9
+List of unusable buffers:
+Total number of unusable buffers: 0
+List of usable inverters: INV_X1 INV_X2 INV_X4 INV_X8 INV_X16 INV_X32
+Total number of usable inverters: 6
+List of unusable inverters:
+Total number of unusable inverters: 0
+List of identified usable delay cells:
+Total number of identified usable delay cells: 0
+List of identified unusable delay cells:
+Total number of identified unusable delay cells: 0
+No delay cells were detected in the set of buffers. Buffers will be used to fix hold violations.
+Reading floorplan file - /home/dlx26.14/erfan/radix4-booth-multiplier/physical_design/runs/CFG_REG_SUPER_BEH_4p0/dbs/10_final.enc.dat/boothmul_registered.fp.gz (mem = 2143.9M).
+% Begin Load floorplan data ... (date=10/11 02:01:27, mem=2208.2M)
+*info: reset 3306 existing net BottomPreferredLayer and AvoidDetour
+Deleting old partition specification.
+Set FPlanBox to (0 0 201780 196560)
+ ... processed partition successfully.
+Reading binary special route file /home/dlx26.14/erfan/radix4-booth-multiplier/physical_design/runs/CFG_REG_SUPER_BEH_4p0/dbs/10_final.enc.dat/boothmul_registered.fp.spr.gz (Created by Innovus v23.35-s106_1 on Sat Oct 10 22:25:14 2026, version: 1)
+Convert 0 swires and 0 svias from compressed groups
+20 swires and 60 svias were compressed
+20 swires and 44 svias were decompressed from small or sparse groups
+Ending "Read special route file" (total cpu=0:00:00.1, real=0:00:00.0, peak res=2211.6M, current mem=2211.6M)
+There are 4 nets with weight being set
+There are 4 nets with bottomPreferredRoutingLayer being set
+There are 4 nets with avoidDetour being set
+Extracting standard cell pins and blockage ...... 
+Pin and blockage extraction finished
+Delete all existing relative floorplan constraints.
+% End Load floorplan data ... (date=10/11 02:01:28, total cpu=0:00:00.1, real=0:00:01.0, peak res=2211.6M, current mem=2209.9M)
+Reading congestion map file /home/dlx26.14/erfan/radix4-booth-multiplier/physical_design/runs/CFG_REG_SUPER_BEH_4p0/dbs/10_final.enc.dat/boothmul_registered.route.congmap.gz ...
+% Begin Load SymbolTable ... (date=10/11 02:01:28, mem=2210.2M)
+Suppress "**WARN ..." messages.
+Un-suppress "**WARN ..." messages.
+% End Load SymbolTable ... (date=10/11 02:01:28, total cpu=0:00:00.1, real=0:00:00.0, peak res=2211.6M, current mem=2211.6M)
+Loading place ...
+% Begin Load placement data ... (date=10/11 02:01:28, mem=2211.6M)
+Reading placement file - /home/dlx26.14/erfan/radix4-booth-multiplier/physical_design/runs/CFG_REG_SUPER_BEH_4p0/dbs/10_final.enc.dat/boothmul_registered.place.gz.
+** Reading stdCellPlacement_binary (Created by Innovus v23.35-s106_1 on Sat Oct 10 22:25:14 2026, version# 2) ...
+Read Views for adaptive view pruning ...
+Read 0 views from Binary DB for adaptive view pruning
+*** applyConnectGlobalNets disabled.
+*** Completed restorePlace (cpu=0:00:00.0 real=0:00:00.0 mem=2143.9M) ***
+Total net length = 2.588e+04 (1.339e+04 1.248e+04) (ext = 1.465e+03)
+% End Load placement data ... (date=10/11 02:01:28, total cpu=0:00:00.1, real=0:00:00.0, peak res=2212.3M, current mem=2212.3M)
+Reading PG file /home/dlx26.14/erfan/radix4-booth-multiplier/physical_design/runs/CFG_REG_SUPER_BEH_4p0/dbs/10_final.enc.dat/boothmul_registered.pg.gz, version#2, (Created by Innovus v23.35-s106_1 on       Sat Oct 10 22:25:14 2026)
+*** Completed restorePGFile (cpu=0:00:00.0 real=0:00:01.0 mem=2143.9M) ***
+% Begin Load routing data ... (date=10/11 02:01:29, mem=2212.6M)
+Reading routing file - /home/dlx26.14/erfan/radix4-booth-multiplier/physical_design/runs/CFG_REG_SUPER_BEH_4p0/dbs/10_final.enc.dat/boothmul_registered.route.gz.
+Reading Innovus routing data (Created by Innovus v23.35-s106_1 on Sat Oct 10 22:25:14 2026 Format: 23.1) ...
+*** Total 3306 nets are successfully restored.
+*** Completed restoreRoute (cpu=0:00:00.1 real=0:00:00.0 mem=2143.9M) ***
+% End Load routing data ... (date=10/11 02:01:29, total cpu=0:00:00.1, real=0:00:00.0, peak res=2217.3M, current mem=2217.3M)
+TAT_INFO: ::restoreCongMap REAL = 0 : CPU = 0 : MEM = 0.
+Reading property file /home/dlx26.14/erfan/radix4-booth-multiplier/physical_design/runs/CFG_REG_SUPER_BEH_4p0/dbs/10_final.enc.dat/boothmul_registered.prop
+*** Completed restoreProperty (cpu=0:00:00.0 real=0:00:00.0 mem=2143.9M) ***
+Reading dirtyarea snapshot file /home/dlx26.14/erfan/radix4-booth-multiplier/physical_design/runs/CFG_REG_SUPER_BEH_4p0/dbs/10_final.enc.dat/boothmul_registered.db.da.gz (Create by Innovus v23.35-s106_1 on Sat Oct 10 22:25:14 2026, version: 8).
+Set Default Input Pin Transition as 0.1 ps.
+Extraction setup Started for TopCell boothmul_registered 
+Initializing multi-corner RC extraction with 1 active RC Corners ...
+Reading Capacitance Table File /home/dlx26.14/erfan/radix4-booth-multiplier/physical_design/runs/CFG_REG_SUPER_BEH_4p0/dbs/10_final.enc.dat/libs/mmmc/NCSU_FreePDK_45nm.capTbl ...
+Cap table was created using Encounter 08.10-p004_1.
+Process name: master_techFreePDK45.
+Importing multi-corner RC tables ... 
+Summary of Active RC-Corners : 
+ 
+ Analysis View: default
+    RC-Corner Name        : standard
+    RC-Corner Index       : 0
+    RC-Corner Temperature : 25 Celsius
+    RC-Corner Cap Table   : '/home/dlx26.14/erfan/radix4-booth-multiplier/physical_design/runs/CFG_REG_SUPER_BEH_4p0/dbs/10_final.enc.dat/libs/mmmc/NCSU_FreePDK_45nm.capTbl'
+    RC-Corner PreRoute Res Factor         : 1
+    RC-Corner PreRoute Cap Factor         : 1
+    RC-Corner PostRoute Res Factor        : 1 {1 1 1}
+    RC-Corner PostRoute Cap Factor        : 1 {1 1 1}
+    RC-Corner PostRoute XCap Factor       : 1 {1 1 1}
+    RC-Corner PreRoute Clock Res Factor   : 1	[Derived from postRoute_res (effortLevel low)]
+    RC-Corner PreRoute Clock Cap Factor   : 1	[Derived from postRoute_cap (effortLevel low)]
+    RC-Corner PostRoute Clock Cap Factor  : 1 {1 1 1} 	[Derived from postRoute_cap (effortLevel low)]
+    RC-Corner PostRoute Clock Res Factor  : 1 {1 1 1} 	[Derived from postRoute_res (effortLevel low)]
+    RC-Corner PostRoute Clock coupling capacitance Factor : 1 {1 1 1} 
+Initializing multi-corner capacitance tables ... 
+Initializing multi-corner resistance tables ...
+Start generating vias ..
+#Skip building auto via since it is not turned on.
+Extracting standard cell pins and blockage ...... 
+Pin and blockage extraction finished
+Via generation completed.
+% Begin Load power constraints ... (date=10/11 02:01:32, mem=2243.3M)
+source /home/dlx26.14/erfan/radix4-booth-multiplier/physical_design/runs/CFG_REG_SUPER_BEH_4p0/dbs/10_final.enc.dat/boothmul_registered_power_constraints.tcl
+'set_default_switching_activity' finished successfully.
+% End Load power constraints ... (date=10/11 02:01:32, total cpu=0:00:00.1, real=0:00:00.0, peak res=2268.3M, current mem=2268.3M)
+% Begin load AAE data ... (date=10/11 02:01:33, mem=2287.0M)
+**WARN: (IMPESI-3505):	setDelayCalMode -eng_enablePrePlacedFlow false (default=false) will be obsoleted along with its sgs2set equivalent.  This parameter will continue to be supported in the current release, but will be removed in the next major release of the software.
+AAE DB initialization (MEM=2303.078125 CPU=0:00:00.0 REAL=0:00:00.0) 
+% End load AAE data ... (date=10/11 02:01:33, total cpu=0:00:00.6, real=0:00:00.0, peak res=2305.2M, current mem=2305.2M)
+Restoring CCOpt config...
+  Extracting original clock gating for CLK...
+    clock_tree CLK contains 128 sinks and 0 clock gates.
+  Extracting original clock gating for CLK done.
+  The skew group CLK/coherent-synthesis was created. It contains 128 sinks and 1 sources.
+  The skew group CLK/coherent-synthesis was created. It contains 128 sinks and 1 sources.
+Restoring CCOpt config done.
+Total number of combinational cells: 93
+Total number of sequential cells: 29
+Total number of tristate cells: 6
+Total number of level shifter cells: 0
+Total number of power gating cells: 0
+Total number of isolation cells: 0
+Total number of power switch cells: 0
+Total number of pulse generator cells: 0
+Total number of always on buffers: 0
+Total number of retention cells: 0
+Total number of physical cells: 6
+List of usable buffers: CLKBUF_X1 BUF_X1 CLKBUF_X2 BUF_X2 CLKBUF_X3 BUF_X4 BUF_X8 BUF_X16 BUF_X32
+Total number of usable buffers: 9
+List of unusable buffers:
+Total number of unusable buffers: 0
+List of usable inverters: INV_X1 INV_X2 INV_X4 INV_X8 INV_X16 INV_X32
+Total number of usable inverters: 6
+List of unusable inverters:
+Total number of unusable inverters: 0
+List of identified usable delay cells:
+Total number of identified usable delay cells: 0
+List of identified unusable delay cells:
+Total number of identified unusable delay cells: 0
+No delay cells were detected in the set of buffers. Buffers will be used to fix hold violations.
+**WARN: (IMPCTE-107):	The following globals have been obsoleted since version (null). They will be removed in the next release. 
+timing_aocv_enable_gba_combine_launch_capture
+timing_enable_backward_compatible_latch_thru_mt_mode
+timing_enable_separate_device_slew_effect_sensitivities
+#% End load design ... (date=10/11 02:01:33, total cpu=0:00:09.3, real=0:00:10.0, peak res=2314.3M, current mem=2309.3M)
+
+*** Summary of all messages that are not suppressed in this session:
+Severity  ID               Count  Summary                                  
+WARNING   IMPESI-3505          1  setDelayCalMode -eng_%s (default=%s) wil...
+WARNING   IMPOPT-3602          1  The specified path group name %s is not ...
+WARNING   IMPCTE-107           1  The following globals have been obsolete...
+WARNING   IMPTCM-77            1  Option "%s" for command %s is obsolete a...
+ERROR     TECHLIB-420          2  Number of ecsm_waveforms in the '%s' tab...
+ERROR     TECHLIB-1256         2  The %s is being ignored due to errors in...
+ERROR     TECHLIB-1346         2  The attribute '%s' defined in group '%s'...
+*** Message Summary: 4 warning(s), 6 error(s)
+
+Extraction called for design 'boothmul_registered' of instances=6515 and nets=3306 using extraction engine 'postRoute' at effort level 'low' .
+PostRoute (effortLevel low) RC Extraction called for design boothmul_registered.
+RC Extraction called in multi-corner(1) mode.
+Process corner(s) are loaded.
+ Corner: standard
+extractDetailRC Option : -outfile /home/dlx26.14/erfan/radix4-booth-multiplier/physical_design/runs/CFG_REG_SUPER_BEH_4p0/innovus_temp_2518764_4876f2f9-751f-4e4e-95d6-2cbbd382b707_microsys.openstack.polito_dlx26.14_Is4CIV/boothmul_registered_2518764_4876f2f9-751f-4e4e-95d6-2cbbd382b707_L5qC3L.rcdb.d  -extended
+RC Mode: PostRoute -effortLevel low [Extended CapTable, RC Table Resistances]
+      RC Corner Indexes            0   
+Capacitance Scaling Factor   : 1.00000 
+Coupling Cap. Scaling Factor : 1.00000 
+Resistance Scaling Factor    : 1.00000 
+Clock Cap. Scaling Factor    : 1.00000 
+Clock Res. Scaling Factor    : 1.00000 
+Shrink Factor                : 1.00000
+Initializing multi-corner capacitance tables ... 
+Initializing multi-corner resistance tables ...
+Checking LVS Completed (CPU Time= 0:00:00.0  MEM= 2263.0M)
+Extracted 10.0044% (CPU Time= 0:00:00.2  MEM= 2320.5M)
+Extracted 20.0056% (CPU Time= 0:00:00.2  MEM= 2321.5M)
+Extracted 30.0038% (CPU Time= 0:00:00.2  MEM= 2321.5M)
+Extracted 40.005% (CPU Time= 0:00:00.2  MEM= 2321.5M)
+Extracted 50.0063% (CPU Time= 0:00:00.3  MEM= 2321.5M)
+Extracted 60.0044% (CPU Time= 0:00:00.3  MEM= 2321.5M)
+Extracted 70.0056% (CPU Time= 0:00:00.3  MEM= 2322.5M)
+Extracted 80.0038% (CPU Time= 0:00:00.3  MEM= 2322.5M)
+Extracted 90.005% (CPU Time= 0:00:00.3  MEM= 2322.5M)
+Extracted 100% (CPU Time= 0:00:00.4  MEM= 2323.5M)
+Number of Extracted Resistors     : 53071
+Number of Extracted Ground Cap.   : 56355
+Number of Extracted Coupling Cap. : 0
+PostRoute (effortLevel low) RC Extraction DONE (CPU Time: 0:00:00.5  Real Time: 0:00:01.0  MEM: 2307.504M)
+#################################################################################
+# Design Stage: PostRoute
+# Design Name: boothmul_registered
+# Design Mode: 45nm
+# Analysis Mode: MMMC OCV 
+# Parasitics Mode: SPEF/RCDB 
+# Signoff Settings: SI Off 
+#################################################################################
+CLK(250.696MHz) CK: assigning clock CLK to net CLK
+Parsing VCD file outputs/boothmul_registered_routed.vcd
+
+Starting Reading VCD variables
+2026-Oct-11 02:01:35 (2026-Oct-11 00:01:35 GMT)
+2026-Oct-11 02:01:35 (2026-Oct-11 00:01:35 GMT): 10%
+2026-Oct-11 02:01:35 (2026-Oct-11 00:01:35 GMT): 20%
+2026-Oct-11 02:01:35 (2026-Oct-11 00:01:35 GMT): 30%
+2026-Oct-11 02:01:35 (2026-Oct-11 00:01:35 GMT): 40%
+2026-Oct-11 02:01:35 (2026-Oct-11 00:01:35 GMT): 50%
+2026-Oct-11 02:01:35 (2026-Oct-11 00:01:35 GMT): 60%
+2026-Oct-11 02:01:35 (2026-Oct-11 00:01:35 GMT): 70%
+2026-Oct-11 02:01:35 (2026-Oct-11 00:01:35 GMT): 80%
+2026-Oct-11 02:01:35 (2026-Oct-11 00:01:35 GMT): 90%
+
+Finished Reading VCD variables
+2026-Oct-11 02:01:35 (2026-Oct-11 00:01:35 GMT)
+** WARN:  (VOLTUS_POWR-1784): The SDC clock frequency 250.696MHz is being overwritten with the VCD clock frequency 346.262MHz for the clock 'CLK' associated with the net
+'CLK' from the VCD file. If the SDC clock frequency is required for static power calculation, use the command
+'set_switching_activity -clock <clock name> -scale_factor <num>' to scale frequency of this clock.
+
+   With this vcd command,  900001 value changes and 1.4744e-06 second
+simulation time were counted for power consumption calculation.
+
+  Filename (activity)                    :
+outputs/boothmul_registered_routed.vcd
+  Names in file that matched to design   : 14114/19148
+  Annotation coverage for this file
+   (Unique nets matched/Total nets)       : 3304/3304 = 100%
+
+  5034 nets were found in the VCD file(s) but were not in
+  the design.  These nets are not reported because
+  'set_power_analysis_mode' -report_missing_nets' is set to false
+(default).
+
+  Total annotation coverage for all files of type VCD: 3304/3304 = 100%
+  Percent of VCD annotated nets with zero toggles: 20/3304 = 0.605327%
+
+'read_activity_file' finished successfully.
+*** Message Summary: 4 warning(s), 6 error(s)
+
+
+*** Memory Usage v#1 (Current mem = 2952.090M, initial mem = 848.406M) ***
+--- Ending "Innovus" (totcpu=0:00:41.8, real=0:00:44.0, mem=2952.1M) ---
+
